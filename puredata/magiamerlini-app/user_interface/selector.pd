@@ -1,0 +1,20 @@
+#N canvas 979 377 845 395 12;
+#X msg 59 301 selector name=\$1 value=\$2;
+#X obj 57 273 pack s f;
+#X obj 64 150 t b f;
+#X obj 60 245 symbol;
+#X obj 58 325 outlet;
+#X obj 162 70 inlet;
+#X obj 53 203 list append \$1;
+#X obj 4 20 hradio 15 1 0 16 empty empty empty 0 -8 0 10 -257985 -1
+-1 1;
+#X text 307 9 message: selector name=[name] value=[value];
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 2 0 6 0;
+#X connect 2 1 1 1;
+#X connect 3 0 1 0;
+#X connect 5 0 7 0;
+#X connect 6 0 3 0;
+#X connect 7 0 2 0;
+#X coords 0 -1 1 1 250 40 1 0 0;

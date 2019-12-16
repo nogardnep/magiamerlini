@@ -1,0 +1,66 @@
+#N canvas 885 355 845 395 12;
+#X obj 7 26 bng 15 250 50 0 empty empty up 17 7 0 10 -260097 -1 -1
+;
+#X obj 7 43 bng 15 250 50 0 empty empty down 17 7 0 10 -260097 -1 -1
+;
+#X obj 7 61 bng 15 250 50 0 empty empty stop 17 7 0 10 -258113 -1 -1
+;
+#X symbolatom 8 79 10 0 0 1 state - -;
+#X obj 197 188 symbol;
+#X msg 324 145 stopped;
+#X msg 173 148 going_up;
+#X msg 242 146 going_down;
+#X obj 165 440 outlet;
+#X obj 68 56 bng 15 250 50 0 empty empty send 17 7 0 10 -262144 -1
+-1;
+#X msg 450 60 1;
+#X msg 483 60 0;
+#X obj 341 298 pack s s;
+#X obj 304 42 t b b;
+#X obj 301 79 t b b;
+#X msg 384 198 up;
+#X msg 421 200 down;
+#X obj 292 234 list append \$1;
+#X obj 345 382 print;
+#X obj 409 250 symbol;
+#X floatatom 69 34 5 0 0 1 speed - -;
+#X msg 345 340 wheel name=\$1 action=\$2;
+#X obj 619 93 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 616 71 loadbang;
+#X obj 456 99 metro;
+#X obj 301 267 symbol;
+#X msg 218 36 500;
+#X text 202 5 message: wheel name=[name] action=[up|down];
+#X connect 0 0 6 0;
+#X connect 0 0 13 0;
+#X connect 1 0 7 0;
+#X connect 1 0 14 0;
+#X connect 2 0 5 0;
+#X connect 2 0 11 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 10 0 24 0;
+#X connect 11 0 24 0;
+#X connect 12 0 21 0;
+#X connect 13 0 10 0;
+#X connect 13 1 15 0;
+#X connect 14 0 10 0;
+#X connect 14 1 16 0;
+#X connect 15 0 19 0;
+#X connect 16 0 19 0;
+#X connect 17 0 25 0;
+#X connect 19 0 12 1;
+#X connect 20 0 24 1;
+#X connect 21 0 18 0;
+#X connect 22 0 26 0;
+#X connect 22 0 5 0;
+#X connect 22 0 11 0;
+#X connect 23 0 22 0;
+#X connect 24 0 9 0;
+#X connect 24 0 17 0;
+#X connect 25 0 12 0;
+#X connect 26 0 20 0;
+#X coords 0 -1 1 1 150 100 1 0 0;

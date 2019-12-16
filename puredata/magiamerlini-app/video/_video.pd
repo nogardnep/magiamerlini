@@ -1,0 +1,6 @@
+#N canvas 868 314 845 395 12;
+#X obj 33 12 inlet message;
+#X obj 29 322 outlet message;
+#X obj 39 46 list_contain 1 video;
+#X connect 0 0 2 0;
+#X coords 0 395 1 394 100 80 0;

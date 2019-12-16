@@ -1,0 +1,17 @@
+#N canvas 733 332 845 395 12;
+#X obj 3 19 tgl 15 0 empty empty 0/1 17 7 0 10 -232576 -1 -1 0 1;
+#X obj 106 84 t b f;
+#X obj 59 254 symbol;
+#X obj 56 139 list append \$1;
+#X obj 67 342 outlet;
+#X obj 63 282 pack s f;
+#X msg 68 310 switch name=\$1 action=\$2;
+#X text 160 12 message: switch name=[name] action=[0|1];
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 1 1 5 1;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X coords 0 -1 1 1 50 40 1 0 0;
