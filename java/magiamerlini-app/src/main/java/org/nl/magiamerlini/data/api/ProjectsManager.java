@@ -2,8 +2,8 @@ package org.nl.magiamerlini.data.api;
 
 import java.util.ArrayList;
 
-import org.nl.magiamerlini.data.entities.Project;
-import org.nl.magiamerlini.data.entities.SamplerTrack;
+import org.nl.magiamerlini.data.items.Project;
+import org.nl.magiamerlini.data.items.SamplerTrack;
 
 /**
  * Every project stored in separated H2 databases, accessible through specific

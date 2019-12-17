@@ -7,8 +7,10 @@ import org.nl.magiamerlini.App;
 import org.nl.magiamerlini.communication.Server;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.components.ui.api.Inputs;
-import org.nl.magiamerlini.components.ui.tools.Button;
-import org.nl.magiamerlini.components.ui.tools.Selector;
+import org.nl.magiamerlini.components.ui.tools.ButtonName;
+import org.nl.magiamerlini.components.ui.tools.ButtonSection;
+import org.nl.magiamerlini.components.ui.tools.SelectorType;
+import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.utils.Logger;
 
 public class CommunicationImpl implements Communication {
@@ -17,22 +19,24 @@ public class CommunicationImpl implements Communication {
 	private final static String PRESSED = "pressed";
 	private final static String LEAVED = "leaved";
 	private final static String ACTION = "action";
-	private final static String BANK = "bank";
 	private final static String NAME = "name";
 	private final static String PATH = "path";
 	private final static String VALUE = "value";
 	private final static String VELOCITY = "velocity";
 	private final static String NUMBER = "number";
+	private final static String SECTION = "section";
 	private final static String TICK = "tick";
 	private final static String LOAD = "load";
 	private final static String NEW = "new";
-	private final static String TEST = "test";
+	private final static String NETWORK = "network";
+	private final static String CONNECTED = "connected";
 	private final static String BUTTON = "button";
 	private final static String PAD = "pad";
 	private final static String CLOCK = "clock";
 	private final static String SELECTOR = "selector";
 	private final static String FILE_EXPLORER = "file_explorer";
 	private final static String SAMPLER = "sampler";
+	private final static String TYPE = "type";
 
 	private Logger logger;
 
@@ -68,36 +72,24 @@ public class CommunicationImpl implements Communication {
 		HashMap<String, String> args = transformMessage(messageParts);
 
 		switch (component) {
-		case TEST:
-			App.test();
+		case NETWORK:
+			switch (args.get(ACTION)) {
+			case CONNECTED:
+				App.test();
+				break;
+			}
 			break;
 		case BUTTON:
-			if (args.get(NAME) == BANK) {
-				int number = Integer.parseInt(args.get(NUMBER));
-				
-				switch (args.get(ACTION)) {
-				case PRESSED:
-					inputs.bankButtonPressed(number);
-					break;
-				case LEAVED:
-					inputs.bankButtonLeaved(number);
-					break;
-				}
-			} else {
-				Button button = Button.getButtonCorrespondingToString(args.get(NAME));
+			String name = args.get(NAME);
+			ButtonSection section = ButtonSection.getCorrespondingToString(args.get(SECTION));
 
-				if (button != null) {
-					switch (args.get(ACTION)) {
-					case PRESSED:
-						inputs.buttonPressed(button);
-						break;
-					case LEAVED:
-						inputs.buttonLeaved(button);
-						break;
-					}
-				} else {
-					logger.log(Level.WARNING, "Unknown button: \"" + args.get(NAME) + "\"");
-				}
+			switch (args.get(ACTION)) {
+			case PRESSED:
+				inputs.buttonPressed(name, section);
+				break;
+			case LEAVED:
+				inputs.buttonLeaved(name, section);
+				break;
 			}
 			break;
 		case PAD:
@@ -113,7 +105,7 @@ public class CommunicationImpl implements Communication {
 			}
 			break;
 		case SELECTOR:
-			inputs.selectorChanged(Selector.getSelectorCorrespondingToString(args.get(NAME)),
+			inputs.selectorChanged(SelectorType.getSelectorCorrespondingToString(args.get(NAME)),
 					Integer.parseInt(args.get(VALUE)));
 			break;
 		case CLOCK:
@@ -123,14 +115,16 @@ public class CommunicationImpl implements Communication {
 			}
 			break;
 		case FILE_EXPLORER:
+			FileType type = FileType.getCorrespondingToString(args.get(TYPE));
+
 			switch (args.get(ACTION)) {
 			case LOAD:
 				String path = args.get(PATH).replace(App.ROOT_DIR_FOR_FILES + "/", ""); // TODO: ugly
-				inputs.fileLoaded(path); // TODO: temporary?
+				inputs.fileLoaded(type, path); // TODO: temporary?
 				break;
 			case NEW:
 				logger.log(Level.INFO, "new");
-				inputs.fileCreated((args.get(NAME) != null ? args.get(NAME) : ""),
+				inputs.fileCreated(type, (args.get(NAME) != null ? args.get(NAME) : ""),
 						(args.get(PATH) != null ? args.get(PATH) : "")); // TODO: temporary?
 				break;
 			}

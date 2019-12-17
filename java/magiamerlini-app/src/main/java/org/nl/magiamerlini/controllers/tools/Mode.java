@@ -1,7 +1,7 @@
 package org.nl.magiamerlini.controllers.tools;
 
 public enum Mode {
-	Project, Song, Sequence, Pattern, Sampler, Mixer, Video;
+	Project, Song, SequenceEdit, PatternEdit, PatternLaunch, AudioSampler, AudioMixer, AudioEffects, VideoSampler, VideoMixer, VideoEffects;
 
 	public int getIndex() {
 		return ordinal();

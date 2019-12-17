@@ -3,7 +3,7 @@ package org.nl.magiamerlini.components.ui.api;
 import org.nl.magiamerlini.components.Component;
 
 public interface Padboard extends Component {
-	public void update();
+	public void updateDisplay();
 	
-	public void updatePad(int padNum);
+	public void updatePadDisplay(int padNum);
 }

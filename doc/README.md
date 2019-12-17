@@ -1,3 +1,3 @@
 # Doc
 
-Things change frequently, see the specifications for an up-to-date presentation, rather than sketches
+See the specifications for an up-to-date presentation, rather than sketches

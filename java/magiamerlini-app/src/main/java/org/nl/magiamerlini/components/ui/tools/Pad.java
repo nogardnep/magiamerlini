@@ -2,18 +2,20 @@ package org.nl.magiamerlini.components.ui.tools;
 
 public class Pad {
 	public final static int SPEED_FOR_NO_BLINKING = 0;
+	public final static int MIN_LIGHT_INTENSITY = 0;
+	public final static int MAX_LIGHT_INTENSITY = 1;
 
 	private int number;
-	private float speed;
-	private Color color;
-	private float intensity;
+	private float blinkingSpeed;
+	private Color lightColor;
+	private float lightIntensity;
 
 	public Pad(int number) {
 		
 		this.number = number;
-		this.speed = SPEED_FOR_NO_BLINKING;
-		this.intensity = 0;
-		this.color = Color.Grey;
+		this.blinkingSpeed = SPEED_FOR_NO_BLINKING;
+		this.lightIntensity = 0;
+		this.lightColor = Color.Grey;
 	}
 
 	public int getNumber() {
@@ -24,32 +26,32 @@ public class Pad {
 		this.number = number;
 	}
 
-	public float getSpeed() {
-		return speed;
+	public float getBlinkingSpeed() {
+		return blinkingSpeed;
 	}
 
-	public void setSpeed(float speed) {
-		this.speed = speed;
+	public void setBlinkingSpeed(float speed) {
+		this.blinkingSpeed = speed;
 	}
 
-	public Color getColor() {
-		return color;
+	public Color getLightColor() {
+		return lightColor;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setLightColor(Color color) {
+		this.lightColor = color;
 	}
 
-	public float getIntensity() {
-		return intensity;
+	public float getLightIntensity() {
+		return lightIntensity;
 	}
 
-	public void setIntensity(float intensity) {
-		this.intensity = intensity;
+	public void setLightIntensity(float intensity) {
+		this.lightIntensity = intensity;
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName() + " [" + "number=" + number + " color=" + color + " intensity=" + intensity + " speed=" + speed + "]";
+		return getClass().getSimpleName() + " [" + "number=" + number + " color=" + lightColor + " intensity=" + lightIntensity + " speed=" + blinkingSpeed + "]";
 	}
 
 }

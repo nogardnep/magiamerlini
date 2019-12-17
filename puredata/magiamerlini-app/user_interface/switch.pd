@@ -6,7 +6,6 @@
 #X obj 67 342 outlet;
 #X obj 63 282 pack s f;
 #X msg 68 310 switch name=\$1 action=\$2;
-#X text 160 12 message: switch name=[name] action=[0|1];
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
 #X connect 1 1 5 1;

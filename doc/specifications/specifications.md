@@ -74,7 +74,7 @@ Edit video effects (maximum of 16 effects - each effect as one instance)
 
 ### Items
 
-Items represent entities than are stored in the database
+Items are kind of entities stored in the database
 
 Each item have a maximum of 16 parameters than can be edited with arrows
 Can edit a parameter for several items at the same time (taking into account the value for the first selected item)
@@ -318,32 +318,32 @@ Drawn lines on the case to explain the different features
 
 Move through the file explorer or through item parameters
 
-Button.**Up**
-Button.**Down**
-Button.**Left**
-Button.**Right**
+Button.Navigation.**Up**
+Button.Navigation.**Down**
+Button.Navigation.**Left**
+Button.Navigation.**Right**
 
-#### Reading
+#### Player
 
-Button.**Forward**
-Button.**Backward**
-Button.**Pause**
-Button.**Play**
+Button.Player.**Forward**
+Button.Player.**Backward**
+Button.Player.**Pause**
+Button.Player.**Play**
 
 #### Banks
 
-Button.**Bank0** => "A"
-Button.**Bank1** => "B"
-Button.**Bank2** => "C"
-Button.**Bank3** => "D"
+Button.Bank.**0** => "A"
+Button.Bank.**1** => "B"
+Button.Bank.**2** => "C"
+Button.Bank.**3** => "D"
 
-#### Special
+#### Action
 
-Button.**Load**: "load"
-Button.**New**: "new" / "insert" (followed by pads)
-Button.**Save**: "copy" (followed by Button.Load and pads)
-Button.**Select**: "select for editing" (followed by pads) / "enter" (after screen)
-Button.**Move**: "swap" (followed by pads) / "cancel" (after screen) / "stop" (followed by pads in Mode.SequenceEdit)
+Button.Action.**Load**: "load"
+Button.Action.**New**: "new" / "insert" (followed by pads)
+Button.Action.**Save**: "copy" (followed by Button.Load and pads)
+Button.Action.**Select**: "select for editing" (followed by pads) / "enter" (after screen)
+Button.Action.**Move**: "swap" (followed by pads) / "cancel" (after screen) / "stop" (followed by pads in Mode.SequenceEdit)
 
 
 
@@ -355,7 +355,7 @@ Button.**Move**: "swap" (followed by pads) / "cancel" (after screen) / "stop" (f
 
 #### Global
 
-Button.Select + pad(s) => **select** item(s) corresponding to pad(s)
+Button.Select + pad => add the corresponding item to **selection**
 bank button => change the **current bank**
 Button.Pause => **pause** the playhead
 Button.Pause + Button.Backward => **stop** all playing tracks, pause the playhead, restore the playhead at starting point
@@ -376,6 +376,7 @@ Default selected item: current Song (depending on loaded  project)
 Selection type: SongPart
 
 pad => **set starting** song part
+Button.Select + pad => add the corresponding item to **selection**
 Button.Play => **play** the song
 Button.New + pad => **insert** a new part between two existing parts
 Button.Move + 2 pads => **swap** part emplacements
@@ -395,6 +396,7 @@ Default selected item: current Sequence (depending on Selector.Sequence)
 Selection type: Pattern
 
 pad => **arm** pattern for playing
+Button.Select + pad => add the corresponding item to **selection**
 Button.Play => **play** the current sequence
 Button.Move + 2 pads => **swap** pattern emplacements
 
@@ -405,7 +407,6 @@ Selection type: PatternEvent
 
 Button.Play => **play** the current pattern
 pad => **toggle** a PatternEvent state between "active" and "unactive"
-TODO
 
 #### Mode.AudioSampler
 
@@ -416,12 +417,12 @@ pad => **play** corresponding sampler track and video track
 Button.Play => **play** the current pattern
 Button.Load + pad => open file explorer, **load** **a sample** for a track
 Button.New + pad => **arm** a track for recording
-Button.Move + 2 pads => **swap** sampler tracks emplacement
-Button.Save + pad(s) => **copy** the selected item(s) on sampler track(s) corresponding to pad(s) (parameters and audio file - respecting selections order - effective on button release)
-Button.Move + pad + bank button => **swap** sampler tracks emplacements over banks
-Button.Load + bank button => open file explorer, **load an existing bank** of presets 
-Button.New + bank button => open file explorer, **create a bank** of presets
-Button.Save + bank button => open file explorer,  **overwrite an existing bank** of presets 
+Button.Move + pad => add item to **swaping** list (effective on Button.Move release)
+Button.Save + pad => add item to **copying ** list (parameters and audio file - effective on Button.Save release)
+Button.Move + pad + bank => **swap** sampler tracks emplacements over banks
+Button.Load + bank => open file explorer, **load an existing bank** of presets 
+Button.New + bank => open file explorer, **create a bank** of presets
+Button.Save + bank => open file explorer,  **overwrite an existing bank** of presets 
 
 #### Mode.AudioMixer
 
@@ -429,12 +430,12 @@ Default selected item: none
 Selection type: AudioMixerTrack
 
 pad => **mute / unmute** mixer track
-Button.Move + 2 pads => **swap** mixer tracks emplacement, update output_channel parameter in sampler tracks
-Button.Save + pad(s) => **copy** the selected item(s) on mixer track(s) corresponding to pad(s) (respecting selections order - effective on button release)
-Button.Move + pad + bank button => **swap** mixer tracks emplacements over banks
-Button.Load + bank button => open file explorer, **load an existing bank** of presets 
-Button.New + bank button => open file explorer, **create a bank** of presets
-Button.Save + bank button => open file explorer,  **overwrite an existing bank** of presets 
+Button.Move + pad => add item to **swaping** list (effective on Button.Move release)
+Button.Move + pad + bank => add item to **swaping** list (from another bank - effective on Button.Move release)
+Button.Save + pad => add item to **copying** list (effective on Button.Save release)
+Button.Load + bank => open file explorer, **load an existing bank** of presets 
+Button.New + bank => open file explorer, **create a bank** of presets
+Button.Save + bank => open file explorer,  **overwrite an existing bank** of presets 
 
 #### Mode.VideoSampler
 
@@ -442,12 +443,12 @@ Default selected item: none
 Selection type: VideoSamplerTrack
 
 pad => **play** corresponding sampler track and video track
-Button.Move + 2 pads => **swap** video tracks emplacement, update output_channel parameter in sampler tracks
-Button.Save + pad(s) => **copy** the selected item(s) on video track(s) corresponding to pad(s) (parameters and video file) respecting selections order - effective on button release)
-Button.Move + pad + bank button => **swap** video tracks emplacements over banks
-Button.Load + bank button => open file explorer, **load an existing bank** of presets 
-Button.New + bank button => open file explorer, **create a bank** of presets
-Button.Save + bank button => open file explorer,  **overwrite an existing bank** of presets
+Button.Move + pad =>  add item to **swaping** list (effective on Button.Move release  - update output_channel parameter in sampler tracks)
+Button.Save + pad  => add item to **copying** list (effective on Button.Save release)
+Button.Move + pad + bank => **swap** video tracks emplacements over banks
+Button.Load + bank => open file explorer, **load an existing bank** of presets 
+Button.New + bank => open file explorer, **create a bank** of presets
+Button.Save + bank => open file explorer,  **overwrite an existing bank** of presets
 
 #### Mode.VideoMixer
 
@@ -455,12 +456,12 @@ Default selected item: none
 Selection type: VideoMixerTrack
 
 pad => **mute / unmute** mixer track
-Button.Move + 2 pads => **swap** mixer tracks emplacement, update output_channel parameter in sampler tracks
-Button.Save + pad(s) => **copy** the selected item(s) on mixer track(s) corresponding to pad(s) (respecting selections order - effective on button release)
-Button.Move + pad + bank button => **swap** mixer tracks emplacements over banks
-Button.Load + bank button => open file explorer, **load an existing bank** of presets 
-Button.New + bank button => open file explorer, **create a bank** of presets
-Button.Save + bank button => open file explorer,  **overwrite an existing bank** of presets 
+Button.Move + pad =>  add item to **swaping** list (effective on Button.Move release)
+Button.Save + pad => add item to **copying** list (effective on Button.Save release)
+Button.Move + pad + bank => **swap** mixer tracks emplacements over banks
+Button.Load + bank => open file explorer, **load an existing bank** of presets 
+Button.New + bank => open file explorer, **create a bank** of presets
+Button.Save + bank => open file explorer,  **overwrite an existing bank** of presets 
 
 #### Mode.AudioEffects
 

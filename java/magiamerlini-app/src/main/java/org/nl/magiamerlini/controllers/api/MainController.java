@@ -1,80 +1,85 @@
 package org.nl.magiamerlini.controllers.api;
 
-import org.nl.magiamerlini.components.mixer.api.Mixer;
-import org.nl.magiamerlini.components.sampler.api.Sampler;
+import org.nl.magiamerlini.components.audio.api.AudioMixer;
+import org.nl.magiamerlini.components.audio.api.AudioSampler;
 import org.nl.magiamerlini.components.sequencer.api.Sequencer;
 import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.components.ui.api.FileExplorer;
 import org.nl.magiamerlini.components.ui.api.Padboard;
+import org.nl.magiamerlini.components.video.api.VideoMixer;
+import org.nl.magiamerlini.components.video.api.VideoSampler;
 import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.api.ProjectsManager;
-import org.nl.magiamerlini.data.entities.SamplerTrack;
 import org.nl.magiamerlini.data.tools.Item;
 
 public interface MainController {
-	public Mode getSelectedMode();
-	
-	public Item getItemCorrespondingToPad(int padNum);
+	public Mode getCurrentMode();
+
+	public Item getItemCorrespondingTo(int number);
 
 	public void changeMode(Mode mode);
 
-	public int getSelectedBankIndex();
+	public void changeMode(int index);
+
+	public int getCurrentBankIndex();
 
 	public void changeBank(int value);
 
-	public boolean isSelecting();
-
-	public void setSelecting(boolean selecting);
-	
 	public void setLoading(boolean loading);
 
 	public void updateDisplay();
 
 	public void loadProject(String path);
 
-	public void changeMode(int value);
-
 	public boolean inMode(Mode mode);
 
-	public Sampler getSampler();
-
-	public ItemsSelector getItemsSelector();
-
 	public ProjectsManager getProjectManager();
-	
+
+	public int getCurrentPatternIndex();
+
+	public void changePattern(int index);
+
+	public int getCurrentTrackIndex();
+
+	public void changeTrack(int index);
+
+	public int getCurrentSequenceIndex();
+
+	public void changeSequence(int index);
+
+	public int getCurrentPageIndex();
+
+	public void changePage(int index);
+
+	public Sequencer getSequencer();
+
+	public Display getDisplay();
+
 	public Padboard getPadboard();
 
-	public int getSelectedPatternIndex();
+	public SelectionController getSelectionController();
 
-	public void changeSelectedPattern(int selectedPattern);
+	public AudioSampler getAudioSampler();
 
-	public int getSelectedTrackIndex();
+	public AudioMixer getAudioMixer();
 
-	public void changeSelectedTrack(int selectedTrack);
+	public VideoSampler getVideoSampler();
 
-	public int getSelectedSequenceIndex();
-
-	public void changeSelectedSequence(int selectedSequence);
-
-	public int getSelectedPageIndex();
-
-	public void changeSelectedPage(int selectedPage);
-
-	public boolean isReady();
-
-	boolean isLoadingProject();
-
-	Mixer getMixer();
-
-	Sequencer getSequencer();
-
-	Display getDisplay();
+	public VideoMixer getVideoMixer();
 
 	boolean isLoading();
 
 	public FileExplorer getFileExplorer();
 
-	public Mode getMode();
-
 	public void createProject(String name, String path);
+
+	public boolean isReady();
+
+	boolean isLoadingProject();
+
+	int getCurrentModeIndex();
+
+	public PresetController getPresetController();
+	
+	public PlayerController getPlayerController();
 }
