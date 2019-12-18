@@ -2,7 +2,7 @@ package org.nl.magiamerlini.utils;
 
 import java.io.File;
 
-public class Utils {
+public class FileSystemUtils {
 	public static boolean deleteDirectory(File dir) {
 		if (dir.isDirectory()) {
 			File[] children = dir.listFiles();

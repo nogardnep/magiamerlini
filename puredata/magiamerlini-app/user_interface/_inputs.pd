@@ -1,4 +1,4 @@
-#N canvas 2012 72 991 394 12;
+#N canvas 346 224 991 394 12;
 #X obj 112 484 outlet message;
 #X obj 858 231 switch precount;
 #X obj 858 271 switch metronome;
@@ -17,7 +17,6 @@
 #X obj 539 312 button copy action;
 #X obj 539 52 button new action;
 #X obj 340 137 button enter navigation;
-#X obj 84 119 button up navigation;
 #X obj 8 169 button left navigation;
 #X obj 166 169 button rigth navigation;
 #X obj 84 219 button down navigation;
@@ -32,7 +31,6 @@
 #X obj 1257 251 button up page;
 #X obj 1108 250 button up track;
 #X obj 1257 301 button down page;
-#X obj 152 293 button backward palyer;
 #X obj 180 343 button play player;
 #X obj 310 343 button pause player;
 #X obj 310 293 button forward player;
@@ -44,6 +42,8 @@
 #X obj 539 212 button edit action;
 #X obj 539 262 button move action;
 #X obj 539 152 button save action;
+#X obj 84 119 button up navigation;
+#X obj 152 293 button backward player;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 4 0;

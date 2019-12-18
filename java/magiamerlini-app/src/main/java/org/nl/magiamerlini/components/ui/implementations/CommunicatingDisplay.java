@@ -8,7 +8,7 @@ import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.data.tools.Item;
-import org.nl.magiamerlini.data.tools.Parameter;
+import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public class CommunicatingDisplay extends CommunicatingComponent implements Display {
 
@@ -37,7 +37,7 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 
 	@Override
 	public void displaySelectedParameter() {
-		Parameter parameter = mainController.getSelectionController().getEditingParameter();
+		ParameterSnapshot parameter = mainController.getSelectionController().getEditingParameter();
 
 		communication.sendMessage(
 				COMPONENT_NAME + " parameter_index " + mainController.getSelectionController().getEditingParameterIndex());

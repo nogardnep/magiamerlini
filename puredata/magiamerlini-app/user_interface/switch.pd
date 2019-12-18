@@ -5,7 +5,7 @@
 #X obj 56 139 list append \$1;
 #X obj 67 342 outlet;
 #X obj 63 282 pack s f;
-#X msg 68 310 switch name=\$1 action=\$2;
+#X msg 68 310 switch section=\$1 value=\$2;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
 #X connect 1 1 5 1;

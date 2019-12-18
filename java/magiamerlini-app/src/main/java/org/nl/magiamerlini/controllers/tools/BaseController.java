@@ -9,6 +9,6 @@ public class BaseController {
 
 	public BaseController(MainController mainController) {
 		this.mainController = mainController;
-		this.logger = new Logger(BaseController.class.getSimpleName(), true);
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
 	}
 }

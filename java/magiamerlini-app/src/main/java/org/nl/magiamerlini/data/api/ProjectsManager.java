@@ -2,8 +2,8 @@ package org.nl.magiamerlini.data.api;
 
 import java.util.ArrayList;
 
+import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
 import org.nl.magiamerlini.data.items.Project;
-import org.nl.magiamerlini.data.items.SamplerTrack;
 
 /**
  * Every project stored in separated H2 databases, accessible through specific
@@ -25,7 +25,7 @@ public interface ProjectsManager {
 
 	public void loadProject(String projectName, String rootFolder);
 
-	public SamplerTrack getSamplerTrack(int bank, int number);
+	public AudioSamplerTrack getAudioSamplerTrack(int bank, int number);
 	
 	public void updateEntity(Object entity);
 }

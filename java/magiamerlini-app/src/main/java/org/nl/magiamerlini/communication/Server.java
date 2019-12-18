@@ -19,9 +19,12 @@ public class Server {
 	private Communication communication;
 	private Logger logger;
 
-	public void connect(Communication communication, int port, boolean debuging) {
+	public Server() {
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
+	}
+
+	public void connect(Communication communication, int port) {
 		this.communication = communication;
-		this.logger = new Logger(Server.class.getSimpleName(), debuging);
 
 		logger.log(Level.INFO, "Waiting for a connection");
 
@@ -56,7 +59,6 @@ public class Server {
 
 	public void sendResponse(String message) {
 		message += ";";
-
 		logger.log(Level.INFO, "SEND: " + message);
 		serverPrintOut.println(message);
 	}

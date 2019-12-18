@@ -3,18 +3,18 @@ package org.nl.magiamerlini.controllers.api;
 import java.util.List;
 
 import org.nl.magiamerlini.data.tools.Item;
-import org.nl.magiamerlini.data.tools.Parameter;
+import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public interface SelectionController {
 	public void emptySelectedItems();
 
-	public void applyParameter(Parameter parameter);
+	public void applyParameter(ParameterSnapshot parameter);
 
 	public List<Item> getSelectedItems();
 
 	public boolean toggleSelected(Item item);
 
-	public Parameter getEditingParameter();
+	public ParameterSnapshot getEditingParameter();
 
 	public int getEditingParameterIndex();
 

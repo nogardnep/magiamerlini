@@ -1,29 +1,19 @@
 package org.nl.magiamerlini.components.ui.tools;
 
-import com.google.common.base.CaseFormat;
+import org.nl.magiamerlini.utils.EnumUtils;
 
 public enum Color {
-	Red, Blue, Yellow, Orange, Grey, Green;
-	
-	public boolean correspondingToString(String string) {
-		return getCorrespondingString().equals(string);
-	}
+	Red, Green, Blue, Orange, Yellow, Grey;
 
-	public static Color getCorrespondingToString(String string) {
+	public Color getCorrespondingToString(String string) {
 		Color found = null;
 
 		for (Color color : values()) {
-			if (color.correspondingToString(string)) {
+			if (EnumUtils.correspondingToString(color.name(), string)) {
 				found = color;
 			}
 		}
 
 		return found;
-	}
-
-	public String getCorrespondingString() {
-		String snakeCaseName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name());
-		
-		return snakeCaseName;
 	}
 }

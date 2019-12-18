@@ -35,8 +35,8 @@ public class BaseMainController implements MainController {
 	private boolean loading;
 	private boolean loadingProject;
 
-	private Mode selectedMode;
-	private int selectedModeIndex;
+	private Mode currentMode;
+	private int currentModeIndex;
 	private int currentBankIndex;
 	private int currentPatternIndex;
 	private int currentTrackIndex;
@@ -58,16 +58,10 @@ public class BaseMainController implements MainController {
 		this.audioMixer = audioMixer;
 		this.videoSampler = videoSampler;
 		this.videoMixer = videoMixer;
-
 		loading = false;
 		loadingProject = false;
 
-		changeMode(DEFAULT_MODE);
-		changeBank(0);
-		changeTrack(0);
-		changePattern(0);
-		changeSequence(0);
-		changePage(0);
+		currentMode = DEFAULT_MODE;
 	}
 
 	@Override
@@ -83,9 +77,9 @@ public class BaseMainController implements MainController {
 	public Item getItemCorrespondingTo(int number) {
 		Item item = null;
 
-		switch (selectedMode) {
+		switch (currentMode) {
 		case AudioSampler:
-			item = projectsManager.getSamplerTrack(currentBankIndex, number);
+			item = projectsManager.getAudioSamplerTrack(currentBankIndex, number);
 			break;
 		default:
 			item = null;
@@ -97,7 +91,7 @@ public class BaseMainController implements MainController {
 
 	@Override
 	public boolean inMode(Mode mode) {
-		return selectedMode.equals(mode);
+		return currentMode.equals(mode);
 	}
 
 	@Override
@@ -167,13 +161,13 @@ public class BaseMainController implements MainController {
 
 	@Override
 	public void changeMode(Mode mode) {
-		if (!selectedMode.equals(mode)) {
+		this.currentModeIndex = mode.getIndex();
+		this.currentMode = mode;
+		display.displayMode();
+		
+		if (!currentMode.equals(mode)) {
 			this.selectionController.emptySelectedItems();
 		}
-
-		this.selectedModeIndex = mode.getIndex();
-		this.selectedMode = mode;
-		display.displayMode();
 	}
 
 	@Override
@@ -187,12 +181,12 @@ public class BaseMainController implements MainController {
 
 	@Override
 	public Mode getCurrentMode() {
-		return selectedMode;
+		return currentMode;
 	}
 
 	@Override
 	public int getCurrentModeIndex() {
-		return selectedModeIndex;
+		return currentModeIndex;
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class BaseDatabaseManager implements DatabaseManager {
 	private Logger logger;
 
 	public BaseDatabaseManager() {
-		logger = new Logger(DatabaseManager.class.getSimpleName(), true);
+		logger = new Logger(this.getClass().getSimpleName(), true);
 		initConfiguration();
 	}
 

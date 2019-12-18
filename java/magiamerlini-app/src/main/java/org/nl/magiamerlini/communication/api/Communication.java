@@ -3,7 +3,7 @@ package org.nl.magiamerlini.communication.api;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 
 public interface Communication {
-	public void connect(int port, boolean printRequest);
+	public void connect(int port);
 	
 	public void receiveMessage(String[] messageParts);
 	

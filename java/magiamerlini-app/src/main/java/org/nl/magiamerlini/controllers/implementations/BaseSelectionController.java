@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.controllers.api.SelectionController;
+import org.nl.magiamerlini.components.audio.items.AudioMixerTrack;
+import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
 import org.nl.magiamerlini.controllers.api.MainController;
+import org.nl.magiamerlini.controllers.api.SelectionController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
-import org.nl.magiamerlini.data.items.MixerTrack;
-import org.nl.magiamerlini.data.items.SamplerTrack;
 import org.nl.magiamerlini.data.tools.Item;
-import org.nl.magiamerlini.data.tools.Parameter;
+import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public class BaseSelectionController extends BaseController implements SelectionController {
 	MainController mainController;
@@ -41,15 +41,15 @@ public class BaseSelectionController extends BaseController implements Selection
 	}
 
 	@Override
-	public void applyParameter(Parameter parameter) {
+	public void applyParameter(ParameterSnapshot parameter) {
 		for (Item item : selectedItems) {
 			item.applyParameter(parameter);
 			mainController.getProjectManager().updateEntity(item);
 
-			if (item instanceof SamplerTrack) {
-				mainController.getAudioSampler().editTrackParameter((SamplerTrack) item, parameter);
-			} else if (item instanceof MixerTrack) {
-				mainController.getAudioMixer().editTrackParameter((MixerTrack) item, parameter);
+			if (item instanceof AudioSamplerTrack) {
+				mainController.getAudioSampler().editTrackParameter((AudioSamplerTrack) item, parameter);
+			} else if (item instanceof AudioMixerTrack) {
+				mainController.getAudioMixer().editTrackParameter((AudioMixerTrack) item, parameter);
 			}
 		}
 
@@ -77,8 +77,8 @@ public class BaseSelectionController extends BaseController implements Selection
 	}
 
 	@Override
-	public Parameter getEditingParameter() {
-		Parameter parameter = null;
+	public ParameterSnapshot getEditingParameter() {
+		ParameterSnapshot parameter = null;
 
 		if (selectedItems.size() > 0) {
 			Item firstSelectedItem = selectedItems.get(0);
@@ -112,7 +112,7 @@ public class BaseSelectionController extends BaseController implements Selection
 
 	@Override
 	public void modifyEditingParameterValue(float factor) {
-		Parameter parameter = getEditingParameter();
+		ParameterSnapshot parameter = getEditingParameter();
 
 		if (parameter != null) {
 			parameter.modifyValue(factor);

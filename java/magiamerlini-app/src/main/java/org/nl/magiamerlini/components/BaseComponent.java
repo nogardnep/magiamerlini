@@ -9,6 +9,6 @@ public abstract class BaseComponent implements Component {
 
 	public void setMainController(MainController mainController) {
 		this.mainController = mainController;
-		this.logger = new Logger(BaseComponent.class.getSimpleName(), true);
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
 	}
 }

@@ -7,23 +7,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hibernate.Session;
+import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
 import org.nl.magiamerlini.data.api.DatabaseManager;
 import org.nl.magiamerlini.data.api.ProjectsManager;
 import org.nl.magiamerlini.data.items.Project;
-import org.nl.magiamerlini.data.items.SamplerTrack;
-import org.nl.magiamerlini.utils.Utils;
+import org.nl.magiamerlini.utils.FileSystemUtils;
+import org.nl.magiamerlini.utils.Logger;
 
 public class BaseProjectsManager implements ProjectsManager {
 	private Project currentProject;
 	private DatabaseManager databaseManager;
 	private final static String DB_FILE_NAME = "data";
 	private final static String DB_FILE_EXTENSION = "mv.db";
+	private Logger logger;
 
 	public BaseProjectsManager(DatabaseManager databaseManager) {
+		logger = new Logger(this.getClass().getSimpleName(), true);
 		this.databaseManager = databaseManager;
 	}
 
@@ -40,7 +44,7 @@ public class BaseProjectsManager implements ProjectsManager {
 		if (projectsInDatabase.size() > 0) {
 			currentProject = (Project) projectsInDatabase.get(0);
 		} else {
-			System.err.println("No Project entity found in the current database");
+			logger.log(Level.SEVERE, "No Project entity found in the current database");
 		}
 	}
 
@@ -56,7 +60,7 @@ public class BaseProjectsManager implements ProjectsManager {
 			ArrayList<Object> projectsInDatabase = databaseManager.getEntities("FROM " + Project.class.getSimpleName());
 
 			if (projectsInDatabase.size() > 0) {
-				System.err.println("Project already exists: \"" + name + "\""
+				logger.log(Level.WARNING, "Project already exists: \"" + name + "\""
 						+ ((path != null && path != "") ? ("(in " + path + ")") : ""));
 			} else {
 				String location = name;
@@ -67,14 +71,14 @@ public class BaseProjectsManager implements ProjectsManager {
 
 				currentProject = new Project(name, location);
 
-				System.out.println("-- create project --");
-				System.out.printf("- %s%n", currentProject);
+				logger.log(Level.INFO, "-- create project --");
+				logger.log(Level.INFO, "- " + currentProject);
 
 				Session session = databaseManager.getSession();
 				session.beginTransaction();
 
 				session.persist(currentProject);
-				currentProject.getSamplerTracks().forEach((SamplerTrack samplerTrack) -> {
+				currentProject.getSamplerTracks().forEach((AudioSamplerTrack samplerTrack) -> {
 					session.persist(samplerTrack);
 				});
 
@@ -83,7 +87,7 @@ public class BaseProjectsManager implements ProjectsManager {
 				session.close();
 			}
 		} else {
-			System.err.println("Invalid name: \"" + name + "\"");
+			logger.log(Level.SEVERE, "Invalid name: \"" + name + "\"");
 		}
 	}
 
@@ -91,13 +95,17 @@ public class BaseProjectsManager implements ProjectsManager {
 	public ArrayList<Project> getProjects() {
 		// TODO: explore data folder to find all db files
 
+		logger.log(Level.INFO, "-- get projects --");
+
 		try (Stream<Path> walk = Files.walk(Paths.get(databaseManager.getRootDirectory()))) {
 			List<String> result = walk.map(x -> x.toString())
 					.filter(f -> f.contains(DB_FILE_NAME + "." + DB_FILE_EXTENSION))
 //					.filter(f -> f.endsWith(fileEnd))
 					.collect(Collectors.toList());
 
-			result.forEach(System.out::println);
+			result.forEach((String string) -> {
+				logger.log(Level.INFO, "- " + string);
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -107,11 +115,11 @@ public class BaseProjectsManager implements ProjectsManager {
 
 	@Override
 	public void deleteCurrentProject() {
-		System.out.println("-- delete project --");
+		logger.log(Level.INFO, "-- delete project --");
 		Project project = currentProject;
 		Path pathToProjectFolder = Paths.get(databaseManager.getRootDirectory() + "/" + project.getLocation());
 		databaseManager.shutdown();
-		Utils.deleteDirectory(pathToProjectFolder.toFile());
+		FileSystemUtils.deleteDirectory(pathToProjectFolder.toFile());
 	}
 
 	@Override
@@ -126,16 +134,16 @@ public class BaseProjectsManager implements ProjectsManager {
 			dbPath = root + "/" + dbPath;
 		}
 
-		System.out.println("makeDbPath" + dbPath);
+		logger.log(Level.INFO, "makeDbPath" + dbPath);
 		return dbPath;
 	}
 
 	@Override
-	public SamplerTrack getSamplerTrack(int bank, int number) {
-		SamplerTrack samplerTrack = null;
+	public AudioSamplerTrack getAudioSamplerTrack(int bank, int number) {
+		AudioSamplerTrack samplerTrack = null;
 
-		for (Iterator<SamplerTrack> iterator = currentProject.getSamplerTracks().iterator(); iterator.hasNext();) {
-			SamplerTrack element = (SamplerTrack) iterator.next();
+		for (Iterator<AudioSamplerTrack> iterator = currentProject.getSamplerTracks().iterator(); iterator.hasNext();) {
+			AudioSamplerTrack element = (AudioSamplerTrack) iterator.next();
 
 			if (element.getBank() == bank && element.getNumber() == number) {
 				samplerTrack = element;
@@ -144,7 +152,7 @@ public class BaseProjectsManager implements ProjectsManager {
 		}
 
 		if (samplerTrack == null) {
-			samplerTrack = new SamplerTrack(bank, number);
+			samplerTrack = new AudioSamplerTrack(bank, number);
 			currentProject.addSamplerTrack(samplerTrack);
 
 			Session session = databaseManager.getSession();
@@ -163,8 +171,8 @@ public class BaseProjectsManager implements ProjectsManager {
 
 	@Override
 	public void updateEntity(Object entity) {
-		System.out.println("-- update entity --");
-		System.out.printf("- %s%n", entity);
+		logger.log(Level.INFO, "-- update entity --");
+		logger.log(Level.INFO, "- " + entity);
 
 		Session session = databaseManager.getSession();
 		session.beginTransaction();

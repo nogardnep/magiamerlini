@@ -7,9 +7,7 @@ import org.nl.magiamerlini.App;
 import org.nl.magiamerlini.communication.Server;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.components.ui.api.Inputs;
-import org.nl.magiamerlini.components.ui.tools.ButtonName;
-import org.nl.magiamerlini.components.ui.tools.ButtonSection;
-import org.nl.magiamerlini.components.ui.tools.SelectorType;
+import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.utils.Logger;
 
@@ -37,17 +35,19 @@ public class CommunicationImpl implements Communication {
 	private final static String FILE_EXPLORER = "file_explorer";
 	private final static String SAMPLER = "sampler";
 	private final static String TYPE = "type";
+	private final static String WHEEL = "wheel";
+	private final static String SWITCH = "switch";
 
 	private Logger logger;
 
 	public CommunicationImpl() {
-		this.logger = new Logger(CommunicationImpl.class.getSimpleName(), true);
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
 		this.server = new Server();
 	}
 
 	@Override
-	public void connect(int port, boolean printRequest) {
-		server.connect(this, port, printRequest);
+	public void connect(int port) {
+		server.connect(this, port);
 	}
 
 	@Override
@@ -71,6 +71,9 @@ public class CommunicationImpl implements Communication {
 		String component = messageParts[0];
 		HashMap<String, String> args = transformMessage(messageParts);
 
+		InputSection section;
+		String name;
+
 		switch (component) {
 		case NETWORK:
 			switch (args.get(ACTION)) {
@@ -80,8 +83,8 @@ public class CommunicationImpl implements Communication {
 			}
 			break;
 		case BUTTON:
-			String name = args.get(NAME);
-			ButtonSection section = ButtonSection.getCorrespondingToString(args.get(SECTION));
+			name = args.get(NAME);
+			section = InputSection.getCorrespondingToString(args.get(SECTION));
 
 			switch (args.get(ACTION)) {
 			case PRESSED:
@@ -91,6 +94,14 @@ public class CommunicationImpl implements Communication {
 				inputs.buttonLeaved(name, section);
 				break;
 			}
+			break;
+		case WHEEL:
+			section = InputSection.getCorrespondingToString(args.get(SECTION));
+			inputs.wheelChanged(section, Integer.parseInt(args.get(VALUE)));
+			break;
+		case SWITCH:
+			section = InputSection.getCorrespondingToString(args.get(SECTION));
+			inputs.switchChanged(section, Integer.parseInt(args.get(VALUE)));
 			break;
 		case PAD:
 			int number = Integer.parseInt(args.get(NUMBER));
@@ -105,8 +116,8 @@ public class CommunicationImpl implements Communication {
 			}
 			break;
 		case SELECTOR:
-			inputs.selectorChanged(SelectorType.getSelectorCorrespondingToString(args.get(NAME)),
-					Integer.parseInt(args.get(VALUE)));
+			section = InputSection.getCorrespondingToString(args.get(NAME));
+			inputs.selectorChanged(section, Integer.parseInt(args.get(VALUE)));
 			break;
 		case CLOCK:
 			switch (args.get(ACTION)) {

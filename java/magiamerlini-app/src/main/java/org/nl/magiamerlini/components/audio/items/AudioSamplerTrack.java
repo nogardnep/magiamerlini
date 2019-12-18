@@ -1,7 +1,4 @@
-package org.nl.magiamerlini.data.items;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.nl.magiamerlini.components.audio.items;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,16 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.Configuration;
+import org.nl.magiamerlini.data.tools.Alias;
 import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
-@Table(name = "sampler_track")
-public class SamplerTrack implements Item {
-	public final static int NO_CHOKE = -1;
-	public final static int TRIGGER_PLAYING_MODE = 0;
-	public final static int HOLD_PLAYING_MODE = 1;
+@Table(name = "audio_sampler_track")
+public class AudioSamplerTrack extends Item {
+	public final static int CHOKE_NO_CHOKE = 0;
+	public final static int PLAYING_MODE_TRIGGER = 0;
+	public final static int PLAYING_MODE_HOLD = 1;
 
 	private final static String VOLUME = "volume";
 	private final static String CHOKE = "choke";
@@ -51,76 +48,81 @@ public class SamplerTrack implements Item {
 	@Column(name = "file_path")
 	private String filePath;
 
-	@Column(name = OUTPUT_CHANNEL)
-	private int outputChannel;
-
 	@Column(name = VOLUME)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 1)
 	private float volume;
 
+	@Column(name = OUTPUT_CHANNEL)
+	@Parameter(min =1, max = 16, step = 1, defaultValue = 1)
+	private int outputChannel;
+
 	@Column(name = CHOKE)
+	@Parameter(min = 0, max = 16, step = 1, defaultValue = 0, aliases = {
+			@Alias(name = "no_choke", value = CHOKE_NO_CHOKE) })
 	private int choke;
 
 	@Column(name = VOICES)
+	@Parameter(min = 1, max = 4, step = 1, defaultValue = 1)
 	private int voices;
 
-	@Column(name = TRANSPOSE)
-	private float transpose;
-
-	@Column(name = DETUNE)
-	private float detune;
-
-	@Column(name = ATTACK)
-	private float attack;
-
-	@Column(name = DECAY)
-	private float decay;
-
-	@Column(name = SUSTAIN)
-	private float sustain;
-
-	@Column(name = RELEASE)
-	private float release;
-
-	@Column(name = RANDOM_TRANSPOSE)
-	private float randomTranspose;
-
-	@Column(name = RANDOM_DETUNE)
-	private float randomDetune;
-
-	@Column(name = RANDOM_VELOCITY)
-	private float randomVelocity;
+	@Column(name = PLAYING_MODE)
+	@Parameter(min = 0, max = 1, step = 1, defaultValue = 0, aliases = {
+			@Alias(name = "trigger", value = PLAYING_MODE_TRIGGER), @Alias(name = "hold", value = PLAYING_MODE_HOLD) })
+	private int playingMode;
 
 	@Column(name = START)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
 	private float start;
 
 	@Column(name = LENGTH)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 1)
 	private float length;
 
-	@Column(name = PLAYING_MODE)
-	private int playingMode;
+	@Column(name = ATTACK)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
+	private float attack;
 
-	public SamplerTrack() {
+	@Column(name = DECAY)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
+	private float decay;
+
+	@Column(name = SUSTAIN)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 1)
+	private float sustain;
+
+	@Column(name = RELEASE)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
+	private float release;
+
+	@Column(name = TRANSPOSE)
+	@Parameter(min = 0, max = 100, step = 0.01f, defaultValue = 0)
+	private float transpose;
+
+	@Column(name = DETUNE)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
+	private float detune;
+
+	@Column(name = RANDOM_TRANSPOSE)
+	@Parameter(min = -100, max = 100, step = 0.01f, defaultValue = 0)
+	private float randomTranspose;
+
+	@Column(name = RANDOM_DETUNE)
+	@Parameter(min = -1, max = 1, step = 0.01f, defaultValue = 0)
+	private float randomDetune;
+
+	@Column(name = RANDOM_VELOCITY)
+	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
+	private float randomVelocity;
+
+	public AudioSamplerTrack() {
+		super();
 	}
 
-	public SamplerTrack(int bank, int number) {
+	public AudioSamplerTrack(int bank, int number) {
+		this();
+
 		this.number = number;
 		this.bank = bank;
-
-		volume = 1;
-		outputChannel = 0;
-		choke = NO_CHOKE;
-		voices = 1;
-		start = 0;
-		length = 1;
-		attack = 0;
-		decay = 0;
-		sustain = 1;
-		release = 0;
-		transpose = 0;
-		detune = 0;
-		randomTranspose = 0;
-		randomDetune = 0;
-		randomVelocity = 0;
 	}
 
 	@Override
@@ -130,89 +132,8 @@ public class SamplerTrack implements Item {
 	}
 
 	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-
-		parameters.add(new Parameter(VOLUME, volume, 0, 1, 0.01f));
-		parameters.add(
-				new Parameter(OUTPUT_CHANNEL, outputChannel, 0, (Configuration.AudioSamplerOutputs.getValue() - 1), 1));
-		parameters.add(new Parameter(CHOKE, choke, -1, (Configuration.Tracks.getValue() - 1), 1));
-		parameters.add(new Parameter(VOICES, voices, 1, 4, 1));
-		parameters.add(new Parameter(PLAYING_MODE, playingMode, TRIGGER_PLAYING_MODE, 1, 1));
-		parameters.add(new Parameter(START, start, 0, 1, 0.01f));
-		parameters.add(new Parameter(LENGTH, length, 0, 1, 0.01f));
-		parameters.add(new Parameter(ATTACK, attack, 0, 5000, 1));
-		parameters.add(new Parameter(DECAY, decay, 0, 5000, 1));
-		parameters.add(new Parameter(SUSTAIN, sustain, 0, 1, 0.01f));
-		parameters.add(new Parameter(RELEASE, release, 0, 5000, 1));
-		parameters.add(new Parameter(TRANSPOSE, transpose, -100, 100, 1));
-		parameters.add(new Parameter(DETUNE, detune, -1, 1, 0.01f));
-		parameters.add(new Parameter(RANDOM_TRANSPOSE, randomTranspose, -100, 100, 1));
-		parameters.add(new Parameter(RANDOM_DETUNE, randomDetune, -1, 1, 0.01f));
-		parameters.add(new Parameter(RANDOM_VELOCITY, randomVelocity, 0, 1, 0.01f));
-
-		return parameters;
-	}
-
-	@Override
-	public void applyParameter(Parameter parameter) {
-		switch (parameter.getName()) {
-		case OUTPUT_CHANNEL:
-			setOutputChannel((int) parameter.getValue());
-			break;
-		case CHOKE:
-			setChoke((int) parameter.getValue());
-			break;
-		case VOICES:
-			setVoices((int) parameter.getValue());
-			break;
-		case VOLUME:
-			setVolume(parameter.getValue());
-			break;
-		case PLAYING_MODE:
-			setPlayingMode((int) parameter.getValue());
-			break;
-		case START:
-			setStart(parameter.getValue());
-			break;
-		case LENGTH:
-			setLength(parameter.getValue());
-			break;
-		case TRANSPOSE:
-			setTranspose(parameter.getValue());
-			break;
-		case DETUNE:
-			setDetune(parameter.getValue());
-			break;
-		case ATTACK:
-			setAttack(parameter.getValue());
-			break;
-		case DECAY:
-			setDecay(parameter.getValue());
-			break;
-		case SUSTAIN:
-			setSustain(parameter.getValue());
-			break;
-		case RELEASE:
-			setRelease(parameter.getValue());
-			break;
-		case RANDOM_TRANSPOSE:
-			setRandomTranspose(parameter.getValue());
-			break;
-		case RANDOM_DETUNE:
-			setRandomDetune(parameter.getValue());
-			break;
-		case RANDOM_VELOCITY:
-			setRandomVelocity(parameter.getValue());
-			break;
-		default:
-			System.err.println("can't find parameter: \"" + parameter.getName() + "\"");
-		}
-	}
-
-	@Override
 	public String toDisplay() {
-		return "sampler-track-" + bank + "-" + number;
+		return "audio-sampler-track_" + bank + "-" + number;
 	}
 
 	public int getOutputChannel() {
@@ -374,5 +295,5 @@ public class SamplerTrack implements Item {
 	public void setPlayingMode(int playingMode) {
 		this.playingMode = playingMode;
 	}
-	
+
 }

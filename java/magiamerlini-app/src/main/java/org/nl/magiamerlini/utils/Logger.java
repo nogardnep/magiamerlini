@@ -32,6 +32,6 @@ public class Logger {
 	}
 
 	private String formatMessage(String type, String message) {
-		return type + " " + name + " " + message;
+		return type + " " + name + ": " + message;
 	}
 }

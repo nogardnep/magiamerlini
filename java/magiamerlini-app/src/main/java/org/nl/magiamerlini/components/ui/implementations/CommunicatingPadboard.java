@@ -10,6 +10,7 @@ import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
 import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.utils.EnumUtils;
 
 public class CommunicatingPadboard extends CommunicatingComponent implements Padboard {
 	private final static String COMPONENT_NAME = "pad";
@@ -58,7 +59,7 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 
 	private void displayPad(Pad pad) {
 		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " intensity " + pad.getLightIntensity());
-		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " color " + pad.getLightColor().getCorrespondingString());
+		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " color " + EnumUtils.getCorrespondingString(pad.getLightColor().name()));
 		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " speed " + pad.getBlinkingSpeed());
 	}
 }

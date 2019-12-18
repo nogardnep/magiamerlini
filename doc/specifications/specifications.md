@@ -107,14 +107,11 @@ Parameters:
 2. beats => for time signature
 3. bars => for time signature
 4. play_mode
-5. repetitions
+5. repetitions => used when a song part is playing
 
 ##### SequenceEvent
 
-Parameters: 
-
-1. action => "play" / "stop" / "inactive"
-2. repetitions => "continue", or a number (used when a song part is playing)
+States: "play" / "stop" / "inactive"
 
 ##### Pattern
 
@@ -124,18 +121,20 @@ Parameters:
 2. beats => for time signature
 3. bars => for time signature
 4. trigger_mode => "on step" / "on beat" / "on bar" (when to play the pattern when a pad is pressed in PatternLaunch mode)
-5. playing_mode => "loop" / "simple"
+5. repetitions => "loop" or a number
 
 ##### PatternEvent
 
+States: "play" / "stop" / "inactive"
+
 Parameter:
 
-1. action => "play" / "inactive"
 2. velocity => 0.00 to 1.00
 3. detune => -1.00 to 1.00
 4. transpose => -100 to 100
-5. steps_length => how many time play the sample (when SamplerTrack's playing mode is "hold")
-6. beats_length => how many time play the sample (when SamplerTrack's playing mode is "hold")
+5. steps_length => how many time play the sample (when AudioSamplerTrack's playing mode is "hold")
+6. beats_length => how many time play the sample (when AudioSamplerTrack's playing mode is "hold")
+6. bars_length => how many time play the sample (when AudioSamplerTrack's playing mode is "hold")
 
 #### Tracks
 
@@ -181,12 +180,16 @@ Parameters:
 6. x_rotation
 7. y_rotation
 8. z_rotation
-9. size
-10. start
-11. length => how many time to show the video (full reading by default, or 1 sec when it is an picture)
-12. repetitions => show the video several times after the length is over
-13. fadein
-14. fadeout
+9. x_size
+10. y_size
+11. z_size
+12. opacity
+13. start
+14. length => how many time to show the video (full reading by default, or 1 sec when it is an picture)
+15. repetitions => show the video several times after the length is over
+16. fadein
+17. fadeout
+18. type => "flat" / "cube" / "sphere"
 
 ##### VideoMixerTrack
 
@@ -226,9 +229,9 @@ Parameters:
 
 Parameters: 
 
-1. low_frequency
-2. medium_frequency
-3. high_frequency
+1. low
+2. medium
+3. high
 
 #### Video effects
 
@@ -236,17 +239,24 @@ Parameters:
 
 Parameters: 
 
-1. alpha
-2. red
+1. red
 3. green
 4. blue
+4. speed
+5. rate
+6. random_rate
+7. random_speed
+8. mode => "easing" / linear" / "all_or_noting"
 
 ##### **BlinkingVideoEffect**
 
 Parameters: 
 
 1. speed
-2. intensity
+2. rate
+3. random_rate
+4. random_speed
+5. mode => "easing" / linear" / "all_or_noting"
 
 ##### **BlendingVideoEffect**
 
@@ -262,7 +272,9 @@ Parameters:
 2. y_rate
 3. z_rate
 4. speed
-5. mode => "linear" / "easing"
+5. random_speed
+6. random_rate
+7. mode => "linear" / "easing"
 
 ##### **RotatingVideoEffect**
 
@@ -272,7 +284,9 @@ Parameters:
 2. y_rate
 3. z_rate
 4. speed
-5. mode => "linear" / "easing"
+5. random_speed
+6. random_rate
+7. mode => "linear" / "easing"
 
 
 
@@ -418,7 +432,7 @@ Button.Play => **play** the current pattern
 Button.Load + pad => open file explorer, **load** **a sample** for a track
 Button.New + pad => **arm** a track for recording
 Button.Move + pad => add item to **swaping** list (effective on Button.Move release)
-Button.Save + pad => add item to **copying ** list (parameters and audio file - effective on Button.Save release)
+Button.Copy + pad => add item to **copying ** list (parameters and audio file - effective on Button.Save release)
 Button.Move + pad + bank => **swap** sampler tracks emplacements over banks
 Button.Load + bank => open file explorer, **load an existing bank** of presets 
 Button.New + bank => open file explorer, **create a bank** of presets
