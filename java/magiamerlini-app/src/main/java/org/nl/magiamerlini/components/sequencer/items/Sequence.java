@@ -1,7 +1,8 @@
 package org.nl.magiamerlini.components.sequencer.items;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Alias;
-import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "sequence")
-public class Sequence extends Item {
+public class Sequence extends Item implements Serializable {
 	public final static String BPM_PARAMETER = "bpm";
 	public final static String BEATS_PARAMETER = "beats";
 	public final static String BARS_PARAMETER = "bars";
@@ -35,7 +36,7 @@ public class Sequence extends Item {
 	private int number;
 
 	@OneToMany(targetEntity = SequenceEvent.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<SequenceEvent> sequenceEvents;
+	private Set<SequenceEvent> sequenceEvents;
 
 	@Column(name = BPM_PARAMETER)
 	@Parameter(min = 20, max = 400, step = 1, defaultValue = 120)
@@ -65,7 +66,7 @@ public class Sequence extends Item {
 	public Sequence(int number) {
 		this();
 		this.number = number;
-		sequenceEvents = new ArrayList<SequenceEvent>();
+		sequenceEvents = new HashSet<SequenceEvent>();
 	}
 
 	@Override
@@ -94,11 +95,11 @@ public class Sequence extends Item {
 		this.number = number;
 	}
 
-	public Collection<SequenceEvent> getSequenceEvents() {
+	public Set<SequenceEvent> getSequenceEvents() {
 		return sequenceEvents;
 	}
 
-	public void setSequenceEvents(Collection<SequenceEvent> sequenceEvents) {
+	public void setSequenceEvents(Set<SequenceEvent> sequenceEvents) {
 		this.sequenceEvents = sequenceEvents;
 	}
 

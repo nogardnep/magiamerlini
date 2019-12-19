@@ -11,8 +11,20 @@
 		<property name="show_sql">true</property>
 		<property name="hbm2ddl.auto">update</property>
 		
-		<mapping class="org.nl.magiamerlini.data.entities.Project" />
-		<mapping class="org.nl.magiamerlini.data.entities.SamplerTrack" />
-
+		<mapping class="org.nl.magiamerlini.data.items.Project" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.Pattern" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.PatternEvent" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.Sequence" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.SequenceEvent" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.Song" />
+		<mapping class="org.nl.magiamerlini.components.sequencer.items.SongPart" />
+		<mapping class="org.nl.magiamerlini.components.sampler.items.SamplerTrack" />
+		<mapping class="org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack" />
+		<mapping class="org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.MixerTrack" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.AudioMixerTrack" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.VideoMixerTrack" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.effects.Effect" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.effects.audio.ReverbAudioEffect" />
 	</session-factory>
 </hibernate-configuration>

@@ -1,5 +1,5 @@
 #N canvas 956 163 743 430 12;
-#X obj 7 20 bng 30 250 50 0 empty empty empty 17 7 0 10 -262144 -33289
+#X obj 7 20 bng 30 250 50 0 empty empty empty 17 7 0 10 -261689 -33289
 -1;
 #X obj 25 342 expr \$1;
 #X obj 8 57 tgl 15 0 empty empty held 17 7 0 10 -228856 -1 -1 0 1;
@@ -26,7 +26,7 @@
 #X floatatom 150 19 5 0 0 0 color_code - -;
 #X msg 150 51 color \$1;
 #X msg 665 306 16;
-#X floatatom 647 266 5 0 0 0 intensity - -;
+#X floatatom 641 267 5 0 0 0 intensity - -;
 #X symbolatom 321 279 10 0 0 0 color_name - -;
 #X obj 322 249 symbol;
 #X floatatom 486 258 5 0 0 0 speed - -;
@@ -49,7 +49,7 @@
 #X obj 837 207 bng 15 250 50 0 empty empty update_color 17 7 0 10 -262144
 -1 -1;
 #X obj 499 518 t b f;
-#X obj 830 320 sel 0;
+#X obj 830 314 sel 0;
 #X obj 869 652 spigot;
 #X obj 905 627 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -59,10 +59,10 @@
 -1 -1;
 #X obj 794 363 bng 15 250 50 0 empty empty low_state 17 7 0 10 -262144
 -1 -1;
-#X obj 878 422 bng 15 250 50 0 empty empty switched_off 17 7 0 10 -262144
+#X obj 852 435 bng 15 250 50 0 empty empty switched_off 17 7 0 10 -262144
 -1 -1;
 #X obj 871 565 t b b b;
-#X obj 340 65 t b a b;
+#X obj 343 86 t b a b;
 #X floatatom 854 808 5 0 0 0 color_code - -;
 #X msg 969 749 3;
 #X msg 1007 747 4;
@@ -93,10 +93,10 @@ blue pink;
 #X obj 238 5 loadbang;
 #X msg 34 462 pad number=\$1 action=\$2 velocity=\$3;
 #X obj 33 430 pack f s f;
-#X obj 57 47 vsl 15 25 0 1 0 0 empty empty vel 0 -9 0 10 -262144 -1
+#X obj 57 47 vsl 15 25 0 1 0 0 empty empty vel 0 -9 0 10 -228856 -1
 -1 2400 1;
-#X obj 45 21 hsl 25 10 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+#X obj 45 21 hsl 25 10 0 1 0 0 empty empty empty -2 -8 0 10 -261689
+-1 -1 480 1;
 #X connect 0 0 5 0;
 #X connect 1 0 80 0;
 #X connect 2 0 11 0;

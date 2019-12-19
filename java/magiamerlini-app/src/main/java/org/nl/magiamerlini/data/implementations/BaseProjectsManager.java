@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hibernate.Session;
-import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.data.api.DatabaseManager;
 import org.nl.magiamerlini.data.api.ProjectsManager;
 import org.nl.magiamerlini.data.items.Project;
@@ -22,8 +23,8 @@ import org.nl.magiamerlini.utils.Logger;
 public class BaseProjectsManager implements ProjectsManager {
 	private Project currentProject;
 	private DatabaseManager databaseManager;
-	private final static String DB_FILE_NAME = "data";
-	private final static String DB_FILE_EXTENSION = "mv.db";
+	public final static String DB_FILE_NAME = "project";
+	public final static String DB_FILE_EXTENSION = "mv.db";
 	private Logger logger;
 
 	public BaseProjectsManager(DatabaseManager databaseManager) {
@@ -32,19 +33,14 @@ public class BaseProjectsManager implements ProjectsManager {
 	}
 
 	@Override
-	public void loadProject(String projectName) {
-		loadProject(projectName, "");
-	}
-
-	@Override
-	public void loadProject(String name, String path) {
-		databaseManager.connectTo(makeDbPath(name, path));
+	public void loadProject(String path) {
+		databaseManager.connectTo(path);
 		ArrayList<Object> projectsInDatabase = databaseManager.getEntities("FROM " + Project.class.getSimpleName());
 
 		if (projectsInDatabase.size() > 0) {
 			currentProject = (Project) projectsInDatabase.get(0);
 		} else {
-			logger.log(Level.SEVERE, "No Project entity found in the current database");
+			logger.log(Level.SEVERE, "No Project entity found in the loaded database ("+ path + ")");
 		}
 	}
 
@@ -61,7 +57,7 @@ public class BaseProjectsManager implements ProjectsManager {
 
 			if (projectsInDatabase.size() > 0) {
 				logger.log(Level.WARNING, "Project already exists: \"" + name + "\""
-						+ ((path != null && path != "") ? ("(in " + path + ")") : ""));
+						+ ((path != null && path != "") ? ("(in " + path + ")") : "") + " (loaded instead)");
 			} else {
 				String location = name;
 
@@ -78,7 +74,7 @@ public class BaseProjectsManager implements ProjectsManager {
 				session.beginTransaction();
 
 				session.persist(currentProject);
-				currentProject.getSamplerTracks().forEach((AudioSamplerTrack samplerTrack) -> {
+				currentProject.getAudioSamplerTracks().forEach((AudioSamplerTrack samplerTrack) -> {
 					session.persist(samplerTrack);
 				});
 
@@ -117,7 +113,7 @@ public class BaseProjectsManager implements ProjectsManager {
 	public void deleteCurrentProject() {
 		logger.log(Level.INFO, "-- delete project --");
 		Project project = currentProject;
-		Path pathToProjectFolder = Paths.get(databaseManager.getRootDirectory() + "/" + project.getLocation());
+		Path pathToProjectFolder = Paths.get(databaseManager.getRootDirectory() + "/" + project.getPath());
 		databaseManager.shutdown();
 		FileSystemUtils.deleteDirectory(pathToProjectFolder.toFile());
 	}
@@ -134,31 +130,32 @@ public class BaseProjectsManager implements ProjectsManager {
 			dbPath = root + "/" + dbPath;
 		}
 
-		logger.log(Level.INFO, "makeDbPath" + dbPath);
+		logger.log(Level.INFO, "makeDbPath->" + dbPath);
 		return dbPath;
 	}
 
 	@Override
 	public AudioSamplerTrack getAudioSamplerTrack(int bank, int number) {
-		AudioSamplerTrack samplerTrack = null;
+		AudioSamplerTrack audioSamplerTrack = null;
 
-		for (Iterator<AudioSamplerTrack> iterator = currentProject.getSamplerTracks().iterator(); iterator.hasNext();) {
+		for (Iterator<AudioSamplerTrack> iterator = currentProject.getAudioSamplerTracks().iterator(); iterator
+				.hasNext();) {
 			AudioSamplerTrack element = (AudioSamplerTrack) iterator.next();
 
 			if (element.getBank() == bank && element.getNumber() == number) {
-				samplerTrack = element;
+				audioSamplerTrack = element;
 				break;
 			}
 		}
 
-		if (samplerTrack == null) {
-			samplerTrack = new AudioSamplerTrack(bank, number);
-			currentProject.addSamplerTrack(samplerTrack);
+		if (audioSamplerTrack == null) {
+			audioSamplerTrack = new AudioSamplerTrack(bank, number);
+			currentProject.addAudioSamplerTrack(audioSamplerTrack);
 
 			Session session = databaseManager.getSession();
 			session.beginTransaction();
 
-			session.persist(samplerTrack);
+			session.persist(audioSamplerTrack);
 			session.update(currentProject);
 
 			session.flush();
@@ -166,7 +163,39 @@ public class BaseProjectsManager implements ProjectsManager {
 			session.close();
 		}
 
-		return samplerTrack;
+		return audioSamplerTrack;
+	}
+
+	@Override
+	public VideoSamplerTrack getVideoSamplerTrack(int bank, int number) {
+		VideoSamplerTrack videoSamplerTrack = null;
+
+		for (Iterator<VideoSamplerTrack> iterator = currentProject.getVideoSamplerTracks().iterator(); iterator
+				.hasNext();) {
+			VideoSamplerTrack element = (VideoSamplerTrack) iterator.next();
+
+			if (element.getBank() == bank && element.getNumber() == number) {
+				videoSamplerTrack = element;
+				break;
+			}
+		}
+
+		if (videoSamplerTrack == null) {
+			videoSamplerTrack = new VideoSamplerTrack(bank, number);
+			currentProject.addVideoSamplerTrack(videoSamplerTrack);
+
+			Session session = databaseManager.getSession();
+			session.beginTransaction();
+
+			session.persist(videoSamplerTrack);
+			session.update(currentProject);
+
+			session.flush();
+			session.getTransaction().commit();
+			session.close();
+		}
+
+		return videoSamplerTrack;
 	}
 
 	@Override

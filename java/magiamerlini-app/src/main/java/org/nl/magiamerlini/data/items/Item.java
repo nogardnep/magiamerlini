@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.data.tools;
+package org.nl.magiamerlini.data.items;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.Column;
 
 import org.nl.magiamerlini.components.BaseComponent;
+import org.nl.magiamerlini.data.tools.Parameter;
+import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 import org.nl.magiamerlini.utils.Logger;
 
 import com.google.common.base.CaseFormat;

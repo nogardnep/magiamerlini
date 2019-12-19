@@ -3,15 +3,18 @@ package org.nl.magiamerlini.components.ui.implementations;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.nl.magiamerlini.components.BaseComponent;
-import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.ButtonEvent;
 import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.controllers.tools.Mode;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
 public class BaseInputs extends BaseComponent implements Inputs {
@@ -23,25 +26,27 @@ public class BaseInputs extends BaseComponent implements Inputs {
 	}
 
 	@Override
-	public void buttonPressed(String name, InputSection section) {
-		buttonPressed(name, section, ButtonEvent.MAX_VELOCITY);
+	public void buttonPressed(InputSection section, String name) {
+		buttonPressed(section, name, ButtonEvent.MAX_VELOCITY);
 	}
 
 	@Override
-	public void buttonPressed(ButtonName buttonName, InputSection section) {
+	public void buttonPressed(InputSection section, ButtonName buttonName) {
 		String stringName = EnumUtils.getCorrespondingString(buttonName.name());
 
-		buttonPressed(stringName, section, ButtonEvent.MAX_VELOCITY);
+		buttonPressed(section, stringName, ButtonEvent.MAX_VELOCITY);
 	}
 
 	@Override
-	public void buttonPressed(String name, InputSection section, float velocity) {
+	public void buttonPressed(InputSection section, String name, float velocity) {
+		logger.log(Level.INFO, "buttonPressed -----------");
 		addToQueue(new ButtonEvent(name, section, velocity));
 		ButtonEvent last = getLastInQueue();
 		ButtonEvent first = getFirstInQueue();
 
 		int index;
 		int number;
+		Item item;
 
 		if (!mainController.isLoadingProject()) {
 			if (mainController.getCurrentMode() == Mode.Project && last.equals(first)
@@ -52,6 +57,9 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					mainController.getFileExplorer().create(FileType.Project);
 				}
 			}
+
+			logger.log(Level.INFO, "first=" + first);
+			logger.log(Level.INFO, "last=" + last);
 
 			if (mainController.isReady()) {
 				switch (last.getSection()) {
@@ -71,9 +79,6 @@ public class BaseInputs extends BaseComponent implements Inputs {
 							case PatternLaunch:
 								break;
 							case AudioSampler:
-								if (last.hasName(ButtonName.Load)) {
-									mainController.getFileExplorer().open(FileType.Sound);
-								}
 								break;
 							case AudioMixer:
 								break;
@@ -124,15 +129,25 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					break;
 				case Padboard:
 					number = Integer.parseInt(last.getName());
+					item = mainController.getItemCorrespondingTo(number);
 					switch (first.getSection()) {
 					case Padboard:
-						mainController.getPlayerController().playTrack(number, velocity);
+						mainController.getPlayerController().playTrack(((AudioSamplerTrack) item).getBank(),
+								((AudioSamplerTrack) item).getNumber(), velocity);
 						break;
 					case Action:
-						if (first.hasName(ButtonName.Edit) || first.hasName(ButtonName.Move)
-								|| first.hasName(ButtonName.Copy)) {
-							mainController.getSelectionController()
-									.toggleSelected(mainController.getItemCorrespondingTo(number));
+						if (mainController.getSelectionController().isSelecting()) {
+							mainController.getSelectionController().toggleSelected(item);
+						} else if (first.hasName(ButtonName.Special) && item instanceof AudioSamplerTrack) {
+							if (((AudioSamplerTrack) item).isArmed()) {
+								mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item, false);
+							} else {
+								mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item, true);
+							}
+						} else if (first.hasName(ButtonName.Load) && item instanceof AudioSamplerTrack) {
+							mainController.getFileExplorer().open(FileType.Sound, item);
+						} else if (first.hasName(ButtonName.Load) && item instanceof VideoSamplerTrack) {
+							mainController.getFileExplorer().open(FileType.Image, item);
 						}
 						break;
 					default:
@@ -154,65 +169,72 @@ public class BaseInputs extends BaseComponent implements Inputs {
 						mainController.getPlayerController().pause();
 					}
 					break;
-				case Mode:
-					index = mainController.getCurrentModeIndex();
-					if (last.hasName(ButtonName.Up)) {
-						index++;
-					} else if (last.hasName(ButtonName.Down)) {
-						index--;
-					}
-					mainController.changeMode(index);
-					break;
-				case Pattern:
-					index = mainController.getCurrentPatternIndex();
-					if (last.hasName(ButtonName.Up)) {
-						index++;
-					} else if (last.hasName(ButtonName.Down)) {
-						index--;
-					}
-					mainController.changePattern(index);
-					break;
-				case Track:
-					index = mainController.getCurrentTrackIndex();
-					if (last.hasName(ButtonName.Up)) {
-						index++;
-					} else if (last.hasName(ButtonName.Down)) {
-						index--;
-					}
-					mainController.changeTrack(index);
-					break;
-				case Sequence:
-					index = mainController.getCurrentSequenceIndex();
-					if (last.hasName(ButtonName.Up)) {
-						index++;
-					} else if (last.hasName(ButtonName.Down)) {
-						index--;
-					}
-					mainController.changeSequence(index);
-					break;
-				case Page:
-					index = mainController.getCurrentPageIndex();
-					if (last.hasName(ButtonName.Up)) {
-						index++;
-					} else if (last.hasName(ButtonName.Down)) {
-						index--;
-					}
-					mainController.changePage(index);
-					break;
 				default:
 					break;
 				}
+			}
+
+			switch (last.getSection()) {
+			case Mode:
+				index = mainController.getCurrentModeIndex();
+				if (last.hasName(ButtonName.Up)) {
+					index++;
+				} else if (last.hasName(ButtonName.Down)) {
+					index--;
+				}
+				mainController.changeMode(index);
+				break;
+			case Pattern:
+				index = mainController.getCurrentPatternIndex();
+				if (last.hasName(ButtonName.Up)) {
+					index++;
+				} else if (last.hasName(ButtonName.Down)) {
+					index--;
+				}
+				mainController.changePattern(index);
+				break;
+			case Track:
+				index = mainController.getCurrentTrackIndex();
+				if (last.hasName(ButtonName.Up)) {
+					index++;
+				} else if (last.hasName(ButtonName.Down)) {
+					index--;
+				}
+				mainController.changeTrack(index);
+				break;
+			case Sequence:
+				index = mainController.getCurrentSequenceIndex();
+				if (last.hasName(ButtonName.Up)) {
+					index++;
+				} else if (last.hasName(ButtonName.Down)) {
+					index--;
+				}
+				mainController.changeSequence(index);
+				break;
+			case Page:
+				index = mainController.getCurrentPageIndex();
+				if (last.hasName(ButtonName.Up)) {
+					index++;
+				} else if (last.hasName(ButtonName.Down)) {
+					index--;
+				}
+				mainController.changePage(index);
+				break;
+			default:
+				break;
 			}
 		}
 	}
 
 	@Override
-	public void buttonLeaved(String name, InputSection section) {
+	public void buttonLeaved(InputSection section, String name) {
+		logger.log(Level.INFO, "buttonLeaved -----------");
 		ButtonEvent button = new ButtonEvent(name, section);
 
 		if (mainController.isReady()) {
 			if (button.equals(getFirstInQueue())) {
 				if (button.hasName(ButtonName.Edit)) {
+					logger.log(Level.FINE, "buttonLeaved->edit");
 					if (EMPTY_SELECTED_ITEMS_ON_LEAVING_EDIT_BUTTON) {
 						mainController.getSelectionController().emptySelectedItems();
 					}
@@ -239,6 +261,8 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					default:
 						break;
 					}
+				} else if (button.hasName(ButtonName.Load)) {
+
 				}
 			}
 		}
@@ -250,20 +274,20 @@ public class BaseInputs extends BaseComponent implements Inputs {
 
 	@Override
 	public void padPressed(int number, float velocity) {
-		buttonPressed(String.valueOf(number), InputSection.Padboard, velocity);
+		buttonPressed(InputSection.Padboard, String.valueOf(number), velocity);
 	}
 
 	@Override
 	public void padLeaved(int number) {
-		buttonLeaved(String.valueOf(number), InputSection.Padboard);
+		buttonLeaved(InputSection.Padboard, String.valueOf(number));
 	}
 
 	@Override
 	public void wheelChanged(InputSection section, int value) {
 		if (value < 0) {
-			buttonPressed(ButtonName.Down, section);
+			buttonPressed(section, ButtonName.Down);
 		} else {
-			buttonPressed(ButtonName.Up, section);
+			buttonPressed(section, ButtonName.Up);
 		}
 	}
 
@@ -298,24 +322,32 @@ public class BaseInputs extends BaseComponent implements Inputs {
 
 	@Override
 	public void fileLoaded(FileType type, String path) {
+		Item item;
+		logger.log(Level.FINE, "fileLoaded " + path);
+
 		switch (type) {
 		case Image:
 			break;
 		case Preset:
 			break;
 		case Project:
-			mainController.loadProject(path);
+			if (path != null) {
+				mainController.loadProject(path);
+			} else {
+				logger.log(Level.SEVERE, "Can't load project (path is null)");
+			}
 			break;
 		case Sound:
-			AudioSamplerTrack samplerTrack = mainController.getProjectManager()
-					.getAudioSamplerTrack(mainController.getCurrentBankIndex(), mainController.getCurrentTrackIndex());
-			mainController.getAudioSampler().loadTrackSample(samplerTrack, path);
+			item = mainController.getFileExplorer().getWaitingItem();
+			if (item instanceof AudioSamplerTrack) {
+				mainController.getAudioSampler().loadTrackSample((AudioSamplerTrack) item, path);
+			}
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	@Override
 	public void switchChanged(InputSection section, int value) {
 		// TODO
@@ -348,6 +380,11 @@ public class BaseInputs extends BaseComponent implements Inputs {
 			}
 			break;
 		}
+	}
+
+	@Override
+	public void networkConnected() {
+		mainController.updateDisplay();
 	}
 
 	private void addToQueue(ButtonEvent button) {

@@ -1,17 +1,19 @@
 package org.nl.magiamerlini.components.sequencer.items;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "pattern_event")
-public class PatternEvent extends Item {
+public class PatternEvent extends Item implements Serializable {
 	public final static int INACTIVE_STATE = 0;
 	public final static int PLAY_STATE = 1;
 	public final static int STOP_STATE = 1;
@@ -62,7 +64,7 @@ public class PatternEvent extends Item {
 	
 	@Column(name = BARS_LENGTH)
 	@Parameter(min = 0, max = 100, step = 1, defaultValue = 0)
-	private float barLength;
+	private float barsLength;
 
 	public PatternEvent(int bank, int number, int state) {
 		this();
@@ -79,5 +81,85 @@ public class PatternEvent extends Item {
 	@Override
 	public String toDisplay() {
 		return "pattern-event_" + bank + "-" + number;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getBank() {
+		return bank;
+	}
+
+	public void setBank(int bank) {
+		this.bank = bank;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public float getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
+
+	public float getDetune() {
+		return detune;
+	}
+
+	public void setDetune(float detune) {
+		this.detune = detune;
+	}
+
+	public float getTranspose() {
+		return transpose;
+	}
+
+	public void setTranspose(float transpose) {
+		this.transpose = transpose;
+	}
+
+	public float getStepsLength() {
+		return stepsLength;
+	}
+
+	public void setStepsLength(float stepsLength) {
+		this.stepsLength = stepsLength;
+	}
+
+	public float getBeatsLength() {
+		return beatsLength;
+	}
+
+	public void setBeatsLength(float beatsLength) {
+		this.beatsLength = beatsLength;
+	}
+
+	public float getBarsLength() {
+		return barsLength;
+	}
+
+	public void setBarsLength(float barsLength) {
+		this.barsLength = barsLength;
 	}
 }

@@ -1,17 +1,19 @@
 package org.nl.magiamerlini.components.sequencer.items;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "song_part")
-public class SongPart extends Item {
+public class SongPart extends Item implements Serializable {
 	public static final String SEQUENCE_PARAMETER = "sequence";
 	public static final String REPETITION_PARAMETER = "repetitions";
 

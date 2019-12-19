@@ -7,8 +7,11 @@ public abstract class BaseComponent implements Component {
 	protected MainController mainController;
 	protected Logger logger;
 
+	public BaseComponent() {
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
+	}
+
 	public void setMainController(MainController mainController) {
 		this.mainController = mainController;
-		this.logger = new Logger(this.getClass().getSimpleName(), true);
 	}
 }

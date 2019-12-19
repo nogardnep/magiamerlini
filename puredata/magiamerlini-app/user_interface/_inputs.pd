@@ -13,12 +13,11 @@
 #X obj 314 18 file_explorer;
 #X obj 769 448 inlet message;
 #X obj 858 311 switch record;
-#X obj 539 102 button load action;
-#X obj 539 312 button copy action;
-#X obj 539 52 button new action;
+#X obj 535 62 button load action;
+#X obj 535 272 button copy action;
+#X obj 535 12 button new action;
 #X obj 340 137 button enter navigation;
 #X obj 8 169 button left navigation;
-#X obj 166 169 button rigth navigation;
 #X obj 84 219 button down navigation;
 #X obj 697 224 wheel navigation;
 #X obj 1111 23 button up mode;
@@ -39,11 +38,13 @@
 #X obj 995 156 button 2 bank;
 #X obj 995 206 button 3 bank;
 #X obj 340 187 button return navigation;
-#X obj 539 212 button edit action;
-#X obj 539 262 button move action;
-#X obj 539 152 button save action;
+#X obj 535 172 button edit action;
+#X obj 535 222 button move action;
+#X obj 535 112 button save action;
 #X obj 84 119 button up navigation;
 #X obj 152 293 button backward player;
+#X obj 166 169 button right navigation;
+#X obj 535 322 button special action;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 4 0;
@@ -91,4 +92,5 @@
 #X connect 41 0 0 0;
 #X connect 42 0 0 0;
 #X connect 43 0 0 0;
+#X connect 44 0 0 0;
 #X coords 0 -1 1 1 1400 400 1 0 0;

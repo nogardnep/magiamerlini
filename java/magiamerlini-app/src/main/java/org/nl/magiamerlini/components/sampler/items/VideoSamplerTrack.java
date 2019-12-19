@@ -1,4 +1,6 @@
-package org.nl.magiamerlini.components.video.items;
+package org.nl.magiamerlini.components.sampler.items;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,12 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.nl.magiamerlini.data.tools.Alias;
-import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "video_sampler_track")
-public class VideoSamplerTrack extends Item {
+public class VideoSamplerTrack extends SamplerTrack implements Serializable {
 	public final static int TYPE_FLAT = 0;
 	public final static int TYPE_CUBE = 1;
 	public final static int TYPE_SPHERE = 2;
@@ -33,20 +34,6 @@ public class VideoSamplerTrack extends Item {
 	private final static String REPETITIONS = "repetitions";
 	private final static String OPACITY = "opacity";
 	private final static String TYPE = "type";
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue
-	private int id;
-
-	@Column(name = "number")
-	private int number;
-
-	@Column(name = "bank")
-	private int bank;
-
-	@Column(name = "file_path")
-	private String filePath;
 
 	@Column(name = START)
 	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
@@ -118,86 +105,7 @@ public class VideoSamplerTrack extends Item {
 	}
 
 	public VideoSamplerTrack(int bank, int number) {
-		this();
-		this.bank = bank;
-		this.number = number;
-	}
-
-	@Override
-	public String toDisplay() {
-		return "video-sampler-track_" + bank + "-" + number;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
-	public int getBank() {
-		return bank;
-	}
-
-	public void setBank(int bank) {
-		this.bank = bank;
-	}
-
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
-	public float getFadein() {
-		return fadein;
-	}
-
-	public void setFadein(float fadein) {
-		this.fadein = fadein;
-	}
-
-	public float getFadeout() {
-		return fadeout;
-	}
-
-	public void setFadeout(float fadeout) {
-		this.fadeout = fadeout;
-	}
-
-	public float getXPosition() {
-		return xPosition;
-	}
-
-	public void setXPosition(float x) {
-		this.xPosition = x;
-	}
-
-	public float getYPosition() {
-		return yPosition;
-	}
-
-	public void setYPosition(float y) {
-		this.yPosition = y;
-	}
-
-	public float getZPosition() {
-		return zPosition;
-	}
-
-	public void setZPosition(float z) {
-		this.zPosition = z;
+		super(bank, number);
 	}
 
 	public float getStart() {
@@ -224,6 +132,22 @@ public class VideoSamplerTrack extends Item {
 		this.repetitions = repetitions;
 	}
 
+	public float getFadein() {
+		return fadein;
+	}
+
+	public void setFadein(float fadein) {
+		this.fadein = fadein;
+	}
+
+	public float getFadeout() {
+		return fadeout;
+	}
+
+	public void setFadeout(float fadeout) {
+		this.fadeout = fadeout;
+	}
+
 	public float getType() {
 		return type;
 	}
@@ -240,75 +164,75 @@ public class VideoSamplerTrack extends Item {
 		this.opacity = opacity;
 	}
 
-	public float getxSize() {
+	public float getXSize() {
 		return xSize;
 	}
 
-	public void setxSize(float xSize) {
+	public void setXSize(float xSize) {
 		this.xSize = xSize;
 	}
 
-	public float getySize() {
+	public float getYSize() {
 		return ySize;
 	}
 
-	public void setySize(float ySize) {
+	public void setYSize(float ySize) {
 		this.ySize = ySize;
 	}
 
-	public float getzSize() {
+	public float getZSize() {
 		return zSize;
 	}
 
-	public void setzSize(float zSize) {
+	public void setZSize(float zSize) {
 		this.zSize = zSize;
 	}
 
-	public float getxPosition() {
+	public float getXPosition() {
 		return xPosition;
 	}
 
-	public void setxPosition(float xPosition) {
+	public void setXPosition(float xPosition) {
 		this.xPosition = xPosition;
 	}
 
-	public float getyPosition() {
+	public float getYPosition() {
 		return yPosition;
 	}
 
-	public void setyPosition(float yPosition) {
+	public void setYPosition(float yPosition) {
 		this.yPosition = yPosition;
 	}
 
-	public float getzPosition() {
+	public float getZPosition() {
 		return zPosition;
 	}
 
-	public void setzPosition(float zPosition) {
+	public void setZPosition(float zPosition) {
 		this.zPosition = zPosition;
 	}
 
-	public float getxRotation() {
+	public float getXRotation() {
 		return xRotation;
 	}
 
-	public void setxRotation(float xRotation) {
+	public void setXRotation(float xRotation) {
 		this.xRotation = xRotation;
 	}
 
-	public float getyRotation() {
+	public float getYRotation() {
 		return yRotation;
 	}
 
-	public void setyRotation(float yRotation) {
+	public void setYRotation(float yRotation) {
 		this.yRotation = yRotation;
 	}
 
-	public float getzRotation() {
+	public float getZRotation() {
 		return zRotation;
 	}
 
-	public void setzRotation(float zRotation) {
+	public void setZRotation(float zRotation) {
 		this.zRotation = zRotation;
 	}
 

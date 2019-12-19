@@ -11,7 +11,7 @@ public interface PlayerController {
 	public void pause();
 	
 	public void stop();
-	
-	public void playTrack(int number, float velocity);
+
+	public void playTrack(int bank, int number, float velocity);
 
 }

@@ -19,19 +19,19 @@ public class Logger {
 		show = false;
 	}
 
-	public void log(Level level, String message) {
+	public void log(Level level, Object anything) {
 		if (show) {
 			if (level == Level.SEVERE) {
-				System.err.println(formatMessage("ERROR", message));
+				System.err.println(formatMessage("ERROR", anything));
 			} else if (level == Level.WARNING) {
-				System.err.println(formatMessage("WARN", message));
+				System.err.println(formatMessage("WARN", anything));
 			} else {
-				System.out.println(formatMessage("LOG", message));
+				System.out.println(formatMessage("LOG", anything));
 			}
 		}
 	}
 
-	private String formatMessage(String type, String message) {
-		return type + " " + name + ": " + message;
+	private String formatMessage(String type, Object anything) {
+		return type + " (" + name + ")" + ": " + anything;
 	}
 }

@@ -2,7 +2,8 @@ package org.nl.magiamerlini.data.api;
 
 import java.util.ArrayList;
 
-import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.data.items.Project;
 
 /**
@@ -21,11 +22,11 @@ public interface ProjectsManager {
 
 	public void deleteCurrentProject();
 
-	public void loadProject(String projectName);
-
-	public void loadProject(String projectName, String rootFolder);
+	public void loadProject(String path);
 
 	public AudioSamplerTrack getAudioSamplerTrack(int bank, int number);
-	
+		
 	public void updateEntity(Object entity);
+
+	public VideoSamplerTrack getVideoSamplerTrack(int bank, int number);
 }

@@ -1,21 +1,23 @@
-package org.nl.magiamerlini.components.audio.items;
+package org.nl.magiamerlini.components.sampler.items;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.nl.magiamerlini.data.tools.Alias;
-import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "audio_sampler_track")
-public class AudioSamplerTrack extends Item {
-	public final static int CHOKE_NO_CHOKE = 0;
-	public final static int PLAYING_MODE_TRIGGER = 0;
-	public final static int PLAYING_MODE_HOLD = 1;
+public class AudioSamplerTrack extends SamplerTrack implements Serializable {
+	public final static float CHOKE_NO_CHOKE = 0;
+	public final static float PLAYING_MODE_TRIGGER = 0;
+	public final static float PLAYING_MODE_HOLD = 1;
 
 	private final static String VOLUME = "volume";
 	private final static String CHOKE = "choke";
@@ -34,41 +36,28 @@ public class AudioSamplerTrack extends Item {
 	private final static String RANDOM_DETUNE = "random_detune";
 	private final static String RANDOM_TRANSPOSE = "random_transpose";
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue
-	private int id;
-
-	@Column(name = "number")
-	private int number;
-
-	@Column(name = "bank")
-	private int bank;
-
-	@Column(name = "file_path")
-	private String filePath;
 
 	@Column(name = VOLUME)
 	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 1)
 	private float volume;
 
 	@Column(name = OUTPUT_CHANNEL)
-	@Parameter(min =1, max = 16, step = 1, defaultValue = 1)
-	private int outputChannel;
+	@Parameter(min = 1, max = 16, step = 1, defaultValue = 1)
+	private float outputChannel;
 
 	@Column(name = CHOKE)
 	@Parameter(min = 0, max = 16, step = 1, defaultValue = 0, aliases = {
 			@Alias(name = "no_choke", value = CHOKE_NO_CHOKE) })
-	private int choke;
+	private float choke;
 
 	@Column(name = VOICES)
 	@Parameter(min = 1, max = 4, step = 1, defaultValue = 1)
-	private int voices;
+	private float voices;
 
 	@Column(name = PLAYING_MODE)
 	@Parameter(min = 0, max = 1, step = 1, defaultValue = 0, aliases = {
 			@Alias(name = "trigger", value = PLAYING_MODE_TRIGGER), @Alias(name = "hold", value = PLAYING_MODE_HOLD) })
-	private int playingMode;
+	private float playingMode;
 
 	@Column(name = START)
 	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
@@ -114,49 +103,39 @@ public class AudioSamplerTrack extends Item {
 	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 0)
 	private float randomVelocity;
 
+	@Transient
+	private boolean armed;
+
 	public AudioSamplerTrack() {
 		super();
+		armed = false;
 	}
 
 	public AudioSamplerTrack(int bank, int number) {
-		this();
-
-		this.number = number;
-		this.bank = bank;
+		super(bank, number);
 	}
 
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName() + " [id=" + id + ", bank=" + bank + ", number=" + number + ", filePath="
-				+ filePath + "]";
-	}
-
-	@Override
-	public String toDisplay() {
-		return "audio-sampler-track_" + bank + "-" + number;
-	}
-
-	public int getOutputChannel() {
+	public float getOutputChannel() {
 		return outputChannel;
 	}
 
-	public void setOutputChannel(int outputChannel) {
+	public void setOutputChannel(float outputChannel) {
 		this.outputChannel = outputChannel;
 	}
 
-	public int getChoke() {
+	public float getChoke() {
 		return choke;
 	}
 
-	public void setChoke(int choke) {
+	public void setChoke(float choke) {
 		this.choke = choke;
 	}
 
-	public int getVoices() {
+	public float getVoices() {
 		return voices;
 	}
 
-	public void setVoices(int voicesNumber) {
+	public void setVoices(float voicesNumber) {
 		this.voices = voicesNumber;
 	}
 
@@ -166,38 +145,6 @@ public class AudioSamplerTrack extends Item {
 
 	public void setVolume(float volume) {
 		this.volume = volume;
-	}
-
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
-	public int getBank() {
-		return bank;
-	}
-
-	public void setBank(int bank) {
-		this.bank = bank;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public float getTranspose() {
@@ -288,12 +235,20 @@ public class AudioSamplerTrack extends Item {
 		this.length = length;
 	}
 
-	public int getPlayingMode() {
+	public float getPlayingMode() {
 		return playingMode;
 	}
 
-	public void setPlayingMode(int playingMode) {
+	public void setPlayingMode(float playingMode) {
 		this.playingMode = playingMode;
+	}
+
+	public boolean isArmed() {
+		return armed;
+	}
+
+	public void setArmed(boolean armed) {
+		this.armed = armed;
 	}
 
 }

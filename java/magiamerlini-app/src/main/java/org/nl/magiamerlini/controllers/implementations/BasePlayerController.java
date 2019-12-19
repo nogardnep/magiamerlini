@@ -2,6 +2,8 @@ package org.nl.magiamerlini.controllers.implementations;
 
 import java.util.logging.Level;
 
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.api.PlayerController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
@@ -42,8 +44,10 @@ public class BasePlayerController extends BaseController implements PlayerContro
 	}
 
 	@Override
-	public void playTrack(int number, float velocity) {
-		// TODO
-		logger.log(Level.INFO, "playTrack number=" + number + " velocity=" + velocity);
+	public void playTrack(int bank, int number, float velocity) {
+		AudioSamplerTrack audioSamplerTrack = mainController.getProjectManager().getAudioSamplerTrack(bank, number);
+		VideoSamplerTrack videoSamplerTrack = mainController.getProjectManager().getVideoSamplerTrack(bank, number);
+		mainController.getAudioSampler().playTrack(audioSamplerTrack, velocity);
+		mainController.getVideoSampler().playTrack(videoSamplerTrack, velocity);
 	}
 }

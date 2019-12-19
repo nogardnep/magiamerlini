@@ -18,12 +18,17 @@ public class Server {
 	private PrintWriter serverPrintOut;
 	private Communication communication;
 	private Logger logger;
+	private boolean displayMessages;
+
+	public static final String NETWORK = "network";
+	public static final String CONNECTED = "connected";
 
 	public Server() {
 		this.logger = new Logger(this.getClass().getSimpleName(), true);
 	}
 
-	public void connect(Communication communication, int port) {
+	public void connect(Communication communication, int port, boolean displayMessages) {
+		this.displayMessages = displayMessages;
 		this.communication = communication;
 
 		logger.log(Level.INFO, "Waiting for a connection");
@@ -39,7 +44,7 @@ public class Server {
 			e.printStackTrace();
 		}
 
-		sendResponse("server connected");
+		sendResponse(NETWORK + " " + CONNECTED);
 		logger.log(Level.INFO, "Connection started --");
 
 		while (scanner.hasNextLine()) {
@@ -52,14 +57,24 @@ public class Server {
 	private void readStream() {
 		String line = scanner.nextLine();
 
-		logger.log(Level.INFO, "RECEIVED: " + line);
-		communication.receiveMessage(line.replace(";", "").split(" "));
-		logger.log(Level.INFO, "-------------");
+		if (displayMessages) {
+			logger.log(Level.INFO, "RECEIVED: " + line);
+		}
+
+		communication.receiveMessage(line);
+
+		if (displayMessages) {
+			logger.log(Level.INFO, "-------------");
+		}
 	}
 
 	public void sendResponse(String message) {
 		message += ";";
-		logger.log(Level.INFO, "SEND: " + message);
+
+		if (displayMessages) {
+			logger.log(Level.INFO, "SEND: " + message);
+		}
+
 		serverPrintOut.println(message);
 	}
 

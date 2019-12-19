@@ -5,5 +5,5 @@ import org.nl.magiamerlini.components.Component;
 public interface Padboard extends Component {
 	public void updateDisplay();
 	
-	public void updatePadDisplay(int padNum);
+	public void updateDisplay(int padNum);
 }

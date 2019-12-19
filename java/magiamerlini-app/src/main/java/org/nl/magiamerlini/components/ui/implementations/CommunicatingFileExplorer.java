@@ -5,24 +5,40 @@ import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.ui.api.FileExplorer;
 import org.nl.magiamerlini.controllers.tools.FileType;
+import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.utils.EnumUtils;
 
 public class CommunicatingFileExplorer extends CommunicatingComponent implements FileExplorer {
-	private final static String COMPONENT_NAME = "file_explorer";
+	public final static String OPEN = "open";
+	public final static String NEW = "new";
+
+	private Item waitingItem;
 
 	public CommunicatingFileExplorer(Communication communication) {
-		super(communication);
+		super(communication, "file_explorer");
 	}
 
 	@Override
 	public void open(FileType type) {
+		open(type, null);
+	}
+
+	@Override
+	public void open(FileType type, Item item) {
 		String rootPath = App.ROOT_DIR_FOR_FILES + "/" + type.getPath();
 
-		communication.sendMessage(COMPONENT_NAME + " open " + type + " " + rootPath);
+		waitingItem = item;
+		sendMessage(OPEN + " " + EnumUtils.getCorrespondingString(type.name()) + " " + rootPath);
 	}
 
 	@Override
 	public void create(FileType type) {
-		communication.sendMessage(COMPONENT_NAME + " new " + type);
+		sendMessage(NEW + " " + EnumUtils.getCorrespondingString(type.name()));
+	}
+
+	@Override
+	public Item getWaitingItem() {
+		return waitingItem;
 	}
 
 }

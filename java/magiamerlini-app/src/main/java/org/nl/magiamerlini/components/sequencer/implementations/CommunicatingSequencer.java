@@ -7,7 +7,7 @@ import org.nl.magiamerlini.components.sequencer.api.Sequencer;
 public class CommunicatingSequencer extends CommunicatingComponent implements Sequencer {
 
 	public CommunicatingSequencer(Communication communication) {
-		super(communication);
+		super(communication, "sequencer");
 	}
 
 }

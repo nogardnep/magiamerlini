@@ -1,16 +1,16 @@
 package org.nl.magiamerlini.controllers.api;
 
-import org.nl.magiamerlini.components.audio.api.AudioMixer;
-import org.nl.magiamerlini.components.audio.api.AudioSampler;
+import org.nl.magiamerlini.components.mixer.api.AudioMixer;
+import org.nl.magiamerlini.components.mixer.api.VideoMixer;
+import org.nl.magiamerlini.components.sampler.api.AudioSampler;
+import org.nl.magiamerlini.components.sampler.api.VideoSampler;
 import org.nl.magiamerlini.components.sequencer.api.Sequencer;
 import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.components.ui.api.FileExplorer;
 import org.nl.magiamerlini.components.ui.api.Padboard;
-import org.nl.magiamerlini.components.video.api.VideoMixer;
-import org.nl.magiamerlini.components.video.api.VideoSampler;
 import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.api.ProjectsManager;
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 
 public interface MainController {
 	public Mode getCurrentMode();
@@ -24,8 +24,6 @@ public interface MainController {
 	public int getCurrentBankIndex();
 
 	public void changeBank(int value);
-
-	public void setLoading(boolean loading);
 
 	public void updateDisplay();
 
@@ -67,15 +65,13 @@ public interface MainController {
 
 	public VideoMixer getVideoMixer();
 
-	boolean isLoading();
+	boolean isLoadingProject();
 
 	public FileExplorer getFileExplorer();
 
 	public void createProject(String name, String path);
 
 	public boolean isReady();
-
-	boolean isLoadingProject();
 
 	int getCurrentModeIndex();
 

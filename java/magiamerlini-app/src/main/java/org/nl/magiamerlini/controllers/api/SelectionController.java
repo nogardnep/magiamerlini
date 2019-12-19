@@ -2,7 +2,7 @@ package org.nl.magiamerlini.controllers.api;
 
 import java.util.List;
 
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public interface SelectionController {

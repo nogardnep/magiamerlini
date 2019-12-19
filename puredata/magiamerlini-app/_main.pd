@@ -1,5 +1,5 @@
-#N canvas 2289 0 719 565 12;
-#X obj 703 -198 network;
+#N canvas 2123 0 885 565 12;
+#X obj 699 -227 network;
 #N canvas 0 50 1077 699 midi 0;
 #X obj 453 60 notein;
 #X floatatom 5 35 5 0 0 0 - - -;
@@ -75,18 +75,18 @@ f 24;
 #X connect 36 1 34 0;
 #X connect 38 0 37 0;
 #X coords 0 -1 1 1 85 60 1 0 0;
-#X restore 704 -288 pd midi;
-#X obj 616 -204 bng 15 250 50 0 empty empty init 17 7 0 10 -4160 -1
+#X restore 374 -229 pd midi;
+#X obj 600 -119 bng 15 250 50 0 empty empty init 17 7 0 10 -4160 -1
 -1;
-#X obj 885 -307 clock;
-#X obj 388 -135 user_interface/_display;
-#X obj 535 227 user_interface/_padboard;
-#X obj 874 -184 user_interface/_inputs;
-#X obj 127 191 io_devices/_audio_output;
-#X obj 616 -229 loadbang;
-#X obj 73 65 audio_mixer/_audio_mixer________________;
-#X obj 28 -98 video_sampler/_video_sampler;
-#X obj 29 -35 audio_sampler/_audio_sampler________________;
+#X obj 355 -162 clock;
+#X obj 519 -66 user_interface/_display;
+#X obj 808 138 user_interface/_padboard;
+#X obj 809 -266 user_interface/_inputs;
+#X obj 55 178 io_devices/_audio_output;
+#X obj 600 -144 loadbang;
+#X obj 69 36 audio_mixer/_audio_mixer________________;
+#X obj 24 -127 video_sampler/_video_sampler;
+#X obj 58 -7 audio_sampler/_audio_sampler________________;
 #X connect 0 0 3 0;
 #X connect 0 0 4 0;
 #X connect 0 0 5 0;

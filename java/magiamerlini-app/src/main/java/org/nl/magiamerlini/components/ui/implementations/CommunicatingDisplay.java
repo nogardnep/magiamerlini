@@ -2,32 +2,33 @@ package org.nl.magiamerlini.components.ui.implementations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public class CommunicatingDisplay extends CommunicatingComponent implements Display {
-
-	private final static String COMPONENT_NAME = "display";
 	private final static String EMPTY = "----";
 
 	public CommunicatingDisplay(Communication communication) {
-		super(communication);
+		super(communication, "display");
 	}
 
 	@Override
 	public void displayProject() {
-		String name = EMPTY;
+		String name;
 
 		if (mainController.getProjectManager().getCurrentProject() != null) {
-			mainController.getProjectManager().getCurrentProject().getName();
+			name = mainController.getProjectManager().getCurrentProject().getName();
+		} else {
+			name = EMPTY;
 		}
 
-		communication.sendMessage(COMPONENT_NAME + " project_name " + name);
+		sendMessage("project_name " + name);
 	}
 
 	@Override
@@ -38,39 +39,46 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 	@Override
 	public void displaySelectedParameter() {
 		ParameterSnapshot parameter = mainController.getSelectionController().getEditingParameter();
+		String index = String.valueOf(mainController.getSelectionController().getEditingParameterIndex() + 1);
+		String name = (parameter != null ? parameter.getName() : EMPTY);
+		String value = (parameter != null ? String.valueOf(parameter.getValue()) : EMPTY);
 
-		communication.sendMessage(
-				COMPONENT_NAME + " parameter_index " + mainController.getSelectionController().getEditingParameterIndex());
-		communication
-				.sendMessage(COMPONENT_NAME + " parameter_name " + (parameter != null ? parameter.getName() : EMPTY));
-		communication
-				.sendMessage(COMPONENT_NAME + " parameter_value " + (parameter != null ? parameter.getValue() : EMPTY));
+		sendMessage("parameter " + index + "." + name + "=" + value);
 	}
 
 	@Override
 	public void displaySelectedItem() {
-		Item item = mainController.getSelectionController().getFirstSelectedItem();
-		communication.sendMessage("display selected_item " + (item != null ? item.getClass().getSimpleName() : EMPTY));
+		String name;
+		int number = mainController.getSelectionController().getSelectedItems().size();
+
+		if (number > 0) {
+			name = mainController.getSelectionController().getFirstSelectedItem().toDisplay();
+
+			if (number > 1) {
+				name += "_(+" + (number - 1) + ")";
+			}
+		} else {
+			name = EMPTY;
+		}
+
+		sendMessage("selected_item " + name);
 	}
 
 	@Override
 	public void displaySelection() {
-		String informationsString = EMPTY;
+		String informationsString;
 
 		if (mainController.isReady()) {
-			Map<String, Integer> informationsMap = new HashMap<String, Integer>();
-
-			informationsMap.put("trk", mainController.getCurrentTrackIndex());
-			informationsMap.put("pg", mainController.getCurrentPageIndex());
-			informationsMap.put("ptn", mainController.getCurrentPatternIndex());
-			informationsMap.put("seq", mainController.getCurrentSequenceIndex());
-
-			for (Map.Entry<String, Integer> entry : informationsMap.entrySet()) {
-				informationsString += entry.getKey() + "=" + entry.getValue() + "_";
-			}
+			informationsString = "";
+			informationsString += "seq=" + mainController.getCurrentSequenceIndex();
+			informationsString += "_ptn=" + mainController.getCurrentPatternIndex();
+			informationsString += "_trk=" + mainController.getCurrentTrackIndex();
+			informationsString += "_pg=" + mainController.getCurrentPageIndex();
+		} else {
+			informationsString = EMPTY;
 		}
 
-		communication.sendMessage(COMPONENT_NAME + " selection " + informationsString);
+		sendMessage("selection " + informationsString);
 	}
 
 	@Override
@@ -83,7 +91,7 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 	public void displayPosition() {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void dipslayMasterSignature() {
 		// TODO
@@ -96,11 +104,11 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 
 	@Override
 	public void displayLoading() {
-		communication.sendMessage(COMPONENT_NAME + " loading " + (mainController.isReady() ? "started" : "ended"));
+		sendMessage("loading " + (mainController.isReady() ? "started" : "ended"));
 	}
 
 	@Override
 	public void displayMode() {
-		communication.sendMessage(COMPONENT_NAME + " mode_name " + mainController.getCurrentMode().getName());
+		sendMessage("mode_name " + mainController.getCurrentMode().getName());
 	}
 }

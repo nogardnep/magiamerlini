@@ -6,60 +6,128 @@ import java.util.List;
 import org.nl.magiamerlini.Configuration;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
 public class CommunicatingPadboard extends CommunicatingComponent implements Padboard {
-	private final static String COMPONENT_NAME = "pad";
-	
 	private List<Pad> pads;
 
 	public CommunicatingPadboard(Communication communication) {
-		super(communication);
+		super(communication, "pad");
 		pads = new ArrayList<Pad>();
 
 		for (int i = 0; i < Configuration.Pads.getValue(); i++) {
 			pads.add(new Pad(i));
+			pads.get(i).setLightColor(Color.Red);
 		}
 	}
 
 	@Override
 	public void updateDisplay() {
-		for (Pad pad : pads ) {
-			updatePad(pad);
+		for (Pad pad : pads) {
+			pad.setLightColor(Color.Blue);
+			updateDisplay(pad);
 		}
 	}
 
 	@Override
-	public void updatePadDisplay(int padNum) {
-		updatePad(pads.get(padNum));
+	public void updateDisplay(int padNum) {
+		updateDisplay(pads.get(padNum));
 	}
-	
-	private void updatePad(Pad pad) {
-		Item item = mainController.getItemCorrespondingTo(pad.getNumber());
 
-		pad.setLightIntensity(1);
-		pad.setBlinkingSpeed(Pad.SPEED_FOR_NO_BLINKING);
+	private void updateDisplay(Pad pad) {
+		if (mainController.isReady()) {
+			Item item = mainController.getItemCorrespondingTo(pad.getNumber());
 
-		if (mainController.getSelectionController().isFirstSelected(item)) {
-			pad.setLightColor(Color.Orange);
-		} else if (mainController.getSelectionController().isSelected(item)) {
-			pad.setLightColor(Color.Yellow);
+			pad.setLightIntensity(1);
+			pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+
+			switch (mainController.getCurrentMode()) {
+			case Project:
+				pad.setLightIntensity(0);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case Song:
+				pad.setLightColor(Color.Blue);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case SequenceEdit:
+				pad.setLightColor(Color.Blue);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case PatternEdit:
+				pad.setLightColor(Color.Blue);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case PatternLaunch:
+				pad.setLightColor(Color.Blue);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case AudioSampler:
+				pad.setLightColor(Color.Red);
+				if (item instanceof AudioSamplerTrack && ((AudioSamplerTrack) item).isPlaying()) {
+					pad.setLightIntensity(0.8f);
+				} else {
+					pad.setLightIntensity(0.2f);
+				}
+				if (item instanceof AudioSamplerTrack && ((AudioSamplerTrack) item).isArmed()) {
+					pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NORMAL);
+				} else {
+					pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				}
+				break;
+			case AudioMixer:
+				pad.setLightColor(Color.Green);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case AudioEffects:
+				pad.setLightColor(Color.Green);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case VideoSampler:
+				pad.setLightColor(Color.Red);
+				pad.setLightIntensity(0.5f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case VideoMixer:
+				pad.setLightColor(Color.Green);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			case VideoEffects:
+				pad.setLightColor(Color.Green);
+				pad.setLightIntensity(0.1f);
+				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				break;
+			default:
+				break;
+			}
+
+			if (mainController.getSelectionController().isFirstSelected(item)) {
+				pad.setLightColor(Color.Orange);
+			} else if (mainController.getSelectionController().isSelected(item)) {
+				pad.setLightColor(Color.Yellow);
+			}
 		} else {
-			pad.setLightColor(Color.Green);
-			//pad.setIntensity(0);
+			pad.setLightIntensity(0);
 		}
 
 		displayPad(pad);
-		
 	}
 
 	private void displayPad(Pad pad) {
-		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " intensity " + pad.getLightIntensity());
-		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " color " + EnumUtils.getCorrespondingString(pad.getLightColor().name()));
-		communication.sendMessage(COMPONENT_NAME + " " + pad.getNumber() + " speed " + pad.getBlinkingSpeed());
+		sendMessage(pad.getNumber() + " intensity " + pad.getLightIntensity());
+		sendMessage(pad.getNumber() + " color " + EnumUtils.getCorrespondingString(pad.getLightColor().name()));
+		sendMessage(pad.getNumber() + " speed " + pad.getLightBlinkingSpeed());
 	}
 }

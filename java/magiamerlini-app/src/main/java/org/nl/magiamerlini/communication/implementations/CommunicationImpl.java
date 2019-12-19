@@ -8,7 +8,9 @@ import org.nl.magiamerlini.communication.Server;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
+import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.tools.FileType;
+import org.nl.magiamerlini.data.implementations.BaseProjectsManager;
 import org.nl.magiamerlini.utils.Logger;
 
 public class CommunicationImpl implements Communication {
@@ -46,13 +48,13 @@ public class CommunicationImpl implements Communication {
 	}
 
 	@Override
-	public void connect(int port) {
-		server.connect(this, port);
+	public void connect(int port, boolean displayMessages) {
+		server.connect(this, port, displayMessages);
 	}
 
 	@Override
 	public void testMessage(String message) {
-		receiveMessage(message.replace(";", "").split(" "));
+		receiveMessage(message);
 	}
 
 	private HashMap<String, String> transformMessage(String[] messageParts) {
@@ -60,14 +62,25 @@ public class CommunicationImpl implements Communication {
 
 		for (String string : messageParts) {
 			String[] split = string.split("=");
-			args.put(split[0], (split.length > 1 ? split[1] : null));
+
+			if (split.length > 1) {
+				// TODO: remove ?
+//				if (split[1].equals("null")) {
+//					split[1] = null;
+//				}
+
+				args.put(split[0], split[1]);
+			} else {
+				args.put(split[0], null);
+			}
 		}
 
 		return args;
 	}
 
 	@Override
-	public void receiveMessage(String[] messageParts) {
+	public void receiveMessage(String message) {
+		String[] messageParts = message.replace(";", "").split(" ");
 		String component = messageParts[0];
 		HashMap<String, String> args = transformMessage(messageParts);
 
@@ -78,6 +91,7 @@ public class CommunicationImpl implements Communication {
 		case NETWORK:
 			switch (args.get(ACTION)) {
 			case CONNECTED:
+				inputs.networkConnected();
 				App.test();
 				break;
 			}
@@ -88,10 +102,10 @@ public class CommunicationImpl implements Communication {
 
 			switch (args.get(ACTION)) {
 			case PRESSED:
-				inputs.buttonPressed(name, section);
+				inputs.buttonPressed(section, name);
 				break;
 			case LEAVED:
-				inputs.buttonLeaved(name, section);
+				inputs.buttonLeaved(section, name);
 				break;
 			}
 			break;
@@ -116,7 +130,7 @@ public class CommunicationImpl implements Communication {
 			}
 			break;
 		case SELECTOR:
-			section = InputSection.getCorrespondingToString(args.get(NAME));
+			section = InputSection.getCorrespondingToString(args.get(SECTION));
 			inputs.selectorChanged(section, Integer.parseInt(args.get(VALUE)));
 			break;
 		case CLOCK:
@@ -130,11 +144,19 @@ public class CommunicationImpl implements Communication {
 
 			switch (args.get(ACTION)) {
 			case LOAD:
-				String path = args.get(PATH).replace(App.ROOT_DIR_FOR_FILES + "/", ""); // TODO: ugly
+				String path = args.get(PATH);
+				if (path != null && !path.equals("")) {
+					// TODO: ugly
+					String rootPath = App.ROOT_DIR_FOR_FILES + "/" + type.getPath() + "/";
+					String fileExtension = "." + BaseProjectsManager.DB_FILE_EXTENSION;
+					System.out.println(fileExtension);
+					System.out.println(path);
+					path = path.replace(rootPath, "");
+					path = path.replace(fileExtension, "");
+				}
 				inputs.fileLoaded(type, path); // TODO: temporary?
 				break;
 			case NEW:
-				logger.log(Level.INFO, "new");
 				inputs.fileCreated(type, (args.get(NAME) != null ? args.get(NAME) : ""),
 						(args.get(PATH) != null ? args.get(PATH) : "")); // TODO: temporary?
 				break;

@@ -16,6 +16,11 @@ public class ButtonEvent {
 		this.velocity = velocity;
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " [" + "section=" + section + ", name=" + name + ", velocity=" + "]";
+	}
+
 	public ButtonEvent(String name, InputSection section) {
 		this(name, section, MAX_VELOCITY);
 	}
@@ -33,18 +38,30 @@ public class ButtonEvent {
 	}
 
 	public boolean equals(ButtonEvent button) {
-		return button.hasName(name) && button.hasSection(section);
+		if (button != null) {
+			return button.hasName(name) && button.hasSection(section);	
+		} else {
+			return false;
+		}
 	}
 
 	public boolean hasName(String name) {
-		return this.name.equals(name);
+		if (this.name != null) {
+			return this.name.equals(name);
+		} else {
+			return false;
+		}
 	}
 
 	public boolean hasName(ButtonName name) {
-		return this.name.equals(EnumUtils.getCorrespondingString(name.name()));
+		return hasName(EnumUtils.getCorrespondingString(name.name()));
 	}
 
 	public boolean hasSection(InputSection section) {
-		return this.section == section;
+		if (this.section != null) {
+			return this.section.equals(section);
+		} else {
+			return false;
+		}
 	}
 }

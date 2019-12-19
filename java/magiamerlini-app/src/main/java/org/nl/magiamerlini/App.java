@@ -1,13 +1,17 @@
 package org.nl.magiamerlini;
 
+import java.util.logging.Level;
+
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.implementations.CommunicationImpl;
-import org.nl.magiamerlini.components.BaseComponent;
-import org.nl.magiamerlini.components.audio.api.AudioMixer;
-import org.nl.magiamerlini.components.audio.api.AudioSampler;
-import org.nl.magiamerlini.components.audio.implementations.CommunicatingAudioMixer;
-import org.nl.magiamerlini.components.audio.implementations.CommunicatingAudioSampler;
-import org.nl.magiamerlini.components.audio.items.effects.ReverbAudioEffect;
+import org.nl.magiamerlini.components.mixer.api.AudioMixer;
+import org.nl.magiamerlini.components.mixer.api.VideoMixer;
+import org.nl.magiamerlini.components.mixer.implementations.CommunicatingAudioMixer;
+import org.nl.magiamerlini.components.mixer.implementations.CommunicatingVideoMixer;
+import org.nl.magiamerlini.components.sampler.api.AudioSampler;
+import org.nl.magiamerlini.components.sampler.api.VideoSampler;
+import org.nl.magiamerlini.components.sampler.implementations.CommunicatingAudioSampler;
+import org.nl.magiamerlini.components.sampler.implementations.CommunicatingVideoSampler;
 import org.nl.magiamerlini.components.sequencer.api.Sequencer;
 import org.nl.magiamerlini.components.sequencer.implementations.CommunicatingSequencer;
 import org.nl.magiamerlini.components.ui.api.Display;
@@ -20,17 +24,13 @@ import org.nl.magiamerlini.components.ui.implementations.CommunicatingFileExplor
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingPadboard;
 import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
-import org.nl.magiamerlini.components.video.api.VideoMixer;
-import org.nl.magiamerlini.components.video.api.VideoSampler;
-import org.nl.magiamerlini.components.video.implementations.CommunicatingVideoSampler;
-import org.nl.magiamerlini.components.video.implementations.VideoMixerImpl;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.implementations.BaseMainController;
+import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.api.DatabaseManager;
 import org.nl.magiamerlini.data.api.ProjectsManager;
 import org.nl.magiamerlini.data.implementations.BaseDatabaseManager;
 import org.nl.magiamerlini.data.implementations.BaseProjectsManager;
-import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 import org.nl.magiamerlini.utils.Logger;
 
 public class App {
@@ -40,21 +40,22 @@ public class App {
 
 	public static Inputs inputs;
 	public static MainController mainController;
-public static Logger logger;
-	
+	public static Logger logger;
+	public static Communication communication;
+
 	public static void main(String[] args) {
 		logger = new Logger(App.class.getSimpleName(), true);
 		DatabaseManager databaseManager = null;
 
 		try {
-			Communication communication = new CommunicationImpl();
+			communication = new CommunicationImpl();
 			databaseManager = new BaseDatabaseManager();
 
 			ProjectsManager projectsManager = new BaseProjectsManager(databaseManager);
 			AudioSampler audioSampler = new CommunicatingAudioSampler(communication);
 			AudioMixer audioMixer = new CommunicatingAudioMixer(communication);
 			VideoSampler videoSampler = new CommunicatingVideoSampler(communication);
-			VideoMixer videoMixer = new VideoMixerImpl(communication);
+			VideoMixer videoMixer = new CommunicatingVideoMixer(communication);
 			Sequencer sequencer = new CommunicatingSequencer(communication);
 			Display display = new CommunicatingDisplay(communication);
 			Padboard padboard = new CommunicatingPadboard(communication);
@@ -68,48 +69,18 @@ public static Logger logger;
 			inputs.setMainController(mainController);
 			display.setMainController(mainController);
 			audioSampler.setMainController(mainController);
+			videoSampler.setMainController(mainController);
 			communication.setInputs(inputs);
 
-//			System.out.println("=======");
+			logger.log(Level.INFO, "=======");
 //			System.out.println(Mode.Mixer.getIndex());
 //			System.out.println(Mode.Project.getIndex());
 
 			// projectManager.createProject("A1");
 			// projectsManager.createProject(CURRENT_PROJECT_NAME);
 
-			// communication.connect(3000); // After everything is ready, can connect
-			// with puredata
-
-			ReverbAudioEffect reverb = new ReverbAudioEffect();
-			System.out.println(reverb.getLevel());
-			
-			System.out.println(reverb.getParameters());
-			reverb.applyParameter(new ParameterSnapshot("level", 8, 0, 0, 1));
-			
-//			try {
-//				reverb.getClass().getMethod("setLevel", float.class).invoke(reverb, 5);
-//			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-//					| NoSuchMethodException | SecurityException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-//			for (Field field : ReverbAudioEffect.class.getDeclaredFields()) {
-//				//System.out.println(field.getAnnotations()..getClass().getSimpleName());
-//				if (field.isAnnotationPresent(Parameter.class)) {
-//					System.out.println(field.getName());
-//					try {
-//						reverb.getClass().getMethod("setLevel", Float.class).invoke(reverb, 5);
-//					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-//							| NoSuchMethodException | SecurityException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-////					obj.getClass().getMethod("setParentName", String.class).invoke(obj, "Parent name");
-//				}
-//			}
-			
-			System.out.println(reverb.getLevel());
+			// ---- After everything is ready, can connect with puredata
+			communication.connect(3000, false);
 
 		} finally {
 			databaseManager.shutdown();
@@ -117,12 +88,11 @@ public static Logger logger;
 	}
 
 	public static void test() {
-		System.out.println("==== TESTS ====");
-		mainController.updateDisplay();
-		inputs.selectorChanged(InputSection.Track, 0);
-		inputs.buttonPressed("0", InputSection.Bank);
-		inputs.buttonPressed(ButtonName.New, InputSection.Action);
-		// inputs.padPressed(0, 1);
-		System.out.println("=======");
+		logger.log(Level.INFO, "==== TESTS ====");
+//		communication.testMessage("file_explorer action=load type=project path=C:/Users/Nicolas/magiamerlini-data/projects/B/project.mv.db");
+//		inputs.selectorChanged(InputSection.Mode, Mode.AudioSampler.ordinal());
+//		inputs.buttonPressed(InputSection.Action, ButtonName.Load);
+//		inputs.padPressed(0, 1);
+		logger.log(Level.INFO, "=======");
 	}
 }

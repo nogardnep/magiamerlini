@@ -1,7 +1,8 @@
 package org.nl.magiamerlini.components.sequencer.items;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Alias;
-import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "pattern")
-public class Pattern extends Item {
+public class Pattern extends Item implements Serializable {
 	public final static String STEPS_PARAMETER = "steps";
 	public final static String BEATS_PARAMETER = "beats";
 	public final static String BARS_PARAMETER = "bars";
@@ -41,7 +42,7 @@ public class Pattern extends Item {
 	private int bank;
 
 	@OneToMany(targetEntity = PatternEvent.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<PatternEvent> patternEvents;
+	private Set<PatternEvent> patternEvents;
 
 	@Column(name = STEPS_PARAMETER)
 	@Parameter(min = 3, max = 8, step = 1, defaultValue = 4)
@@ -75,7 +76,7 @@ public class Pattern extends Item {
 		this();
 		this.number = number;
 		this.bank = bank;
-		patternEvents = new ArrayList<PatternEvent>();
+		patternEvents = new HashSet<PatternEvent>();
 	}
 
 	@Override
@@ -152,11 +153,11 @@ public class Pattern extends Item {
 		this.repetitions = repetitions;
 	}
 
-	public Collection<PatternEvent> getPatternEvents() {
+	public Set<PatternEvent> getPatternEvents() {
 		return patternEvents;
 	}
 
-	public void setPatternEvents(Collection<PatternEvent> patternEvents) {
+	public void setPatternEvents(Set<PatternEvent> patternEvents) {
 		this.patternEvents = patternEvents;
 	}
 

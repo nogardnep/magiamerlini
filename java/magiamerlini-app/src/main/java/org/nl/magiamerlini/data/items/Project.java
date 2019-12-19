@@ -1,7 +1,8 @@
 package org.nl.magiamerlini.data.items;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,20 +13,19 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.components.audio.items.AudioMixerTrack;
-import org.nl.magiamerlini.components.audio.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
+import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
+import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.components.sequencer.items.Pattern;
 import org.nl.magiamerlini.components.sequencer.items.Sequence;
 import org.nl.magiamerlini.components.sequencer.items.Song;
-import org.nl.magiamerlini.components.video.items.VideoMixerTrack;
-import org.nl.magiamerlini.components.video.items.VideoSamplerTrack;
 import org.nl.magiamerlini.data.tools.Alias;
-import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "project")
-public class Project extends Item {
+public class Project extends Item implements Serializable {
 	public final static String SONG_PARAMETER = "song";
 	public final static String METRONOME_VOLUME_PARAMETER = "metronome_volume";
 	public final static String PRECOUNT_PARAMETER = "precount";
@@ -42,26 +42,26 @@ public class Project extends Item {
 	@Column(name = "path")
 	private String path;
 
-	@OneToMany(targetEntity = AudioSamplerTrack.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<AudioSamplerTrack> audioSamplerTracks;
+	@OneToMany(targetEntity = AudioSamplerTrack.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<AudioSamplerTrack> audioSamplerTracks;
 
-	@OneToMany(targetEntity = AudioMixerTrack.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<AudioMixerTrack> audioMixerTracks;
+	@OneToMany(targetEntity = AudioMixerTrack.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<AudioMixerTrack> audioMixerTracks;
 
-	@OneToMany(targetEntity = VideoSamplerTrack.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<VideoSamplerTrack> videoSamplerTracks;
+	@OneToMany(targetEntity = VideoSamplerTrack.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<VideoSamplerTrack> videoSamplerTracks;
 
-	@OneToMany(targetEntity = VideoMixerTrack.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<VideoMixerTrack> videoMixerTracks;
+	@OneToMany(targetEntity = VideoMixerTrack.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<VideoMixerTrack> videoMixerTracks;
 
-	@OneToMany(targetEntity = Pattern.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<Pattern> patterns;
+	@OneToMany(targetEntity = Pattern.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Pattern> patterns;
 
-	@OneToMany(targetEntity = Sequence.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<Sequence> sequences;
+	@OneToMany(targetEntity = Sequence.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Sequence> sequences;
 
-	@OneToMany(targetEntity = Song.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Collection<Song> songs;
+	@OneToMany(targetEntity = Song.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Song> songs;
 
 	@Column(name = SONG_PARAMETER)
 	@Parameter(min = 1, max = 16, step = 1, defaultValue = 1)
@@ -84,13 +84,13 @@ public class Project extends Item {
 		this();
 		this.name = name;
 		this.path = location;
-		audioSamplerTracks = new ArrayList<AudioSamplerTrack>();
-		audioMixerTracks = new ArrayList<AudioMixerTrack>();
-		videoSamplerTracks = new ArrayList<VideoSamplerTrack>();
-		videoMixerTracks = new ArrayList<VideoMixerTrack>();
-		patterns = new ArrayList<Pattern>();
-		sequences = new ArrayList<Sequence>();
-		songs = new ArrayList<Song>();
+		audioSamplerTracks = new HashSet<AudioSamplerTrack>();
+		audioMixerTracks = new HashSet<AudioMixerTrack>();
+		videoSamplerTracks = new HashSet<VideoSamplerTrack>();
+		videoMixerTracks = new HashSet<VideoMixerTrack>();
+		patterns = new HashSet<Pattern>();
+		sequences = new HashSet<Sequence>();
+		songs = new HashSet<Song>();
 	}
 
 	@Override
@@ -103,8 +103,12 @@ public class Project extends Item {
 		return "project";
 	}
 
-	public void addSamplerTrack(AudioSamplerTrack samplerTrack) {
-		audioSamplerTracks.add(samplerTrack);
+	public void addAudioSamplerTrack(AudioSamplerTrack audioSamplerTrack) {
+		audioSamplerTracks.add(audioSamplerTrack);
+	}
+
+	public void addVideoSamplerTrack(VideoSamplerTrack videoSamplerTrack) {
+		videoSamplerTracks.add(videoSamplerTrack);
 	}
 
 	public int getId() {
@@ -131,6 +135,70 @@ public class Project extends Item {
 		this.path = path;
 	}
 
+	public Set<AudioSamplerTrack> getAudioSamplerTracks() {
+		return audioSamplerTracks;
+	}
+
+	public void setAudioSamplerTracks(Set<AudioSamplerTrack> audioSamplerTracks) {
+		this.audioSamplerTracks = audioSamplerTracks;
+	}
+
+	public Set<AudioMixerTrack> getAudioMixerTracks() {
+		return audioMixerTracks;
+	}
+
+	public void setAudioMixerTracks(Set<AudioMixerTrack> audioMixerTracks) {
+		this.audioMixerTracks = audioMixerTracks;
+	}
+
+	public Set<VideoSamplerTrack> getVideoSamplerTracks() {
+		return videoSamplerTracks;
+	}
+
+	public void setVideoSamplerTracks(Set<VideoSamplerTrack> videoSamplerTracks) {
+		this.videoSamplerTracks = videoSamplerTracks;
+	}
+
+	public Set<VideoMixerTrack> getVideoMixerTracks() {
+		return videoMixerTracks;
+	}
+
+	public void setVideoMixerTracks(Set<VideoMixerTrack> videoMixerTracks) {
+		this.videoMixerTracks = videoMixerTracks;
+	}
+
+	public Set<Pattern> getPatterns() {
+		return patterns;
+	}
+
+	public void setPatterns(Set<Pattern> patterns) {
+		this.patterns = patterns;
+	}
+
+	public Set<Sequence> getSequences() {
+		return sequences;
+	}
+
+	public void setSequences(Set<Sequence> sequences) {
+		this.sequences = sequences;
+	}
+
+	public Set<Song> getSongs() {
+		return songs;
+	}
+
+	public void setSongs(Set<Song> songs) {
+		this.songs = songs;
+	}
+
+	public float getSong() {
+		return song;
+	}
+
+	public void setSong(float song) {
+		this.song = song;
+	}
+
 	public float getMetronomeVolume() {
 		return metronomeVolume;
 	}
@@ -145,70 +213,6 @@ public class Project extends Item {
 
 	public void setPrecount(float precount) {
 		this.precount = precount;
-	}
-
-	public Collection<AudioSamplerTrack> getAudioSamplerTracks() {
-		return audioSamplerTracks;
-	}
-
-	public void setAudioSamplerTracks(Collection<AudioSamplerTrack> audioSamplerTracks) {
-		this.audioSamplerTracks = audioSamplerTracks;
-	}
-
-	public Collection<AudioMixerTrack> getAudioMixerTracks() {
-		return audioMixerTracks;
-	}
-
-	public void setAudioMixerTracks(Collection<AudioMixerTrack> audioMixerTracks) {
-		this.audioMixerTracks = audioMixerTracks;
-	}
-
-	public Collection<VideoSamplerTrack> getVideoSamplerTracks() {
-		return videoSamplerTracks;
-	}
-
-	public void setVideoSamplerTracks(Collection<VideoSamplerTrack> videoSamplerTracks) {
-		this.videoSamplerTracks = videoSamplerTracks;
-	}
-
-	public Collection<VideoMixerTrack> getVideoMixerTracks() {
-		return videoMixerTracks;
-	}
-
-	public void setVideoMixerTracks(Collection<VideoMixerTrack> videoMixerTracks) {
-		this.videoMixerTracks = videoMixerTracks;
-	}
-
-	public Collection<Pattern> getPatterns() {
-		return patterns;
-	}
-
-	public void setPatterns(Collection<Pattern> patterns) {
-		this.patterns = patterns;
-	}
-
-	public Collection<Sequence> getSequences() {
-		return sequences;
-	}
-
-	public void setSequences(Collection<Sequence> sequences) {
-		this.sequences = sequences;
-	}
-
-	public Collection<Song> getSongs() {
-		return songs;
-	}
-
-	public void setSongs(Collection<Song> songs) {
-		this.songs = songs;
-	}
-
-	public float getSong() {
-		return song;
-	}
-
-	public void setSong(float song) {
-		this.song = song;
 	}
 
 }

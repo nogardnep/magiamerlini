@@ -1,5 +1,6 @@
 package org.nl.magiamerlini.components.sequencer.items;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,11 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.data.tools.Item;
+import org.nl.magiamerlini.data.items.Item;
 
 @Entity
 @Table(name = "song")
-public class Song extends Item {
+public class Song extends Item  implements Serializable{
 	@Id
 	@Column(name = "id")
 	@GeneratedValue

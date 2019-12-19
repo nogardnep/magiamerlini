@@ -3,9 +3,9 @@ package org.nl.magiamerlini.communication.api;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 
 public interface Communication {
-	public void connect(int port);
+	public void connect(int port, boolean displayMessages);
 	
-	public void receiveMessage(String[] messageParts);
+	public void receiveMessage(String message);
 	
 	public void sendMessage(String message);
 	

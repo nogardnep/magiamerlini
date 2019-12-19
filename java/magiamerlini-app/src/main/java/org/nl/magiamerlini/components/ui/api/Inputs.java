@@ -6,13 +6,13 @@ import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.tools.FileType;
 
 public interface Inputs extends Component {
-	public void buttonPressed(String name, InputSection section, float velocity);
+	public void buttonPressed(InputSection section, String name, float velocity);
 
-	public void buttonPressed(ButtonName name, InputSection section);
+	public void buttonPressed(InputSection section, ButtonName name);
 
-	public void buttonPressed(String name, InputSection section);
+	public void buttonPressed(InputSection section, String name);
 
-	public void buttonLeaved(String name, InputSection section);
+	public void buttonLeaved(InputSection section, String name);
 
 	public void selectorChanged(InputSection section, int newValue);
 
@@ -31,4 +31,6 @@ public interface Inputs extends Component {
 	public void wheelChanged(InputSection section, int value);
 
 	public void switchChanged(InputSection section, int value);
+
+	public void networkConnected();
 }
