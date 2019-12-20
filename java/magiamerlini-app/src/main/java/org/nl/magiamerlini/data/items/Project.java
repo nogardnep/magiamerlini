@@ -103,6 +103,10 @@ public class Project extends Item implements Serializable {
 		return "project";
 	}
 
+	public void addSong(Song song) {
+		songs.add(song);
+	}
+
 	public void addAudioSamplerTrack(AudioSamplerTrack audioSamplerTrack) {
 		audioSamplerTracks.add(audioSamplerTrack);
 	}
@@ -117,6 +121,14 @@ public class Project extends Item implements Serializable {
 
 	public void addVideoMixerTrack(VideoMixerTrack videoMixerTrack) {
 		videoMixerTracks.add(videoMixerTrack);
+	}
+
+	public void addPattern(Pattern pattern) {
+		patterns.add(pattern);
+	}
+
+	public void addSequence(Sequence sequence) {
+		sequences.add(sequence);
 	}
 
 	public int getId() {

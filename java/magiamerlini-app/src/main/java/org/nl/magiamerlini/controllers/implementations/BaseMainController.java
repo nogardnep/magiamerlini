@@ -6,6 +6,10 @@ import org.nl.magiamerlini.components.mixer.api.VideoMixer;
 import org.nl.magiamerlini.components.sampler.api.AudioSampler;
 import org.nl.magiamerlini.components.sampler.api.VideoSampler;
 import org.nl.magiamerlini.components.sequencer.api.Sequencer;
+import org.nl.magiamerlini.components.sequencer.items.Pattern;
+import org.nl.magiamerlini.components.sequencer.items.Sequence;
+import org.nl.magiamerlini.components.sequencer.items.Song;
+import org.nl.magiamerlini.components.sequencer.tools.TimeSignature;
 import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.components.ui.api.FileExplorer;
 import org.nl.magiamerlini.components.ui.api.Padboard;
@@ -75,17 +79,84 @@ public class BaseMainController implements MainController {
 	@Override
 	public Item getItemCorrespondingTo(int number) {
 		Item item = null;
+		Pattern pattern;
+		Sequence sequence;
+		Song song;
+		int bar = 0, beat = 0, tick = 0;
 
 		switch (currentMode) {
 		case Project:
 			break;
 		case Song:
+			song = projectsController.getSong(0);
+			item = projectsController.getSongPart(song, number);
 			break;
 		case SequenceEdit:
+			sequence = projectsController.getSequence(currentSequenceIndex);
+
+			// TODO: ugly
+			boolean visibleBeat = true;
+			TimeSignature sequenceTimeSignature = sequence.getTimeSignature();
+
+			bar = 0;
+			beat = number % 4;
+			tick = 0;
+
+			if (number <= 3) {
+				bar = 0;
+			} else if (number >= 4 && number <= 7) {
+				bar = 1;
+			} else if (number >= 8 && number <= 11) {
+				bar = 2;
+			} else if (number >= 12 && number <= 15) {
+				bar = 3;
+			}
+
+			if (beat >= sequenceTimeSignature.getBeat()) {
+				visibleBeat = false;
+			}
+
+			if (bar >= sequenceTimeSignature.getBar()) {
+				visibleBeat = false;
+			}
+
+			if (visibleBeat) {
+				item = projectsController.getSequenceEvent(sequence, currentPatternIndex, bar, beat);
+			} else {
+				item = null;
+			}
 			break;
 		case PatternEdit:
+			// TODO: ugly
+			bar = currentPageIndex;
+			if (number < 4) {
+				beat = 0;
+			} else if (number < 8) {
+				beat = 1;
+			} else if (number < 12) {
+				beat = 2;
+			} else {
+				beat = 3;
+			}
+			switch (number % 4) {
+			case 0:
+				tick = 0;
+				break;
+			case 1:
+				tick = 6;
+				break;
+			case 2:
+				tick = 12;
+				break;
+			case 3:
+				tick = 18;
+				break;
+			}
+			pattern = projectsController.getPattern(currentBankIndex, currentPatternIndex);
+			item = projectsController.getPatternEvent(pattern, currentTrackIndex, bar, beat, tick);
 			break;
 		case PatternLaunch:
+			item = projectsController.getPattern(currentBankIndex, number);
 			break;
 		case AudioMixer:
 			item = projectsController.getAudioMixerTrack(number);
@@ -200,7 +271,7 @@ public class BaseMainController implements MainController {
 			this.selectionController.emptySelectedItems();
 		}
 
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -238,7 +309,7 @@ public class BaseMainController implements MainController {
 			this.currentBankIndex = value;
 		}
 
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -250,7 +321,7 @@ public class BaseMainController implements MainController {
 	@Override
 	public void changePattern(int selectedPattern) {
 		this.currentPatternIndex = selectedPattern;
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -262,7 +333,7 @@ public class BaseMainController implements MainController {
 	@Override
 	public void changeTrack(int selectedTrack) {
 		this.currentTrackIndex = selectedTrack;
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -275,7 +346,7 @@ public class BaseMainController implements MainController {
 	public void changeSequence(int selectedSequence) {
 		this.currentSequenceIndex = selectedSequence;
 		display.displaySelection();
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -287,7 +358,7 @@ public class BaseMainController implements MainController {
 	@Override
 	public void changePage(int selectedPage) {
 		this.currentPageIndex = selectedPage;
-		selectionController.setSelecting(false);
+		currentStateChanged();
 		updateDisplay();
 	}
 
@@ -314,6 +385,11 @@ public class BaseMainController implements MainController {
 	@Override
 	public PlayerController getPlayerController() {
 		return playerController;
+	}
+
+	private void currentStateChanged() {
+		selectionController.setSelecting(false);
+		selectionController.emptySelectedItems();
 	}
 
 }

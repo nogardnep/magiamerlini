@@ -49,15 +49,16 @@ public abstract class CommunicatingSampler extends CommunicatingComponent implem
 	public void loadTrackSample(SamplerTrack samplerTrack, String path) {
 		samplerTrack.setFilePath(path);
 		mainController.getProjectManager().update(samplerTrack);
+		// TODO: load sample in puredata
 	}
 	
 	@Override
-	public void updateTrack(SamplerTrack samplerTrack) {
+	public void trackEdited(SamplerTrack samplerTrack) {
 		for (ParameterSnapshot parameter : samplerTrack.getParameters()) {
 			trackParameterEdited(samplerTrack, parameter);
 		}
 		
-		
+		// TODO: load sample in puredata
 	}
 
 	protected void updateDisplay() {

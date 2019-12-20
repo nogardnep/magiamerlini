@@ -13,6 +13,8 @@ import org.nl.magiamerlini.components.mixer.items.MixerTrack;
 import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
+import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
+import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
 import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
@@ -48,6 +50,7 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 	private void updateDisplay(Pad pad) {
 		if (mainController.isReady()) {
 			Item item = mainController.getItemCorrespondingTo(pad.getNumber());
+			logger.log(Level.ALL, "for pad n°" + pad.getNumber() + " " + item);
 
 			pad.setLightIntensity(1);
 			pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
@@ -64,12 +67,42 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 				break;
 			case SequenceEdit:
 				pad.setLightColor(Color.Blue);
-				pad.setLightIntensity(0.1f);
+				if (item != null && item instanceof SequenceEvent) {
+					switch (((SequenceEvent) item).getState()) {
+					case SequenceEvent.PLAY_STATE:
+						pad.setLightIntensity(1);
+						break;
+					case SequenceEvent.STOP_STATE:
+						pad.setLightColor(Color.Red);
+						pad.setLightIntensity(1);
+						break;
+					default:
+						pad.setLightIntensity(0.1f);
+						break;
+					}
+				} else {
+					pad.setLightIntensity(0);
+				}
 				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
 				break;
 			case PatternEdit:
 				pad.setLightColor(Color.Blue);
-				pad.setLightIntensity(0.1f);
+				if (item != null && item instanceof PatternEvent) {
+					switch (((PatternEvent) item).getState()) {
+					case PatternEvent.PLAY_STATE:
+						pad.setLightIntensity(((PatternEvent) item).getVelocity());
+						break;
+					case PatternEvent.STOP_STATE:
+						pad.setLightColor(Color.Red);
+						pad.setLightIntensity(1);
+						break;
+					default:
+						pad.setLightIntensity(0.1f);
+						break;
+					}
+				} else {
+					pad.setLightIntensity(0);
+				}
 				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
 				break;
 			case PatternLaunch:

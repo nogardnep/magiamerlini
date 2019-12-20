@@ -46,7 +46,11 @@ public class Song extends Item  implements Serializable{
 
 	@Override
 	public String toDisplay() {
-		return "sequence_" + number;
+		return "song_" + number;
+	}
+	
+	public void addSongPart(SongPart songPart) {
+		songParts.add(songPart);
 	}
 
 	public int getId() {

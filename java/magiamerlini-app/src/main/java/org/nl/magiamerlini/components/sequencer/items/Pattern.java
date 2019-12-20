@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Alias;
@@ -67,9 +68,13 @@ public class Pattern extends Item implements Serializable {
 	@Parameter(min = 0, max = 1, step = 1, defaultValue = 0, aliases = {
 			@Alias(name = "loop", value = REPETITIONS_LOOP) })
 	private float repetitions;
+	
+	@Transient
+	boolean playing;
 
 	public Pattern() {
 		super();
+		this.playing = false;
 	}
 
 	public Pattern(int bank, int number) {
@@ -87,6 +92,10 @@ public class Pattern extends Item implements Serializable {
 	@Override
 	public String toDisplay() {
 		return "pattern_" + bank + "-" + number;
+	}
+	
+	public void addPatternEvent(PatternEvent patternEvent) {
+		patternEvents.add(patternEvent);
 	}
 
 	public int getId() {
@@ -159,6 +168,14 @@ public class Pattern extends Item implements Serializable {
 
 	public void setPatternEvents(Set<PatternEvent> patternEvents) {
 		this.patternEvents = patternEvents;
+	}
+	
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
+	}
+	
+	public boolean isPlaying() {
+		return playing;
 	}
 
 }

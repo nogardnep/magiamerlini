@@ -12,13 +12,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hibernate.Session;
-import org.nl.magiamerlini.components.mixer.items.AudioEffect;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
 import org.nl.magiamerlini.components.mixer.items.Effect;
 import org.nl.magiamerlini.components.mixer.items.MixerTrack;
 import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
+import org.nl.magiamerlini.components.sequencer.items.Pattern;
+import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
+import org.nl.magiamerlini.components.sequencer.items.Sequence;
+import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
+import org.nl.magiamerlini.components.sequencer.items.Song;
+import org.nl.magiamerlini.components.sequencer.items.SongPart;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.api.ProjectsController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
@@ -48,7 +53,7 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 
 		if (projectsInDatabase.size() > 0) {
 			currentProject = (Project) projectsInDatabase.get(0);
-			updateAllItems();
+			sendAllItemsState();
 		} else {
 			logger.log(Level.SEVERE, "No Project entity found in the loaded database (" + path + ")");
 		}
@@ -77,10 +82,66 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 
 				currentProject = new Project(name, fullPath);
 				persist(currentProject);
-				updateAllItems();
+				sendAllItemsState();
 			}
 		} else {
 			logger.log(Level.SEVERE, "Invalid name: \"" + name + "\"");
+		}
+	}
+
+	@Override
+	public void update(Object entity) {
+		logger.log(Level.INFO, "-- update entity --");
+		logger.log(Level.INFO, "- " + entity);
+
+		Session session = databaseManager.getSession();
+		session.beginTransaction();
+
+		session.update(entity);
+
+		session.flush();
+		session.getTransaction().commit();
+		session.close();
+	}
+
+	@Override
+	public void persist(Object entity) {
+		logger.log(Level.INFO, "-- persist entity --");
+		logger.log(Level.INFO, "- " + entity);
+
+		Session session = databaseManager.getSession();
+		session.beginTransaction();
+
+		session.persist(entity);
+
+		session.flush();
+		session.getTransaction().commit();
+		session.close();
+	}
+
+	private void sendAllItemsState() {
+		for (AudioSamplerTrack audioSamplerTrack : currentProject.getAudioSamplerTracks()) {
+			mainController.getAudioSampler().trackEdited(audioSamplerTrack);
+		}
+
+		for (VideoSamplerTrack videoSamplerTrack : currentProject.getVideoSamplerTracks()) {
+			mainController.getVideoSampler().trackEdited(videoSamplerTrack);
+		}
+
+		for (AudioMixerTrack audioMixerTrack : currentProject.getAudioMixerTracks()) {
+			mainController.getAudioMixer().trackEdited(audioMixerTrack);
+
+			for (Effect effect : audioMixerTrack.getEffects()) {
+				mainController.getAudioMixer().effectEdited(effect);
+			}
+		}
+
+		for (VideoMixerTrack videoMixerTrack : currentProject.getVideoMixerTracks()) {
+			mainController.getVideoMixer().trackEdited(videoMixerTrack);
+
+			for (Effect effect : videoMixerTrack.getEffects()) {
+				mainController.getVideoMixer().effectEdited(effect);
+			}
 		}
 	}
 
@@ -146,9 +207,8 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 			currentProject.addAudioSamplerTrack(audioSamplerTrack);
 			persist(audioSamplerTrack);
 			update(currentProject);
-			mainController.getAudioSampler().updateTrack(audioSamplerTrack);
+			mainController.getAudioSampler().trackEdited(audioSamplerTrack);
 		}
-		
 
 		return audioSamplerTrack;
 	}
@@ -169,9 +229,8 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 			currentProject.addVideoSamplerTrack(videoSamplerTrack);
 			persist(videoSamplerTrack);
 			update(currentProject);
-			mainController.getVideoSampler().updateTrack(videoSamplerTrack);
+			mainController.getVideoSampler().trackEdited(videoSamplerTrack);
 		}
-		
 
 		return videoSamplerTrack;
 	}
@@ -192,8 +251,8 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 			currentProject.addAudioMixerTrack(audioMixerTrack);
 			persist(audioMixerTrack);
 			update(currentProject);
-			mainController.getAudioMixer().updateTrack(audioMixerTrack);
-		}		
+			mainController.getAudioMixer().trackEdited(audioMixerTrack);
+		}
 
 		return audioMixerTrack;
 	}
@@ -214,8 +273,8 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 			currentProject.addVideoMixerTrack(videoMixerTrack);
 			persist(videoMixerTrack);
 			update(currentProject);
-			mainController.getVideoMixer().updateTrack(videoMixerTrack);
-		}		
+			mainController.getVideoMixer().trackEdited(videoMixerTrack);
+		}
 
 		return videoMixerTrack;
 	}
@@ -250,67 +309,138 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 					e.printStackTrace();
 				}
 			}
-			
-			mainController.getVideoMixer().updateEffect(effect);
+
+			mainController.getVideoMixer().effectEdited(effect);
 		}
 
 		return effect;
 	}
 
 	@Override
-	public void update(Object entity) {
-		logger.log(Level.INFO, "-- update entity --");
-		logger.log(Level.INFO, "- " + entity);
+	public Pattern getPattern(int bank, int number) {
+		Pattern pattern = null;
 
-		Session session = databaseManager.getSession();
-		session.beginTransaction();
+		for (Pattern element : currentProject.getPatterns()) {
+			if (element.getBank() == bank && element.getNumber() == number) {
+				pattern = element;
+				break;
+			}
+		}
 
-		session.update(entity);
+		if (pattern == null) {
+			pattern = new Pattern(bank, number);
+			currentProject.addPattern(pattern);
+			persist(pattern);
+			update(currentProject);
+		}
 
-		session.flush();
-		session.getTransaction().commit();
-		session.close();
+		return pattern;
 	}
 
 	@Override
-	public void persist(Object entity) {
-		logger.log(Level.INFO, "-- persist entity --");
-		logger.log(Level.INFO, "- " + entity);
+	public Sequence getSequence(int number) {
+		Sequence sequence = null;
 
-		Session session = databaseManager.getSession();
-		session.beginTransaction();
+		for (Sequence element : currentProject.getSequences()) {
+			if (element.getNumber() == number) {
+				sequence = element;
+				break;
+			}
+		}
 
-		session.persist(entity);
+		if (sequence == null) {
+			sequence = new Sequence(number);
+			currentProject.addSequence(sequence);
+			persist(sequence);
+			update(currentProject);
+		}
 
-		session.flush();
-		session.getTransaction().commit();
-		session.close();
+		return sequence;
 	}
-	
-	private void updateAllItems() {
-		for (AudioSamplerTrack audioSamplerTrack : currentProject.getAudioSamplerTracks()) {
-			mainController.getAudioSampler().updateTrack(audioSamplerTrack);
-		}
-		
-		for (VideoSamplerTrack videoSamplerTrack : currentProject.getVideoSamplerTracks()) {
-			mainController.getVideoSampler().updateTrack(videoSamplerTrack);
-		}
-		
-		for (AudioMixerTrack audioMixerTrack : currentProject.getAudioMixerTracks()) {
-			mainController.getAudioMixer().updateTrack(audioMixerTrack);
-			
-			for (Effect effect : audioMixerTrack.getEffects()) {
-				mainController.getAudioMixer().updateEffect(effect);
+
+	@Override
+	public PatternEvent getPatternEvent(Pattern pattern, int trackNumber, int bar, int beat, int tick) {
+		PatternEvent patternEvent = null;
+
+		for (PatternEvent element : pattern.getPatternEvents()) {
+			if (element.getTrackNumber() == trackNumber && element.getBar() == bar && element.getBeat() == beat
+					&& element.getTick() == tick) {
+				patternEvent = element;
+				break;
 			}
 		}
-		
-		for (VideoMixerTrack videoMixerTrack : currentProject.getVideoMixerTracks()) {
-			mainController.getVideoMixer().updateTrack(videoMixerTrack);
-			
-			for (Effect effect : videoMixerTrack.getEffects()) {
-				mainController.getVideoMixer().updateEffect(effect);
+
+		if (patternEvent == null) {
+			patternEvent = new PatternEvent(trackNumber, bar, beat, tick, PatternEvent.INACTIVE_STATE);
+			pattern.addPatternEvent(patternEvent);
+			persist(patternEvent);
+			update(pattern);
+		}
+
+		return patternEvent;
+	}
+
+	@Override
+	public SequenceEvent getSequenceEvent(Sequence sequence, int patternNumber, int bar, int beat) {
+		SequenceEvent sequenceEvent = null;
+
+		for (SequenceEvent element : sequence.getSequenceEvents()) {
+			if (element.getPatternNumber() == patternNumber && element.getBar() == bar && element.getBeat() == beat) {
+				sequenceEvent = element;
+				break;
 			}
 		}
+
+		if (sequenceEvent == null) {
+			sequenceEvent = new SequenceEvent(patternNumber, bar, beat, PatternEvent.INACTIVE_STATE);
+			sequence.addSequenceEvent(sequenceEvent);
+			persist(sequenceEvent);
+			update(sequence);
+		}
+
+		return sequenceEvent;
+	}
+
+	@Override
+	public SongPart getSongPart(Song song, int number) {
+		SongPart songPart = null;
+
+		for (SongPart element : song.getSongParts()) {
+			if (element.getNumber() == number) {
+				songPart = element;
+				break;
+			}
+		}
+
+		if (songPart == null) {
+			songPart = new SongPart(number);
+			song.addSongPart(songPart);
+			persist(songPart);
+			update(currentProject);
+		}
+
+		return songPart;
+	}
+
+	@Override
+	public Song getSong(int number) {
+		Song song = null;
+
+		for (Song element : currentProject.getSongs()) {
+			if (element.getNumber() == number) {
+				song = element;
+				break;
+			}
+		}
+
+		if (song == null) {
+			song = new Song(number);
+			currentProject.addSong(song);
+			persist(song);
+			update(currentProject);
+		}
+
+		return song;
 	}
 
 }

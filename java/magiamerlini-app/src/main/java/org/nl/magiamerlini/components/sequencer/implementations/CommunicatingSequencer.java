@@ -2,41 +2,46 @@ package org.nl.magiamerlini.components.sequencer.implementations;
 
 import java.util.logging.Level;
 
+import org.nl.magiamerlini.Configuration;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.components.sequencer.api.Sequencer;
+import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
+import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
+import org.nl.magiamerlini.components.sequencer.tools.Position;
+import org.nl.magiamerlini.components.sequencer.tools.TimeSignature;
 
 public class CommunicatingSequencer extends CommunicatingComponent implements Sequencer {
 
-	public static final int NUMBER_STEP_BY_BEAT = 24;
 	public static final int INITIAL_BPM = 120;
 
 	private static final String POSITION = "position";
-	private static final String REPETITION = "repetition";
-	private static final String TICK = "tyck";
+	private static final String TICK = "tick";
 	private static final String BEAT = "beat";
 	private static final String BAR = "bar";
+	private static final String TURN = "turn";
 	private static final String BPM = "bpm";
-	private static final String STEP_BY_BEAT = "step_by_beat";
-	private static final String STEP = "step";
+	private static final String TICKS_BY_BEAT = "ticks_by_beat";
 	private static final String PLAY = "play";
 	private static final String PAUSE = "pause";
 	private static final String CLOCK = "clock";
+	private static final String METRONOME = "metronome";
+	private static final String ON_BAR = "on_bar";
+	private static final String ON_BEAT = "on_beat";
 
 	private boolean playing;
-	private int currentRepetition;
-	private int currentStep;
-	private int currentTick;
-	private int currentBeat;
-	private int currentBar;
-	private int currentBpm;
+	private Position masterPosition;
+	private TimeSignature masterTimeSignature;
+	private int masterBpm;
 
 	public CommunicatingSequencer(Communication communication) {
 		super(communication, "sequencer");
-		currentBpm = INITIAL_BPM;
-		playing = false;
+		this.masterBpm = INITIAL_BPM;
+		this.playing = false;
+		this.masterTimeSignature = new TimeSignature(4, 4, 4);
+		this.masterPosition = new Position(0, 0, 0, masterTimeSignature);
 	}
 
 	@Override
@@ -48,45 +53,53 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 	@Override
 	public void pause() {
 		playing = false;
-		sendMessage(CLOCK + " " +PAUSE);
+		sendMessage(CLOCK + " " + PAUSE);
 	}
 
 	@Override
 	public void stop() {
 		pause();
-		restoreToStart();
+		masterPosition.restore();
+		updateDisplay();
 	}
 
 	@Override
 	public void moveForward() {
-		currentBeat++; // TODO: change
+		masterPosition.move(0, 1, 0);
 		updateDisplay();
 	}
 
 	@Override
 	public void moveBackward() {
-		currentBeat--; // TODO: change
+		masterPosition.move(0, -1, 0);
 		updateDisplay();
 	}
 
 	@Override
 	public void clockTicked() {
-		moveOn();
+		if (masterPosition.onBar()) {
+			sendMessage(METRONOME + " " + PLAY + " " + ON_BAR);
+		} else if (masterPosition.onBeat()) {
+			sendMessage(METRONOME + " " + PLAY + " " + ON_BEAT);
+		}
+
+		masterPosition.move(0, 0, 1);
+		updateDisplay();
 	}
 
 	@Override
 	public void sendBpm() {
-		String[] messageParts = { BPM, String.valueOf(currentBpm), STEP_BY_BEAT, String.valueOf(NUMBER_STEP_BY_BEAT) };
+		String[] messageParts = { BPM, String.valueOf(masterBpm), TICKS_BY_BEAT,
+				String.valueOf(Configuration.TicksByBeat.getValue()) };
 		sendMessage(messageParts);
 	}
 
 	private void updateDisplay() {
-		logger.log(Level.ALL, REPETITION + " " + currentRepetition);
-		sendMessage(POSITION + " " + REPETITION + " " + currentRepetition);
-		sendMessage(POSITION + " " + BEAT + " " + currentBeat);
-		sendMessage(POSITION + " " + BAR + " " + currentBar);
-		sendMessage(POSITION + " " + STEP + " " + currentStep);
-		sendMessage(POSITION + " " + TICK + " " + currentTick);
+		sendMessage(POSITION + " " + TURN + " " + masterPosition.getTurn());
+		sendMessage(POSITION + " " + BEAT + " " + masterPosition.getBeat());
+		sendMessage(POSITION + " " + BAR + " " + masterPosition.getBar());
+		sendMessage(POSITION + " " + TICK + " " + masterPosition.getTick());
+		mainController.getPadboard().updateDisplay();
 	}
 
 	@Override
@@ -97,51 +110,30 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		mainController.getVideoSampler().playTrack(videoSamplerTrack, velocity);
 	}
 
-	private void moveOn() {
-		logger.log(Level.ALL, "MOVE ON");
-//		currentTick++; // TODO: change
-//		updateDisplay();
+	@Override
+	public boolean isPlaying() {
+		return playing;
 	}
 
-	private void restoreToStart() {
-		currentTick = 0;
-		currentRepetition = 0;
-		currentStep = 0;
-		currentBeat = 0;
-		currentBar = 0;
+	@Override
+	public void setSequenceEventState(SequenceEvent sequenceEvent, int state) {
+		sequenceEvent.setState(state);
+		mainController.getProjectManager().update(sequenceEvent);
+	}
+
+	@Override
+	public void setPatternEventState(PatternEvent patternEvent, int state) {
+		logger.log(Level.ALL ,"NEW STATE " + state);
+		patternEvent.setState(state);
+		mainController.getProjectManager().update(patternEvent);
 		updateDisplay();
 	}
 
-	public int getCurrentRepetition() {
-		return currentRepetition;
-	}
-
-	public void setCurrentRepetition(int currentRepetition) {
-		this.currentRepetition = currentRepetition;
-	}
-
-	public int getCurrentStep() {
-		return currentStep;
-	}
-
-	public void setCurrentStep(int currentStep) {
-		this.currentStep = currentStep;
-	}
-
-	public int getCurrentBeat() {
-		return currentBeat;
-	}
-
-	public void setCurrentBeat(int currentBeat) {
-		this.currentBeat = currentBeat;
-	}
-
-	public int getCurrentBar() {
-		return currentBar;
-	}
-
-	public void setCurrentBar(int currentBar) {
-		this.currentBar = currentBar;
+	@Override
+	public void setPatternEventVelocity(PatternEvent patternEvent, float velocity) {
+		patternEvent.setVelocity(velocity);
+		mainController.getProjectManager().update(patternEvent);
+		updateDisplay();
 	}
 
 }

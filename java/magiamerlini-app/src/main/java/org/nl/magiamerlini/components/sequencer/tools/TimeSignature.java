@@ -1,43 +1,41 @@
 package org.nl.magiamerlini.components.sequencer.tools;
 
-import java.io.Serializable;
-
 public class TimeSignature {
 	private int step;
 	private int beat;
 	private int bar;
 
-	TimeSignature(int bar, int beat, int step) {
+	public TimeSignature(int bar, int beat, int step) {
 		set(bar, beat, step);
 	}
 
-	void set(int bar, int beat, int step) {
+	public void set(int bar, int beat, int step) {
 		this.bar = bar;
 		this.beat = beat;
 		this.step = step;
 	}
 
-	void setStep(int step) {
+	public void setStep(int step) {
 		this.step = step;
 	}
 
-	void setBeat(int beat) {
+	public void setBeat(int beat) {
 		this.beat = beat;
 	}
 
-	void setBar(int bar) {
+	public void setBar(int bar) {
 		this.bar = bar;
 	}
 
-	int getStep() {
+	public int getStep() {
 		return step;
 	}
 
-	int getBeat() {
+	public int getBeat() {
 		return beat;
 	}
 
-	int getBar() {
+	public int getBar() {
 		return bar;
 	}
 

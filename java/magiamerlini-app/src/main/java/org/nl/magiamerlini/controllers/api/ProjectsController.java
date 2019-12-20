@@ -7,6 +7,12 @@ import org.nl.magiamerlini.components.mixer.items.Effect;
 import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
+import org.nl.magiamerlini.components.sequencer.items.Pattern;
+import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
+import org.nl.magiamerlini.components.sequencer.items.Sequence;
+import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
+import org.nl.magiamerlini.components.sequencer.items.Song;
+import org.nl.magiamerlini.components.sequencer.items.SongPart;
 import org.nl.magiamerlini.data.items.Project;
 
 /**
@@ -42,4 +48,16 @@ public interface ProjectsController {
 	public Effect getAudioEffect(int currentTrackIndex, int number);
 
 	public Effect getVideoEffect(int currentTrackIndex, int number);
+
+	public Pattern getPattern(int bank, int number);
+
+	public Sequence getSequence(int number);
+
+	public SequenceEvent getSequenceEvent(Sequence sequence, int patternNumber, int bar, int beat);
+
+	public PatternEvent getPatternEvent(Pattern pattern, int trackNumber, int bar, int beat, int tick);
+
+	public SongPart getSongPart(Song song, int number);
+
+	public Song getSong(int number);
 }

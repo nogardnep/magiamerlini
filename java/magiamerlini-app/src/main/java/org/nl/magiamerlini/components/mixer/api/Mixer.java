@@ -15,7 +15,7 @@ public interface Mixer extends Component {
 
 	public void setTrackMuted(MixerTrack mixerTrack, boolean state);
 
-	public void updateTrack(MixerTrack mixerTrack);
+	public void trackEdited(MixerTrack mixerTrack);
 
-	public void updateEffect(Effect effect);
+	public void effectEdited(Effect effect);
 }

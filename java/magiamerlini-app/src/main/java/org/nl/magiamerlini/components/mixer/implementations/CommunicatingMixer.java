@@ -52,7 +52,7 @@ public abstract class CommunicatingMixer extends CommunicatingComponent implemen
 	}
 
 	@Override
-	public void updateTrack(MixerTrack mixerTrack) {
+	public void trackEdited(MixerTrack mixerTrack) {
 		for (ParameterSnapshot parameter : mixerTrack.getParameters()) {
 			trackParameterEdited(mixerTrack, parameter);
 		}
@@ -61,7 +61,7 @@ public abstract class CommunicatingMixer extends CommunicatingComponent implemen
 	}
 
 	@Override
-	public void updateEffect(Effect effect) {
+	public void effectEdited(Effect effect) {
 		for (ParameterSnapshot parameter : effect.getParameters()) {
 			effectParameterEdited(effect, parameter);
 		}
@@ -76,7 +76,6 @@ public abstract class CommunicatingMixer extends CommunicatingComponent implemen
 				(effect.isActivated() ? "1" : "0") };
 		sendMessage(message);
 		updateDisplay();
-		
 	}
 	
 	private void trackMutedEdited(MixerTrack mixerTrack) {

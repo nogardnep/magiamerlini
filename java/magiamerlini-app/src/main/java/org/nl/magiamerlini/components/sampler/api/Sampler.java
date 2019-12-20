@@ -15,5 +15,5 @@ public interface Sampler extends Component {
 
 	public void trackStopped(SamplerTrack samplerTrack);
 	
-	public void updateTrack(SamplerTrack samplerTrack);
+	public void trackEdited(SamplerTrack samplerTrack);
 }

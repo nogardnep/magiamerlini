@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.nl.magiamerlini.components.sequencer.tools.TimeSignature;
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Alias;
 import org.nl.magiamerlini.data.tools.Parameter;
@@ -41,10 +42,6 @@ public class Sequence extends Item implements Serializable {
 	@Column(name = BPM_PARAMETER)
 	@Parameter(min = 20, max = 400, step = 1, defaultValue = 120)
 	private float bpm;
-
-	@Column(name = STEPS_PARAMETER)
-	@Parameter(min = 3, max = 8, step = 1, defaultValue = 4)
-	private float steps;
 
 	@Column(name = BEATS_PARAMETER)
 	@Parameter(min = 1, max = 8, step = 1, defaultValue = 4)
@@ -79,6 +76,10 @@ public class Sequence extends Item implements Serializable {
 		return "sequence_" + number;
 	}
 
+	public void addSequenceEvent(SequenceEvent sequenceEvent) {
+		sequenceEvents.add(sequenceEvent);
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -111,14 +112,6 @@ public class Sequence extends Item implements Serializable {
 		this.bpm = bpm;
 	}
 
-	public float getSteps() {
-		return steps;
-	}
-
-	public void setSteps(float steps) {
-		this.steps = steps;
-	}
-
 	public float getBeats() {
 		return beats;
 	}
@@ -141,6 +134,10 @@ public class Sequence extends Item implements Serializable {
 
 	public void setRepetitions(float repetitions) {
 		this.repetitions = repetitions;
+	}
+
+	public TimeSignature getTimeSignature() {
+		return new TimeSignature((int) bars, (int) beats, 0);
 	}
 
 }

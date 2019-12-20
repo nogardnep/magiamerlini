@@ -10,9 +10,16 @@ import org.nl.magiamerlini.components.mixer.items.AudioEffect;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
 import org.nl.magiamerlini.components.mixer.items.Effect;
 import org.nl.magiamerlini.components.mixer.items.VideoEffect;
+import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
+import org.nl.magiamerlini.components.sequencer.items.Pattern;
+import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
+import org.nl.magiamerlini.components.sequencer.items.Sequence;
+import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
+import org.nl.magiamerlini.components.sequencer.items.Song;
+import org.nl.magiamerlini.components.sequencer.items.SongPart;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.ButtonEvent;
 import org.nl.magiamerlini.components.ui.tools.ButtonName;
@@ -52,6 +59,7 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		int index;
 		int number;
 		Item item;
+		int newState;
 
 		if (!mainController.isLoadingProject()) {
 			if (mainController.getCurrentMode() == Mode.Project && last.equals(first)
@@ -137,38 +145,76 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					item = mainController.getItemCorrespondingTo(number);
 					switch (first.getSection()) {
 					case Padboard:
-						switch (mainController.getCurrentMode()) {
-						case AudioSampler:
-						case VideoSampler:
+						if (item instanceof Song) {
+
+						} else if (item instanceof SongPart) {
+
+						} else if (item instanceof Sequence) {
+
+						} else if (item instanceof Pattern) {
+
+						} else if (item instanceof SequenceEvent) {
+							if (((SequenceEvent) item).getState() == SequenceEvent.INACTIVE_STATE) {
+								newState = SequenceEvent.PLAY_STATE;
+							} else {
+								newState = SequenceEvent.PLAY_STATE;
+							}
+							mainController.getSequencer().setSequenceEventState((SequenceEvent) item, newState);
+						} else if (item instanceof PatternEvent) {
+							if (((PatternEvent) item).getState() == PatternEvent.INACTIVE_STATE) {
+								newState = PatternEvent.PLAY_STATE;
+							} else {
+								newState = PatternEvent.INACTIVE_STATE;
+							}
+							((PatternEvent) item).setVelocity(velocity);
+							mainController.getSequencer().setPatternEventState((PatternEvent) item, newState);
+						} else if (item instanceof AudioSamplerTrack || item instanceof VideoSamplerTrack) {
 							mainController.getSequencer().playTrack(((SamplerTrack) item).getBank(),
 									((SamplerTrack) item).getNumber(), velocity);
-							break;
-						default:
-							break;
+						} else if (item instanceof AudioMixerTrack) {
+
+						} else if (item instanceof VideoMixerTrack) {
+
+						} else if (item instanceof AudioEffect) {
+
+						} else if (item instanceof VideoEffect) {
+
 						}
 						break;
 					case Action:
-						if (mainController.getSelectionController().isSelecting()) {
-							if (item != null) {
+						switch (ButtonName.getCorrespondingToString(first.getName())) {
+						case Edit:
+						case Copy:
+						case Move:
+							if (mainController.getSelectionController().isSelecting() && item != null) {
 								logger.log(Level.ALL, "*** select ***");
 								mainController.getSelectionController().toggleSelected(item);
 							}
-						} else if (first.hasName(ButtonName.Special) && item instanceof AudioSamplerTrack) {
-							mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item,
-									!((AudioSamplerTrack) item).isArmed());
-						} else if (first.hasName(ButtonName.Special) && item instanceof AudioMixerTrack) {
-							mainController.getAudioMixer().setTrackMuted((AudioMixerTrack) item,
-									!((AudioMixerTrack) item).isMuted());
-						} else if (first.hasName(ButtonName.Special) && item instanceof AudioEffect) {
-							mainController.getAudioMixer().setEffectActivated((Effect) item,
-									!((Effect) item).isActivated());
-						} else if (first.hasName(ButtonName.Special) && item instanceof VideoEffect) {
-							mainController.getVideoMixer().setEffectActivated((Effect) item,
-									!((Effect) item).isActivated());
-						} else if (first.hasName(ButtonName.Load) && item instanceof AudioSamplerTrack) {
-							mainController.getFileExplorer().open(FileType.Sound, item);
-						} else if (first.hasName(ButtonName.Load) && item instanceof VideoSamplerTrack) {
-							mainController.getFileExplorer().open(FileType.Image, item);
+							break;
+						case Special:
+							if (item instanceof AudioSamplerTrack) {
+								mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item,
+										!((AudioSamplerTrack) item).isArmed());
+							} else if (item instanceof AudioMixerTrack) {
+								mainController.getAudioMixer().setTrackMuted((AudioMixerTrack) item,
+										!((AudioMixerTrack) item).isMuted());
+							} else if (item instanceof AudioEffect) {
+								mainController.getAudioMixer().setEffectActivated((Effect) item,
+										!((Effect) item).isActivated());
+							} else if (item instanceof VideoEffect) {
+								mainController.getVideoMixer().setEffectActivated((Effect) item,
+										!((Effect) item).isActivated());
+							}
+							break;
+						case Load:
+							if (item instanceof AudioSamplerTrack) {
+								mainController.getFileExplorer().open(FileType.Sound, item);
+							} else if (item instanceof VideoSamplerTrack) {
+								mainController.getFileExplorer().open(FileType.Image, item);
+							}
+							break;
+						default:
+							break;
 						}
 						break;
 					default:

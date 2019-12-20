@@ -16,7 +16,7 @@ import org.nl.magiamerlini.data.tools.Parameter;
 public class PatternEvent extends Item implements Serializable {
 	public final static int INACTIVE_STATE = 0;
 	public final static int PLAY_STATE = 1;
-	public final static int STOP_STATE = 1;
+	public final static int STOP_STATE = 2;
 	public static final String VELOCITY = "velocity";
 	public static final String DETUNE = "detune";
 	public static final String TRANSPOSE = "transpose";
@@ -29,14 +29,20 @@ public class PatternEvent extends Item implements Serializable {
 	@GeneratedValue
 	private int id;
 
-	@Column(name = "number")
-	private int number;
-
-	@Column(name = "bank")
-	private int bank;
-
 	@Column(name = "state")
 	private int state;
+	
+	@Column(name = "track_number")
+	private int trackNumber;
+	
+	@Column(name = "bar")
+	private int bar;
+	
+	@Column(name = "beat")
+	private int beat;
+	
+	@Column(name = "tick")
+	private int tick;
 
 	public PatternEvent() {
 		super();
@@ -66,21 +72,23 @@ public class PatternEvent extends Item implements Serializable {
 	@Parameter(min = 0, max = 100, step = 1, defaultValue = 0)
 	private float barsLength;
 
-	public PatternEvent(int bank, int number, int state) {
+	public PatternEvent(int trackNumber, int bar, int beat, int tick, int state) {
 		this();
-		this.bank = bank;
-		this.number = number;
+		this.trackNumber = trackNumber;
+		this.bar = bar;
+		this.beat= beat;
+		this.tick= tick;
 		this.state = state;
 	}
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + " [id=" + id + ", bank=" + bank + ", number=" + number + "]";
+		return this.getClass().getSimpleName() + " [id=" + id + ", track=" + trackNumber + ", bar=" + bar + ", beat=" + beat + ", tick=" + tick + "]";
 	}
 
 	@Override
 	public String toDisplay() {
-		return "pattern-event_" + bank + "-" + number;
+		return "pattern-event_" + trackNumber + "-" + bar + "-" + beat + "-" + tick;
 	}
 
 	public int getId() {
@@ -90,21 +98,38 @@ public class PatternEvent extends Item implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 
-	public int getNumber() {
-		return number;
+	public int getTrackNumber() {
+		return trackNumber;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setTrackNumber(int trackNumber) {
+		this.trackNumber = trackNumber;
 	}
 
-	public int getBank() {
-		return bank;
+	public int getBar() {
+		return bar;
 	}
 
-	public void setBank(int bank) {
-		this.bank = bank;
+	public void setBar(int bar) {
+		this.bar = bar;
+	}
+
+	public int getBeat() {
+		return beat;
+	}
+
+	public void setBeat(int beat) {
+		this.beat = beat;
+	}
+
+	public int getTick() {
+		return tick;
+	}
+
+	public void setTick(int tick) {
+		this.tick = tick;
 	}
 
 	public int getState() {
@@ -162,4 +187,6 @@ public class PatternEvent extends Item implements Serializable {
 	public void setBarsLength(float barsLength) {
 		this.barsLength = barsLength;
 	}
+	
+	
 }

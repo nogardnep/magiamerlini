@@ -1,18 +1,19 @@
 package org.nl.magiamerlini.components.sequencer.tools;
 
-import java.io.Serializable;
+import org.nl.magiamerlini.Configuration;
 
-class Position {
+public class Position {
 	private TimeSignature timeSignature;
 	private int tick;
 	private int bar;
 	private int beat;
-	private int currentTurn;
+	private int turn; // TODO: keep?
 	private int repetitions; // TODO: keep?
 
-	public Position(int bar, int beat, int tick) {
+	public Position(int bar, int beat, int tick, TimeSignature timeSignature) {
 		set(bar, beat, tick);
-		currentTurn = 0;
+		turn = 0;
+		setTimeSignature(timeSignature);
 	}
 
 	private void set(int bar, int beat, int tick) {
@@ -22,42 +23,44 @@ class Position {
 	}
 
 	public static Position copy(Position position) {
-		return new Position(position.getBar(), position.getBeat(), position.getTick());
+		return new Position(position.getBar(), position.getBeat(), position.getTick(), position.getTimeSignature());
 	}
 
 	public void move(int barProgression, int beatProgression, int tickProgression) {
 		// TODO: do not work moving backward
+		
+		int ticksByBeat  = Configuration.TicksByBeat.getValue();
+		
+		tickProgression += tick;
+		double beatToAdd = Math.ceil((((double) tickProgression) - (ticksByBeat - 1)) / ticksByBeat);
 
-//		tickProgression += tick;
-//		double beatToAdd = Math.ceil((((double) tickProgression) - (Player.TICK_BY_BEAT - 1)) / Player.TICK_BY_BEAT);
-//
-//		beatProgression += beat + ((int) beatToAdd);
-//		double barToAdd = Math
-//				.ceil((((double) beatProgression) - (timeSignature.getBeat() - 1)) / timeSignature.getBeat());
-//
-//		barProgression += bar + ((int) barToAdd);
-//		double turnToAdd = Math
-//				.ceil((((double) barProgression) - (timeSignature.getBar() - 1)) / timeSignature.getBar());
-//
-//		if (tickProgression >= 0) {
-//			tick = tickProgression % Player.TICK_BY_BEAT;
-//		} else {
-//			tick = (Player.TICK_BY_BEAT + tickProgression) % Player.TICK_BY_BEAT;
-//		}
-//
-//		if (beatProgression >= 0) {
-//			beat = beatProgression % timeSignature.getBeat();
-//		} else {
-//			beat = (timeSignature.getBeat() + beatProgression) % timeSignature.getBeat();
-//		}
-//
-//		if (barProgression >= 0) {
-//			bar = barProgression % timeSignature.getBar();
-//		} else {
-//			bar = (timeSignature.getBar() + barProgression) % timeSignature.getBar();
-//		}
-//
-//		currentTurn += turnToAdd;
+		beatProgression += beat + ((int) beatToAdd);
+		double barToAdd = Math
+				.ceil((((double) beatProgression) - (timeSignature.getBeat() - 1)) / timeSignature.getBeat());
+
+		barProgression += bar + ((int) barToAdd);
+		double turnToAdd = Math
+				.ceil((((double) barProgression) - (timeSignature.getBar() - 1)) / timeSignature.getBar());
+
+		if (tickProgression >= 0) {
+			tick = tickProgression % ticksByBeat;
+		} else {
+			tick = (ticksByBeat + tickProgression) % ticksByBeat;
+		}
+
+		if (beatProgression >= 0) {
+			beat = beatProgression % timeSignature.getBeat();
+		} else {
+			beat = (timeSignature.getBeat() + beatProgression) % timeSignature.getBeat();
+		}
+
+		if (barProgression >= 0) {
+			bar = barProgression % timeSignature.getBar();
+		} else {
+			bar = (timeSignature.getBar() + barProgression) % timeSignature.getBar();
+		}
+
+		turn += turnToAdd;
 	}
 
 	public void moveOnBeat(int numberToTravel) {
@@ -139,6 +142,10 @@ class Position {
 	public int getBar() {
 		return bar;
 	}
+	
+	public int getTurn() {
+		return turn;
+	}
 
 	public TimeSignature getTimeSignature() {
 		return timeSignature;
@@ -149,11 +156,11 @@ class Position {
 	}
 
 	public int getCurrentTurn() {
-		return currentTurn;
+		return turn;
 	}
 
 	public void restore() {
 		set(0, 0, 0);
-		currentTurn = 0;
+		turn = 0;
 	}
 }

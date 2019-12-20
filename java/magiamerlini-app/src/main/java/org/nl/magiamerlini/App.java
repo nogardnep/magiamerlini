@@ -22,6 +22,7 @@ import org.nl.magiamerlini.components.ui.implementations.BaseInputs;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingDisplay;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingFileExplorer;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingPadboard;
+import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.implementations.BaseMainController;
@@ -68,6 +69,7 @@ public class App {
 			videoSampler.setMainController(mainController);
 			audioMixer.setMainController(mainController);
 			videoMixer.setMainController(mainController);
+			sequencer.setMainController(mainController);
 			communication.setInputs(inputs);
 
 			logger.log(Level.INFO, "=======");
@@ -89,8 +91,11 @@ public class App {
 		logger.log(Level.INFO, "==== TESTS ====");
 		communication.testMessage(
 				"file_explorer action=load type=project path=C:/Users/Nicolas/magiamerlini-data/projects/W/project.mv.db");
-		inputs.selectorChanged(InputSection.Mode, Mode.AudioSampler.ordinal());
-//		inputs.buttonPressed(InputSection.Action, ButtonName.Special);
+		inputs.selectorChanged(InputSection.Mode, Mode.AudioEffects.ordinal());
+		inputs.buttonPressed(InputSection.Action, ButtonName.Edit);
+		inputs.padPressed(2, 1);
+		inputs.padLeaved(2);
+		inputs.buttonLeaved(InputSection.Action, ButtonName.Edit);
 //		inputs.padPressed(0, 1);
 //		inputs.padLeaved(0);
 ////		for (int i = 0; i < 5; i++) {
@@ -100,6 +105,8 @@ public class App {
 ////		inputs.padPressed(0, 1);
 ////		inputs.padLeaved(0);
 //		inputs.buttonLeaved(InputSection.Action, ButtonName.Special);
+		// inputs.buttonPressed(InputSection.Player, ButtonName.Play);
+		// inputs.buttonLeaved(InputSection.Player, ButtonName.Play);
 		logger.log(Level.INFO, "=======");
 	}
 }
