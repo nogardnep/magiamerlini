@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.utils.Logger;
 
 public class Server {

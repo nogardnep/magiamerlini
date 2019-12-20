@@ -2,33 +2,21 @@ package org.nl.magiamerlini;
 
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.api.Communication;
-import org.nl.magiamerlini.communication.implementations.CommunicationImpl;
-import org.nl.magiamerlini.components.mixer.api.AudioMixer;
-import org.nl.magiamerlini.components.mixer.api.VideoMixer;
-import org.nl.magiamerlini.components.mixer.implementations.CommunicatingAudioMixer;
-import org.nl.magiamerlini.components.mixer.implementations.CommunicatingVideoMixer;
-import org.nl.magiamerlini.components.sampler.api.AudioSampler;
-import org.nl.magiamerlini.components.sampler.api.VideoSampler;
-import org.nl.magiamerlini.components.sampler.implementations.CommunicatingAudioSampler;
-import org.nl.magiamerlini.components.sampler.implementations.CommunicatingVideoSampler;
-import org.nl.magiamerlini.components.sequencer.api.Sequencer;
-import org.nl.magiamerlini.components.sequencer.implementations.CommunicatingSequencer;
-import org.nl.magiamerlini.components.ui.api.Display;
-import org.nl.magiamerlini.components.ui.api.FileExplorer;
-import org.nl.magiamerlini.components.ui.api.Inputs;
-import org.nl.magiamerlini.components.ui.api.Padboard;
-import org.nl.magiamerlini.components.ui.implementations.BaseInputs;
-import org.nl.magiamerlini.components.ui.implementations.CommunicatingDisplay;
-import org.nl.magiamerlini.components.ui.implementations.CommunicatingFileExplorer;
-import org.nl.magiamerlini.components.ui.implementations.CommunicatingPadboard;
+import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.components.mixer.AudioMixer;
+import org.nl.magiamerlini.components.mixer.VideoMixer;
+import org.nl.magiamerlini.components.sampler.AudioSampler;
+import org.nl.magiamerlini.components.sampler.VideoSampler;
+import org.nl.magiamerlini.components.sequencer.Sequencer;
+import org.nl.magiamerlini.components.ui.Display;
+import org.nl.magiamerlini.components.ui.FileExplorer;
+import org.nl.magiamerlini.components.ui.Inputs;
+import org.nl.magiamerlini.components.ui.Padboard;
 import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.implementations.BaseMainController;
+import org.nl.magiamerlini.controllers.MainController;
 import org.nl.magiamerlini.controllers.tools.Mode;
-import org.nl.magiamerlini.data.api.DatabaseManager;
-import org.nl.magiamerlini.data.implementations.BaseDatabaseManager;
+import org.nl.magiamerlini.data.DatabaseManager;
 import org.nl.magiamerlini.utils.Logger;
 
 public class App {
@@ -46,20 +34,20 @@ public class App {
 		DatabaseManager databaseManager = null;
 
 		try {
-			communication = new CommunicationImpl();
-			databaseManager = new BaseDatabaseManager();
+			communication = new Communication();
+			databaseManager = new DatabaseManager();
 
-			AudioSampler audioSampler = new CommunicatingAudioSampler(communication);
-			AudioMixer audioMixer = new CommunicatingAudioMixer(communication);
-			VideoSampler videoSampler = new CommunicatingVideoSampler(communication);
-			VideoMixer videoMixer = new CommunicatingVideoMixer(communication);
-			Sequencer sequencer = new CommunicatingSequencer(communication);
-			Display display = new CommunicatingDisplay(communication);
-			Padboard padboard = new CommunicatingPadboard(communication);
-			FileExplorer fileExplorer = new CommunicatingFileExplorer(communication);
-			inputs = new BaseInputs();
+			AudioSampler audioSampler = new AudioSampler(communication);
+			AudioMixer audioMixer = new AudioMixer(communication);
+			VideoSampler videoSampler = new VideoSampler(communication);
+			VideoMixer videoMixer = new VideoMixer(communication);
+			Sequencer sequencer = new Sequencer(communication);
+			Display display = new Display(communication);
+			Padboard padboard = new Padboard(communication);
+			FileExplorer fileExplorer = new FileExplorer(communication);
+			inputs = new Inputs();
 
-			mainController = new BaseMainController(databaseManager, display, fileExplorer, padboard, sequencer,
+			mainController = new MainController(databaseManager, display, fileExplorer, padboard, sequencer,
 					audioSampler, audioMixer, videoSampler, videoMixer);
 
 			padboard.setMainController(mainController);
@@ -91,7 +79,7 @@ public class App {
 		logger.log(Level.INFO, "==== TESTS ====");
 		communication.testMessage(
 				"file_explorer action=load type=project path=C:/Users/Nicolas/magiamerlini-data/projects/W/project.mv.db");
-		inputs.selectorChanged(InputSection.Mode, Mode.AudioEffects.ordinal());
+		//inputs.selectorChanged(InputSection.Mode, Mode.AudioEffects.ordinal());
 		inputs.buttonPressed(InputSection.Action, ButtonName.Edit);
 		inputs.padPressed(2, 1);
 		inputs.padLeaved(2);

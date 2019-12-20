@@ -1,19 +1,18 @@
-package org.nl.magiamerlini.components.sequencer.implementations;
+package org.nl.magiamerlini.components.sequencer;
 
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.communication.api.Communication;
+import org.nl.magiamerlini.communication.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
-import org.nl.magiamerlini.components.sequencer.api.Sequencer;
 import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
 import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
 import org.nl.magiamerlini.components.sequencer.tools.Position;
 import org.nl.magiamerlini.components.sequencer.tools.TimeSignature;
 
-public class CommunicatingSequencer extends CommunicatingComponent implements Sequencer {
+public class Sequencer extends CommunicatingComponent  {
 
 	public static final int INITIAL_BPM = 120;
 
@@ -36,7 +35,7 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 	private TimeSignature masterTimeSignature;
 	private int masterBpm;
 
-	public CommunicatingSequencer(Communication communication) {
+	public Sequencer(Communication communication) {
 		super(communication, "sequencer");
 		this.masterBpm = INITIAL_BPM;
 		this.playing = false;
@@ -44,38 +43,32 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		this.masterPosition = new Position(0, 0, 0, masterTimeSignature);
 	}
 
-	@Override
 	public void play() {
 		sendBpm(); // TODO: remove
 		sendMessage(CLOCK + " " + PLAY);
 	}
 
-	@Override
 	public void pause() {
 		playing = false;
 		sendMessage(CLOCK + " " + PAUSE);
 	}
 
-	@Override
 	public void stop() {
 		pause();
 		masterPosition.restore();
 		updateDisplay();
 	}
 
-	@Override
 	public void moveForward() {
 		masterPosition.move(0, 1, 0);
 		updateDisplay();
 	}
 
-	@Override
 	public void moveBackward() {
 		masterPosition.move(0, -1, 0);
 		updateDisplay();
 	}
 
-	@Override
 	public void clockTicked() {
 		if (masterPosition.onBar()) {
 			sendMessage(METRONOME + " " + PLAY + " " + ON_BAR);
@@ -87,7 +80,6 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		updateDisplay();
 	}
 
-	@Override
 	public void sendBpm() {
 		String[] messageParts = { BPM, String.valueOf(masterBpm), TICKS_BY_BEAT,
 				String.valueOf(Configuration.TicksByBeat.getValue()) };
@@ -102,7 +94,6 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		mainController.getPadboard().updateDisplay();
 	}
 
-	@Override
 	public void playTrack(int bank, int number, float velocity) {
 		AudioSamplerTrack audioSamplerTrack = mainController.getProjectManager().getAudioSamplerTrack(bank, number);
 		VideoSamplerTrack videoSamplerTrack = mainController.getProjectManager().getVideoSamplerTrack(bank, number);
@@ -110,18 +101,15 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		mainController.getVideoSampler().playTrack(videoSamplerTrack, velocity);
 	}
 
-	@Override
 	public boolean isPlaying() {
 		return playing;
 	}
 
-	@Override
 	public void setSequenceEventState(SequenceEvent sequenceEvent, int state) {
 		sequenceEvent.setState(state);
 		mainController.getProjectManager().update(sequenceEvent);
 	}
 
-	@Override
 	public void setPatternEventState(PatternEvent patternEvent, int state) {
 		logger.log(Level.ALL ,"NEW STATE " + state);
 		patternEvent.setState(state);
@@ -129,7 +117,6 @@ public class CommunicatingSequencer extends CommunicatingComponent implements Se
 		updateDisplay();
 	}
 
-	@Override
 	public void setPatternEventVelocity(PatternEvent patternEvent, float velocity) {
 		patternEvent.setVelocity(velocity);
 		mainController.getProjectManager().update(patternEvent);

@@ -1,11 +1,11 @@
-package org.nl.magiamerlini.components.ui.implementations;
+package org.nl.magiamerlini.components.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.communication.api.Communication;
+import org.nl.magiamerlini.communication.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
 import org.nl.magiamerlini.components.mixer.items.Effect;
@@ -15,16 +15,15 @@ import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
 import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
-import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
-public class CommunicatingPadboard extends CommunicatingComponent implements Padboard {
+public class Padboard extends CommunicatingComponent  {
 	private List<Pad> pads;
 
-	public CommunicatingPadboard(Communication communication) {
+	public Padboard(Communication communication) {
 		super(communication, "pad");
 		pads = new ArrayList<Pad>();
 
@@ -34,7 +33,6 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 		}
 	}
 
-	@Override
 	public void updateDisplay() {
 		for (Pad pad : pads) {
 			pad.setLightColor(Color.Blue);
@@ -42,7 +40,6 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 		}
 	}
 
-	@Override
 	public void updateDisplay(int padNum) {
 		updateDisplay(pads.get(padNum));
 	}

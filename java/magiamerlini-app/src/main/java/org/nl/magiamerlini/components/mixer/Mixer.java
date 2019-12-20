@@ -1,36 +1,31 @@
-package org.nl.magiamerlini.components.mixer.implementations;
+package org.nl.magiamerlini.components.mixer;
 
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.api.Communication;
+import org.nl.magiamerlini.communication.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
-import org.nl.magiamerlini.components.mixer.api.Mixer;
-import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
 import org.nl.magiamerlini.components.mixer.items.Effect;
 import org.nl.magiamerlini.components.mixer.items.MixerTrack;
-import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 import com.google.common.base.CaseFormat;
 
-public abstract class CommunicatingMixer extends CommunicatingComponent implements Mixer {
+public abstract class Mixer extends CommunicatingComponent  {
 	private final static String EDIT_PARAMETER = "edit_parameter";
 	private final static String ACTIVATED = "activated";
 	private final static String MUTED = "muted";
 	private final static String EFFECT = "effect";
 
-	public CommunicatingMixer(Communication communication, String name) {
+	public Mixer(Communication communication, String name) {
 		super(communication, name);
 	}
 
-	@Override
 	public void trackParameterEdited(MixerTrack mixerTrack, ParameterSnapshot parameter) {
 		String[] message = { getIdentifierFor(mixerTrack), EDIT_PARAMETER, parameter.getName(),
 				parameter.getDisplayedValue() };
 		sendMessage(message);
 	}
 
-	@Override
 	public void effectParameterEdited(Effect effect, ParameterSnapshot parameter) {
 		MixerTrack mixerTrack = effect.getMixerTrack();
 		logger.log(Level.ALL, mixerTrack);
@@ -39,19 +34,16 @@ public abstract class CommunicatingMixer extends CommunicatingComponent implemen
 		sendMessage(message);
 	}
 
-	@Override
 	public void setEffectActivated(Effect effect, boolean state) {
 		effect.setActivated(state);
 		effectActivatedEdited(effect);
 	}
 
-	@Override
 	public void setTrackMuted(MixerTrack mixerTrack, boolean state) {
 		mixerTrack.setMuted(state);
 		trackMutedEdited(mixerTrack);
 	}
 
-	@Override
 	public void trackEdited(MixerTrack mixerTrack) {
 		for (ParameterSnapshot parameter : mixerTrack.getParameters()) {
 			trackParameterEdited(mixerTrack, parameter);
@@ -60,7 +52,6 @@ public abstract class CommunicatingMixer extends CommunicatingComponent implemen
 		trackMutedEdited(mixerTrack);
 	}
 
-	@Override
 	public void effectEdited(Effect effect) {
 		for (ParameterSnapshot parameter : effect.getParameters()) {
 			effectParameterEdited(effect, parameter);

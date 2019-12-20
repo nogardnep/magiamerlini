@@ -1,29 +1,24 @@
-package org.nl.magiamerlini.controllers.implementations;
+package org.nl.magiamerlini.controllers;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.components.mixer.api.AudioMixer;
-import org.nl.magiamerlini.components.mixer.api.VideoMixer;
-import org.nl.magiamerlini.components.sampler.api.AudioSampler;
-import org.nl.magiamerlini.components.sampler.api.VideoSampler;
-import org.nl.magiamerlini.components.sequencer.api.Sequencer;
+import org.nl.magiamerlini.components.mixer.AudioMixer;
+import org.nl.magiamerlini.components.mixer.VideoMixer;
+import org.nl.magiamerlini.components.sampler.AudioSampler;
+import org.nl.magiamerlini.components.sampler.VideoSampler;
+import org.nl.magiamerlini.components.sequencer.Sequencer;
 import org.nl.magiamerlini.components.sequencer.items.Pattern;
 import org.nl.magiamerlini.components.sequencer.items.Sequence;
 import org.nl.magiamerlini.components.sequencer.items.Song;
 import org.nl.magiamerlini.components.sequencer.tools.TimeSignature;
-import org.nl.magiamerlini.components.ui.api.Display;
-import org.nl.magiamerlini.components.ui.api.FileExplorer;
-import org.nl.magiamerlini.components.ui.api.Padboard;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.api.PlayerController;
-import org.nl.magiamerlini.controllers.api.PresetController;
-import org.nl.magiamerlini.controllers.api.ProjectsController;
-import org.nl.magiamerlini.controllers.api.SelectionController;
+import org.nl.magiamerlini.components.ui.Display;
+import org.nl.magiamerlini.components.ui.FileExplorer;
+import org.nl.magiamerlini.components.ui.Padboard;
 import org.nl.magiamerlini.controllers.tools.Mode;
-import org.nl.magiamerlini.data.api.DatabaseManager;
+import org.nl.magiamerlini.data.DatabaseManager;
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.utils.Logger;
 
-public class BaseMainController implements MainController {
+public class MainController {
 	private SelectionController selectionController;
 	private PresetController presetController;
 	private ProjectsController projectsController;
@@ -49,15 +44,15 @@ public class BaseMainController implements MainController {
 	private int currentSequenceIndex;
 	private int currentPageIndex;
 
-	public BaseMainController(DatabaseManager databaseManager, Display display, FileExplorer fileExplorer,
+	public MainController(DatabaseManager databaseManager, Display display, FileExplorer fileExplorer,
 			Padboard padboard, Sequencer sequencer, AudioSampler audioSampler, AudioMixer audioMixer,
 			VideoSampler videoSampler, VideoMixer videoMixer) {
 		this.logger = new Logger(this.getClass().getSimpleName(), true);
 
-		this.selectionController = new BaseSelectionController(this);
-		this.presetController = new BasePresetController(this);
-		this.playerController = new BasePlayerController(this);
-		this.projectsController = new BaseProjectsController(this, databaseManager);
+		this.selectionController = new SelectionController(this);
+		this.presetController = new PresetController(this);
+		this.playerController = new PlayerController(this);
+		this.projectsController = new ProjectsController(this, databaseManager);
 		this.display = display;
 		this.padboard = padboard;
 		this.fileExplorer = fileExplorer;
@@ -76,7 +71,6 @@ public class BaseMainController implements MainController {
 		currentPageIndex = 0;
 	}
 
-	@Override
 	public Item getItemCorrespondingTo(int number) {
 		Item item = null;
 		Pattern pattern;
@@ -183,7 +177,6 @@ public class BaseMainController implements MainController {
 		return item;
 	}
 
-	@Override
 	public void updateDisplay() {
 		display.displayLoading();
 		display.displayProject();
@@ -194,12 +187,10 @@ public class BaseMainController implements MainController {
 		padboard.updateDisplay();
 	}
 
-	@Override
 	public boolean inMode(Mode mode) {
 		return currentMode.equals(mode);
 	}
 
-	@Override
 	public void loadProject(String path) {
 		loadingProject = true;
 		display.displayLoading();
@@ -208,7 +199,6 @@ public class BaseMainController implements MainController {
 		updateDisplay();
 	}
 
-	@Override
 	public void createProject(String name, String path) {
 		loadingProject = true;
 		display.displayLoading();
@@ -217,52 +207,42 @@ public class BaseMainController implements MainController {
 		updateDisplay();
 	}
 
-	@Override
 	public AudioSampler getAudioSampler() {
 		return audioSampler;
 	}
 
-	@Override
 	public Display getDisplay() {
 		return display;
 	}
 
-	@Override
 	public AudioMixer getAudioMixer() {
 		return audioMixer;
 	}
 
-	@Override
 	public Sequencer getSequencer() {
 		return sequencer;
 	}
 
-	@Override
 	public SelectionController getSelectionController() {
 		return selectionController;
 	}
 
-	@Override
 	public ProjectsController getProjectManager() {
 		return projectsController;
 	}
 
-	@Override
 	public Padboard getPadboard() {
 		return padboard;
 	}
 
-	@Override
 	public FileExplorer getFileExplorer() {
 		return fileExplorer;
 	}
 
-	@Override
 	public boolean isLoadingProject() {
 		return loadingProject;
 	}
 
-	@Override
 	public void changeMode(Mode mode) {
 		this.currentModeIndex = mode.getIndex();
 		this.currentMode = mode;
@@ -275,7 +255,6 @@ public class BaseMainController implements MainController {
 		updateDisplay();
 	}
 
-	@Override
 	public void changeMode(int index) {
 		Mode mode = Mode.getCorrespondingMode(index);
 
@@ -284,22 +263,18 @@ public class BaseMainController implements MainController {
 		}
 	}
 
-	@Override
 	public Mode getCurrentMode() {
 		return currentMode;
 	}
 
-	@Override
 	public int getCurrentModeIndex() {
 		return currentModeIndex;
 	}
 
-	@Override
 	public int getCurrentBankIndex() {
 		return currentBankIndex;
 	}
 
-	@Override
 	public void changeBank(int value) {
 		if (value < Configuration.Banks.getValue()) {
 			if (value != this.currentBankIndex) {
@@ -313,36 +288,30 @@ public class BaseMainController implements MainController {
 		updateDisplay();
 	}
 
-	@Override
 	public int getCurrentPatternIndex() {
 		return currentPatternIndex;
 	}
 
-	@Override
 	public void changePattern(int selectedPattern) {
 		this.currentPatternIndex = selectedPattern;
 		currentStateChanged();
 		updateDisplay();
 	}
 
-	@Override
 	public int getCurrentTrackIndex() {
 		return currentTrackIndex;
 	}
 
-	@Override
 	public void changeTrack(int selectedTrack) {
 		this.currentTrackIndex = selectedTrack;
 		currentStateChanged();
 		updateDisplay();
 	}
 
-	@Override
 	public int getCurrentSequenceIndex() {
 		return currentSequenceIndex;
 	}
 
-	@Override
 	public void changeSequence(int selectedSequence) {
 		this.currentSequenceIndex = selectedSequence;
 		display.displaySelection();
@@ -350,39 +319,32 @@ public class BaseMainController implements MainController {
 		updateDisplay();
 	}
 
-	@Override
 	public int getCurrentPageIndex() {
 		return currentPageIndex;
 	}
 
-	@Override
 	public void changePage(int selectedPage) {
 		this.currentPageIndex = selectedPage;
 		currentStateChanged();
 		updateDisplay();
 	}
 
-	@Override
 	public boolean isReady() {
 		return projectsController.getCurrentProject() != null && !loadingProject;
 	}
 
-	@Override
 	public VideoSampler getVideoSampler() {
 		return videoSampler;
 	}
 
-	@Override
 	public VideoMixer getVideoMixer() {
 		return videoMixer;
 	}
 
-	@Override
 	public PresetController getPresetController() {
 		return presetController;
 	}
 
-	@Override
 	public PlayerController getPlayerController() {
 		return playerController;
 	}

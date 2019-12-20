@@ -1,24 +1,16 @@
-package org.nl.magiamerlini.components.ui.implementations;
+package org.nl.magiamerlini.components.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
-import org.nl.magiamerlini.communication.api.Communication;
+import org.nl.magiamerlini.communication.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
-import org.nl.magiamerlini.components.ui.api.Display;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
-public class CommunicatingDisplay extends CommunicatingComponent implements Display {
+public class Display extends CommunicatingComponent {
 	private final static String EMPTY = "----";
 
-	public CommunicatingDisplay(Communication communication) {
+	public Display(Communication communication) {
 		super(communication, "display");
 	}
 
-	@Override
 	public void displayProject() {
 		String name;
 
@@ -31,12 +23,10 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 		sendMessage("project_name " + name);
 	}
 
-	@Override
 	public void displayProjects() {
 		// TODO
 	}
 
-	@Override
 	public void displaySelectedParameter() {
 		ParameterSnapshot parameter = mainController.getSelectionController().getEditingParameter();
 		String index = String.valueOf(mainController.getSelectionController().getEditingParameterIndex() + 1);
@@ -46,7 +36,6 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 		sendMessage("parameter " + index + "." + name + "=" + value);
 	}
 
-	@Override
 	public void displaySelectedItem() {
 		String name;
 		int number = mainController.getSelectionController().getSelectedItems().size();
@@ -64,7 +53,6 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 		sendMessage("selected_item " + name);
 	}
 
-	@Override
 	public void displaySelection() {
 		String informationsString;
 
@@ -81,33 +69,27 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 		sendMessage("selection " + informationsString);
 	}
 
-	@Override
 	public void displayPlayingInformations() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void displayPosition() {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void dipslayMasterSignature() {
 		// TODO
 	}
 
-	@Override
 	public void displaySamples() {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void displayLoading() {
 		sendMessage("loading " + (mainController.isReady() ? "started" : "ended"));
 	}
 
-	@Override
 	public void displayMode() {
 		sendMessage("mode_name " + mainController.getCurrentMode().getName());
 	}

@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.controllers.implementations;
+package org.nl.magiamerlini.controllers;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,29 +24,26 @@ import org.nl.magiamerlini.components.sequencer.items.Sequence;
 import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
 import org.nl.magiamerlini.components.sequencer.items.Song;
 import org.nl.magiamerlini.components.sequencer.items.SongPart;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.api.ProjectsController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
-import org.nl.magiamerlini.data.api.DatabaseManager;
+import org.nl.magiamerlini.data.DatabaseManager;
 import org.nl.magiamerlini.data.items.Project;
 import org.nl.magiamerlini.utils.EffectsUtils;
 import org.nl.magiamerlini.utils.FileSystemUtils;
 import org.nl.magiamerlini.utils.Logger;
 
-public class BaseProjectsController extends BaseController implements ProjectsController {
+public class ProjectsController extends BaseController {
 	private Project currentProject;
 	private DatabaseManager databaseManager;
 	public final static String DB_FILE_NAME = "project";
 	public final static String DB_FILE_EXTENSION = "mv.db";
 	private Logger logger;
 
-	public BaseProjectsController(MainController mainController, DatabaseManager databaseManager) {
+	public ProjectsController(MainController mainController, DatabaseManager databaseManager) {
 		super(mainController);
 		logger = new Logger(this.getClass().getSimpleName(), true);
 		this.databaseManager = databaseManager;
 	}
 
-	@Override
 	public void loadProject(String path) {
 		databaseManager.connectTo(path);
 		ArrayList<Object> projectsInDatabase = databaseManager.getEntities("FROM " + Project.class.getSimpleName());
@@ -59,12 +56,10 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		}
 	}
 
-	@Override
 	public void createProject(String name) {
 		createProject(name, "");
 	}
 
-	@Override
 	public void createProject(String name, String path) {
 		if (name != "") {
 			databaseManager.connectTo(makeDbPath(name, path));
@@ -89,7 +84,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		}
 	}
 
-	@Override
 	public void update(Object entity) {
 		logger.log(Level.INFO, "-- update entity --");
 		logger.log(Level.INFO, "- " + entity);
@@ -104,8 +98,7 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		session.close();
 	}
 
-	@Override
-	public void persist(Object entity) {
+		public void persist(Object entity) {
 		logger.log(Level.INFO, "-- persist entity --");
 		logger.log(Level.INFO, "- " + entity);
 
@@ -145,7 +138,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		}
 	}
 
-	@Override
 	public ArrayList<Project> getProjects() {
 		// TODO: explore data folder to find all db files
 
@@ -167,7 +159,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return null;
 	}
 
-	@Override
 	public void deleteCurrentProject() {
 		logger.log(Level.INFO, "-- delete project --");
 		Project project = currentProject;
@@ -176,7 +167,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		FileSystemUtils.deleteDirectory(pathToProjectFolder.toFile());
 	}
 
-	@Override
 	public Project getCurrentProject() {
 		return currentProject;
 	}
@@ -191,7 +181,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return dbPath;
 	}
 
-	@Override
 	public AudioSamplerTrack getAudioSamplerTrack(int bank, int number) {
 		AudioSamplerTrack audioSamplerTrack = null;
 
@@ -213,7 +202,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return audioSamplerTrack;
 	}
 
-	@Override
 	public VideoSamplerTrack getVideoSamplerTrack(int bank, int number) {
 		VideoSamplerTrack videoSamplerTrack = null;
 
@@ -235,7 +223,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return videoSamplerTrack;
 	}
 
-	@Override
 	public AudioMixerTrack getAudioMixerTrack(int number) {
 		AudioMixerTrack audioMixerTrack = null;
 
@@ -257,8 +244,7 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return audioMixerTrack;
 	}
 
-	@Override
-	public VideoMixerTrack getVideoMixerTrack(int number) {
+		public VideoMixerTrack getVideoMixerTrack(int number) {
 		VideoMixerTrack videoMixerTrack = null;
 
 		for (VideoMixerTrack element : currentProject.getVideoMixerTracks()) {
@@ -279,13 +265,11 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return videoMixerTrack;
 	}
 
-	@Override
 	public Effect getAudioEffect(int track, int number) {
 		Class<?> type = EffectsUtils.getAudioEffectTypeCorrespondingTo(number);
 		return getEffect(getAudioMixerTrack(track), number, type);
 	}
 
-	@Override
 	public Effect getVideoEffect(int track, int number) {
 		Class<?> type = EffectsUtils.getVideoEffectTypeCorrespondingTo(number);
 		return getEffect(getVideoMixerTrack(track), number, type);
@@ -316,7 +300,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return effect;
 	}
 
-	@Override
 	public Pattern getPattern(int bank, int number) {
 		Pattern pattern = null;
 
@@ -337,7 +320,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return pattern;
 	}
 
-	@Override
 	public Sequence getSequence(int number) {
 		Sequence sequence = null;
 
@@ -358,7 +340,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return sequence;
 	}
 
-	@Override
 	public PatternEvent getPatternEvent(Pattern pattern, int trackNumber, int bar, int beat, int tick) {
 		PatternEvent patternEvent = null;
 
@@ -380,7 +361,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return patternEvent;
 	}
 
-	@Override
 	public SequenceEvent getSequenceEvent(Sequence sequence, int patternNumber, int bar, int beat) {
 		SequenceEvent sequenceEvent = null;
 
@@ -401,7 +381,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return sequenceEvent;
 	}
 
-	@Override
 	public SongPart getSongPart(Song song, int number) {
 		SongPart songPart = null;
 
@@ -422,7 +401,6 @@ public class BaseProjectsController extends BaseController implements ProjectsCo
 		return songPart;
 	}
 
-	@Override
 	public Song getSong(int number) {
 		Song song = null;
 

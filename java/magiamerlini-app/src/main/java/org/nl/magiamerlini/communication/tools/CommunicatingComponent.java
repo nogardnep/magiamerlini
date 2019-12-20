@@ -2,7 +2,7 @@ package org.nl.magiamerlini.communication.tools;
 
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.api.Communication;
+import org.nl.magiamerlini.communication.Communication;
 import org.nl.magiamerlini.components.BaseComponent;
 
 public abstract class CommunicatingComponent extends BaseComponent {

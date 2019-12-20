@@ -1,50 +1,42 @@
-package org.nl.magiamerlini.controllers.implementations;
+package org.nl.magiamerlini.controllers;
 
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.api.PlayerController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
 
 // TODO: delete?
-public class BasePlayerController extends BaseController implements PlayerController {
-	public BasePlayerController(MainController mainController) {
+public class PlayerController extends BaseController {
+	public PlayerController(MainController mainController) {
 		super(mainController);
 	}
 
-	@Override
 	public void moveForward() {
 		// TODO
 		logger.log(Level.INFO, "moveForward");
 	}
 
-	@Override
 	public void moveBackward() {
 		// TODO
 		logger.log(Level.INFO, "moveBackward");
 	}
 
-	@Override
 	public void play() {
 		logger.log(Level.INFO, "play");
 	}
 
-	@Override
 	public void pause() {
 		// TODO
 		logger.log(Level.INFO, "pause");
 
 	}
 
-	@Override
 	public void stop() {
 		// TODO
 		logger.log(Level.INFO, "stop");
 	}
 
-	@Override
 	public void playTrack(int bank, int number, float velocity) {
 		AudioSamplerTrack audioSamplerTrack = mainController.getProjectManager().getAudioSamplerTrack(bank, number);
 		VideoSamplerTrack videoSamplerTrack = mainController.getProjectManager().getVideoSamplerTrack(bank, number);

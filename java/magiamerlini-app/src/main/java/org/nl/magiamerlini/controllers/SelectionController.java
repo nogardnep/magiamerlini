@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.controllers.implementations;
+package org.nl.magiamerlini.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,24 +7,21 @@ import java.util.logging.Level;
 import org.nl.magiamerlini.Configuration;
 import org.nl.magiamerlini.components.mixer.items.AudioEffect;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
-import org.nl.magiamerlini.components.mixer.items.MixerTrack;
 import org.nl.magiamerlini.components.mixer.items.VideoEffect;
 import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.api.SelectionController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
-public class BaseSelectionController extends BaseController implements SelectionController {
+public class SelectionController extends BaseController {
 	MainController mainController;
 	List<Item> selectedItems;
 	int editingParameterIndex;
 	boolean selecting;
 
-	public BaseSelectionController(MainController mainController) {
+	public SelectionController(MainController mainController) {
 		super(mainController);
 
 		selectedItems = new ArrayList<Item>();
@@ -33,7 +30,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		selecting = false;
 	}
 
-	@Override
 	public void emptySelectedItems() {
 		selectedItems.clear();
 		selectDefaultSelectedItem();
@@ -46,7 +42,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		updateDisplay();
 	}
 
-	@Override
 	public void applyParameter(ParameterSnapshot parameter) {
 		for (Item item : selectedItems) {
 			item.applyParameter(parameter);
@@ -69,7 +64,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		updateDisplay();
 	}
 
-	@Override
 	public boolean toggleSelected(Item item) {
 		boolean selected;
 
@@ -92,7 +86,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		return selected;
 	}
 
-	@Override
 	public void setEditingParameterIndex(int newIndex) {
 		if (newIndex < 0) {
 			newIndex = Configuration.Parameters.getValue() - 1;
@@ -104,7 +97,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		updateDisplay();
 	}
 
-	@Override
 	public void modifyEditingParameterValue(float factor) {
 		ParameterSnapshot parameter = getEditingParameter();
 
@@ -116,20 +108,17 @@ public class BaseSelectionController extends BaseController implements Selection
 		updateDisplay();
 	}
 
-	@Override
 	public void modifyEditingParameterIndex(int factor) {
 		setEditingParameterIndex(editingParameterIndex + factor);
 		updateDisplay();
 	}
 
-	@Override
 	public void setSelecting(boolean selecting) {
 		//emptySelectedItems(); // TODO: remove
 		this.selecting = selecting;
 		updateDisplay();
 	}
 
-	@Override
 	public void applySwapping() {
 		// TODO: swapping for more than 2 items
 		// TODO: swap toggether video and audio
@@ -156,7 +145,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		}
 	}
 
-	@Override
 	public void applyCopying() {
 		// TODO
 		updateDisplay();
@@ -177,17 +165,14 @@ public class BaseSelectionController extends BaseController implements Selection
 		updateDisplay();
 	}
 
-	@Override
 	public boolean isSelected(Item item) {
 		return selectedItems.contains(item);
 	}
 
-	@Override
 	public int getEditingParameterIndex() {
 		return editingParameterIndex;
 	}
 
-	@Override
 	public boolean isFirstSelected(Item item) {
 		boolean firstSelected = false;
 
@@ -198,7 +183,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		return firstSelected;
 	}
 
-	@Override
 	public Item getFirstSelectedItem() {
 		Item found = null;
 
@@ -209,12 +193,10 @@ public class BaseSelectionController extends BaseController implements Selection
 		return found;
 	}
 
-	@Override
 	public List<Item> getSelectedItems() {
 		return selectedItems;
 	}
 
-	@Override
 	public ParameterSnapshot getEditingParameter() {
 		ParameterSnapshot parameter = null;
 
@@ -231,7 +213,6 @@ public class BaseSelectionController extends BaseController implements Selection
 		return parameter;
 	}
 
-	@Override
 	public boolean isSelecting() {
 		return selecting;
 	}

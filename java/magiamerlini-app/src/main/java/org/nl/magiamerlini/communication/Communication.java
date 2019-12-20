@@ -1,19 +1,15 @@
-package org.nl.magiamerlini.communication.implementations;
+package org.nl.magiamerlini.communication;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import org.nl.magiamerlini.App;
-import org.nl.magiamerlini.communication.Server;
-import org.nl.magiamerlini.communication.api.Communication;
-import org.nl.magiamerlini.components.ui.api.Inputs;
+import org.nl.magiamerlini.components.ui.Inputs;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
-import org.nl.magiamerlini.controllers.api.MainController;
-import org.nl.magiamerlini.controllers.implementations.BaseProjectsController;
+import org.nl.magiamerlini.controllers.ProjectsController;
 import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.utils.Logger;
 
-public class CommunicationImpl implements Communication {
+public class Communication  {
 	private final static String PRESSED = "pressed";
 	private final static String LEAVED = "leaved";
 	private final static String ACTION = "action";
@@ -43,17 +39,15 @@ public class CommunicationImpl implements Communication {
 
 	private Logger logger;
 
-	public CommunicationImpl() {
+	public Communication() {
 		this.logger = new Logger(this.getClass().getSimpleName(), true);
 		this.server = new Server();
 	}
 
-	@Override
 	public void connect(int port, boolean displayMessages) {
 		server.connect(this, port, displayMessages);
 	}
 
-	@Override
 	public void testMessage(String message) {
 		receiveMessage(message);
 	}
@@ -79,7 +73,6 @@ public class CommunicationImpl implements Communication {
 		return args;
 	}
 
-	@Override
 	public void receiveMessage(String message) {
 		String[] messageParts = message.replace(";", "").split(" ");
 		String component = messageParts[0];
@@ -150,7 +143,7 @@ public class CommunicationImpl implements Communication {
 				if (path != null && !path.equals("")) {
 					// TODO: ugly
 					String rootPath = App.ROOT_DIR_FOR_FILES + "/" + type.getPath() + "/";
-					String fileExtension = "." + BaseProjectsController.DB_FILE_EXTENSION;
+					String fileExtension = "." + ProjectsController.DB_FILE_EXTENSION;
 					System.out.println(fileExtension);
 					System.out.println(path);
 					path = path.replace(rootPath, "");
@@ -183,12 +176,10 @@ public class CommunicationImpl implements Communication {
 		}
 	}
 
-	@Override
 	public void sendMessage(String message) {
 		server.sendResponse(message);
 	}
 
-	@Override
 	public void setInputs(Inputs inputs) {
 		this.inputs = inputs;
 	}

@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.components.ui.implementations;
+package org.nl.magiamerlini.components.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +20,6 @@ import org.nl.magiamerlini.components.sequencer.items.Sequence;
 import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
 import org.nl.magiamerlini.components.sequencer.items.Song;
 import org.nl.magiamerlini.components.sequencer.items.SongPart;
-import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.ButtonEvent;
 import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
@@ -29,27 +28,24 @@ import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
-public class BaseInputs extends BaseComponent implements Inputs {
+public class Inputs extends BaseComponent {
 	private final static boolean EMPTY_SELECTED_ITEMS_ON_LEAVING_EDIT_BUTTON = false;
 	public List<ButtonEvent> queue;
 
-	public BaseInputs() {
+	public Inputs() {
 		queue = new ArrayList<ButtonEvent>();
 	}
 
-	@Override
 	public void buttonPressed(InputSection section, String name) {
 		buttonPressed(section, name, ButtonEvent.MAX_VELOCITY);
 	}
 
-	@Override
 	public void buttonPressed(InputSection section, ButtonName buttonName) {
 		String stringName = EnumUtils.getCorrespondingString(buttonName.name());
 
 		buttonPressed(section, stringName, ButtonEvent.MAX_VELOCITY);
 	}
 
-	@Override
 	public void buttonPressed(InputSection section, String name, float velocity) {
 		logger.log(Level.INFO, "buttonPressed -----------");
 		addToQueue(new ButtonEvent(name, section, velocity));
@@ -293,13 +289,11 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		}
 	}
 
-	@Override
 	public void buttonLeaved(InputSection section, ButtonName buttonName) {
 		String stringName = EnumUtils.getCorrespondingString(buttonName.name());
 		buttonLeaved(section, stringName);
 	}
 
-	@Override
 	public void buttonLeaved(InputSection section, String name) {
 		logger.log(Level.INFO, "buttonLeaved -----------");
 		ButtonEvent button = new ButtonEvent(name, section);
@@ -346,17 +340,14 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		removeFromQueue(button);
 	}
 
-	@Override
 	public void padPressed(int number, float velocity) {
 		buttonPressed(InputSection.Padboard, String.valueOf(number), velocity);
 	}
 
-	@Override
 	public void padLeaved(int number) {
 		buttonLeaved(InputSection.Padboard, String.valueOf(number));
 	}
 
-	@Override
 	public void wheelChanged(InputSection section, int value) {
 		if (value < 0) {
 			buttonPressed(section, ButtonName.Down);
@@ -365,17 +356,14 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		}
 	}
 
-	@Override
 	public void switchPressed(InputSection section) {
 
 	}
 
-	@Override
 	public void switchLeaved(InputSection section) {
 
 	}
 
-	@Override
 	public void fileCreated(FileType type, String name, String path) {
 		// TODO: why? if (mainController.isReady()) {
 		switch (type) {
@@ -394,7 +382,6 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		// TODO: }
 	}
 
-	@Override
 	public void fileLoaded(FileType type, String path) {
 		Item item;
 		logger.log(Level.FINE, "fileLoaded " + path);
@@ -423,17 +410,14 @@ public class BaseInputs extends BaseComponent implements Inputs {
 	}
 
 	// TODO: Move
-	@Override
 	public void clockTicked() {
 		mainController.getSequencer().clockTicked();
 	}
 
-	@Override
 	public void switchChanged(InputSection section, int value) {
 		// TODO
 	}
 
-	@Override
 	public void selectorChanged(InputSection section, int value) {
 		switch (section) {
 		case Mode:
@@ -462,7 +446,6 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		}
 	}
 
-	@Override
 	public void networkConnected() {
 		mainController.updateDisplay();
 	}

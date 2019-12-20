@@ -1,6 +1,6 @@
 package org.nl.magiamerlini.controllers.tools;
 
-import org.nl.magiamerlini.controllers.api.MainController;
+import org.nl.magiamerlini.controllers.MainController;
 import org.nl.magiamerlini.utils.Logger;
 
 public class BaseController {

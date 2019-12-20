@@ -1,9 +1,9 @@
 package org.nl.magiamerlini.components;
 
-import org.nl.magiamerlini.controllers.api.MainController;
+import org.nl.magiamerlini.controllers.MainController;
 import org.nl.magiamerlini.utils.Logger;
 
-public abstract class BaseComponent implements Component {
+public abstract class BaseComponent  {
 	protected MainController mainController;
 	protected Logger logger;
 

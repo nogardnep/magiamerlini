@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.data.implementations;
+package org.nl.magiamerlini.data;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,22 +13,20 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.nl.magiamerlini.data.api.DatabaseManager;
 import org.nl.magiamerlini.utils.Logger;
 
-public class BaseDatabaseManager implements DatabaseManager {
+public class DatabaseManager {
 	private static SessionFactory sessionFactory;
 	private static StandardServiceRegistry registry;
 	private static Configuration configuration;
 	private static Connection connection;
 	private Logger logger;
 
-	public BaseDatabaseManager() {
+	public DatabaseManager() {
 		logger = new Logger(this.getClass().getSimpleName(), true);
 		initConfiguration();
 	}
 
-	@Override
 	public void connectTo(String dbPath) {
 		String options = "";
 
@@ -45,7 +43,6 @@ public class BaseDatabaseManager implements DatabaseManager {
 		}
 	}
 
-	@Override
 	public void shutdown() {
 		logger.log(Level.INFO, "SHUTDOWN");
 
@@ -68,18 +65,15 @@ public class BaseDatabaseManager implements DatabaseManager {
 		}
 	}
 
-	@Override
 	public String getRootDirectory() {
 		return configuration.getProperty("root_directory");
 	}
 
-	@Override
 	public String getConnectionURL() {
 		return configuration.getProperty("hibernate.connection.url");
 	}
 
 	// TODO: delete?
-	@Override
 	public void saveEntity(Object entity) {
 		List<Object> list = new ArrayList<Object>();
 		list.add(entity);
@@ -87,7 +81,6 @@ public class BaseDatabaseManager implements DatabaseManager {
 	}
 
 	// TODO: delete?
-	@Override
 	public void saveEntities(List<Object> entities) {
 		Session session = sessionFactory.openSession();
 
@@ -115,7 +108,6 @@ public class BaseDatabaseManager implements DatabaseManager {
 	}
 
 	// TODO: delete?
-	@Override
 	public ArrayList<Object> getEntities(String hql) {
 		List<Object> objects = new ArrayList<Object>();
 		Session session = sessionFactory.openSession();
@@ -134,7 +126,6 @@ public class BaseDatabaseManager implements DatabaseManager {
 		configuration.configure();
 	}
 
-	@Override
 	public Session getSession() {
 		return sessionFactory.openSession();
 	}
