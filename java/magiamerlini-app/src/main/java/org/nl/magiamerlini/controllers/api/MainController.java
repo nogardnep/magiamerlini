@@ -9,7 +9,6 @@ import org.nl.magiamerlini.components.ui.api.Display;
 import org.nl.magiamerlini.components.ui.api.FileExplorer;
 import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.controllers.tools.Mode;
-import org.nl.magiamerlini.data.api.ProjectsManager;
 import org.nl.magiamerlini.data.items.Item;
 
 public interface MainController {
@@ -31,7 +30,7 @@ public interface MainController {
 
 	public boolean inMode(Mode mode);
 
-	public ProjectsManager getProjectManager();
+	public ProjectsController getProjectManager();
 
 	public int getCurrentPatternIndex();
 

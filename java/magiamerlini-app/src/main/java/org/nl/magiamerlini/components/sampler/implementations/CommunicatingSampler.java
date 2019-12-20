@@ -1,12 +1,14 @@
 package org.nl.magiamerlini.components.sampler.implementations;
 
+import java.util.logging.Level;
+
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
-import org.nl.magiamerlini.components.sampler.api.SamplerComponent;
+import org.nl.magiamerlini.components.sampler.api.Sampler;
 import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
-public abstract class CommunicatingSampler extends CommunicatingComponent implements SamplerComponent {
+public abstract class CommunicatingSampler extends CommunicatingComponent implements Sampler {
 	private final static String EDIT_PARAMETER = "edit_parameter";
 	private final static String PLAY = "play";
 	private final static String STOP = "stop";
@@ -31,7 +33,7 @@ public abstract class CommunicatingSampler extends CommunicatingComponent implem
 	}
 
 	@Override
-	public void editTrackParameter(SamplerTrack samplerTrack, ParameterSnapshot parameter) {
+	public void trackParameterEdited(SamplerTrack samplerTrack, ParameterSnapshot parameter) {
 		String[] message = { getIdentifierFor(samplerTrack), EDIT_PARAMETER, parameter.getName(),
 				parameter.getDisplayedValue() };
 		sendMessage(message);
@@ -46,7 +48,16 @@ public abstract class CommunicatingSampler extends CommunicatingComponent implem
 	@Override
 	public void loadTrackSample(SamplerTrack samplerTrack, String path) {
 		samplerTrack.setFilePath(path);
-		mainController.getProjectManager().updateEntity(samplerTrack);
+		mainController.getProjectManager().update(samplerTrack);
+	}
+	
+	@Override
+	public void updateTrack(SamplerTrack samplerTrack) {
+		for (ParameterSnapshot parameter : samplerTrack.getParameters()) {
+			trackParameterEdited(samplerTrack, parameter);
+		}
+		
+		
 	}
 
 	protected void updateDisplay() {
@@ -54,6 +65,6 @@ public abstract class CommunicatingSampler extends CommunicatingComponent implem
 	}
 
 	protected String getIdentifierFor(SamplerTrack samplerTrack) {
-		return samplerTrack.getBank() + " " + samplerTrack + samplerTrack.getNumber();
+		return samplerTrack.getBank() + " " + samplerTrack.getNumber();
 	}
 }

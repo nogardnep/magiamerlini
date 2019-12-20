@@ -9,13 +9,11 @@ import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.api.MainController;
+import org.nl.magiamerlini.controllers.implementations.BaseProjectsController;
 import org.nl.magiamerlini.controllers.tools.FileType;
-import org.nl.magiamerlini.data.implementations.BaseProjectsManager;
 import org.nl.magiamerlini.utils.Logger;
 
 public class CommunicationImpl implements Communication {
-	private Server server;
-	private Inputs inputs;
 	private final static String PRESSED = "pressed";
 	private final static String LEAVED = "leaved";
 	private final static String ACTION = "action";
@@ -25,20 +23,23 @@ public class CommunicationImpl implements Communication {
 	private final static String VELOCITY = "velocity";
 	private final static String NUMBER = "number";
 	private final static String SECTION = "section";
-	private final static String TICK = "tick";
+	private final static String TICKED = "ticked";
 	private final static String LOAD = "load";
 	private final static String NEW = "new";
 	private final static String NETWORK = "network";
 	private final static String CONNECTED = "connected";
 	private final static String BUTTON = "button";
 	private final static String PAD = "pad";
-	private final static String CLOCK = "clock";
 	private final static String SELECTOR = "selector";
 	private final static String FILE_EXPLORER = "file_explorer";
 	private final static String SAMPLER = "sampler";
 	private final static String TYPE = "type";
 	private final static String WHEEL = "wheel";
 	private final static String SWITCH = "switch";
+	private final static String SEQUENCER = "sequencer";
+	
+	private Server server;
+	private Inputs inputs;
 
 	private Logger logger;
 
@@ -64,7 +65,7 @@ public class CommunicationImpl implements Communication {
 			String[] split = string.split("=");
 
 			if (split.length > 1) {
-				// TODO: remove ?
+				// TODO: remove?
 //				if (split[1].equals("null")) {
 //					split[1] = null;
 //				}
@@ -93,6 +94,13 @@ public class CommunicationImpl implements Communication {
 			case CONNECTED:
 				inputs.networkConnected();
 				App.test();
+				break;
+			}
+			break;
+		case SEQUENCER:
+			switch (args.get(ACTION)) {
+			case TICKED:
+				inputs.clockTicked();
 				break;
 			}
 			break;
@@ -133,12 +141,6 @@ public class CommunicationImpl implements Communication {
 			section = InputSection.getCorrespondingToString(args.get(SECTION));
 			inputs.selectorChanged(section, Integer.parseInt(args.get(VALUE)));
 			break;
-		case CLOCK:
-			switch (args.get(ACTION)) {
-			case TICK:
-				break;
-			}
-			break;
 		case FILE_EXPLORER:
 			FileType type = FileType.getCorrespondingToString(args.get(TYPE));
 
@@ -148,7 +150,7 @@ public class CommunicationImpl implements Communication {
 				if (path != null && !path.equals("")) {
 					// TODO: ugly
 					String rootPath = App.ROOT_DIR_FOR_FILES + "/" + type.getPath() + "/";
-					String fileExtension = "." + BaseProjectsManager.DB_FILE_EXTENSION;
+					String fileExtension = "." + BaseProjectsController.DB_FILE_EXTENSION;
 					System.out.println(fileExtension);
 					System.out.println(path);
 					path = path.replace(rootPath, "");

@@ -14,13 +14,13 @@ import org.nl.magiamerlini.data.tools.Parameter;
 @Table(name = "video_mixer_track")
 public class VideoMixerTrack extends MixerTrack implements Serializable {
 	private final static String OUTPUT_CHANNEL_PARAMETER = "output_channel";
-	private final static String VOLUME_PARAMETER = "volume";
+	private final static String OPACITY_PARAMETER = "opacity";
 	private final static String EFFECTS_SEND_PARAMETER = "effects_send";
 
 
-	@Column(name = VOLUME_PARAMETER)
+	@Column(name = OPACITY_PARAMETER)
 	@Parameter(min = 0, max = 1, step = 0.01f, defaultValue = 1)
-	private float volume;
+	private float opacity;
 
 	@Column(name = OUTPUT_CHANNEL_PARAMETER)
 	@Parameter(min = 1, max = 16, step = 1, defaultValue = 1)
@@ -46,12 +46,12 @@ public class VideoMixerTrack extends MixerTrack implements Serializable {
 		this.outputChannel = outputChannel;
 	}
 
-	public float getVolume() {
-		return volume;
+	public float getOpacity() {
+		return opacity;
 	}
 
-	public void setVolume(float volume) {
-		this.volume = volume;
+	public void setOpacity(float opacity) {
+		this.opacity = opacity;
 	}
 
 	public float getEffectsSend() {

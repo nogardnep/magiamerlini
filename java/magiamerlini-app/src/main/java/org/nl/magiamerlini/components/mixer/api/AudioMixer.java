@@ -1,5 +1,7 @@
 package org.nl.magiamerlini.components.mixer.api;
 
-public interface AudioMixer extends MixerComponent {
+public interface AudioMixer extends Mixer {
+
+	
 
 }

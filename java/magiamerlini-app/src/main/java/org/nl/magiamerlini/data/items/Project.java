@@ -111,6 +111,14 @@ public class Project extends Item implements Serializable {
 		videoSamplerTracks.add(videoSamplerTrack);
 	}
 
+	public void addAudioMixerTrack(AudioMixerTrack audioMixerTrack) {
+		audioMixerTracks.add(audioMixerTrack);
+	}
+
+	public void addVideoMixerTrack(VideoMixerTrack videoMixerTrack) {
+		videoMixerTracks.add(videoMixerTrack);
+	}
+
 	public int getId() {
 		return id;
 	}

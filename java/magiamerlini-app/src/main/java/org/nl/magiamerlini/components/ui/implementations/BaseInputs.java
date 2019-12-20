@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.components.BaseComponent;
+import org.nl.magiamerlini.components.mixer.items.AudioEffect;
+import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
+import org.nl.magiamerlini.components.mixer.items.Effect;
+import org.nl.magiamerlini.components.mixer.items.VideoEffect;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.components.ui.api.Inputs;
 import org.nl.magiamerlini.components.ui.tools.ButtonEvent;
@@ -65,8 +70,8 @@ public class BaseInputs extends BaseComponent implements Inputs {
 				switch (last.getSection()) {
 				case Action:
 					if (last.equals(first)) {
-						if (first.hasName(ButtonName.Edit) || first.hasName(ButtonName.Move)
-								|| first.hasName(ButtonName.Copy)) {
+						if (isASelectingButton(last)) {
+							logger.log(Level.ALL, "START SELECTING *****************************");
 							mainController.getSelectionController().setSelecting(true);
 						} else {
 							switch (mainController.getCurrentMode()) {
@@ -132,18 +137,34 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					item = mainController.getItemCorrespondingTo(number);
 					switch (first.getSection()) {
 					case Padboard:
-						mainController.getPlayerController().playTrack(((AudioSamplerTrack) item).getBank(),
-								((AudioSamplerTrack) item).getNumber(), velocity);
+						switch (mainController.getCurrentMode()) {
+						case AudioSampler:
+						case VideoSampler:
+							mainController.getSequencer().playTrack(((SamplerTrack) item).getBank(),
+									((SamplerTrack) item).getNumber(), velocity);
+							break;
+						default:
+							break;
+						}
 						break;
 					case Action:
 						if (mainController.getSelectionController().isSelecting()) {
-							mainController.getSelectionController().toggleSelected(item);
-						} else if (first.hasName(ButtonName.Special) && item instanceof AudioSamplerTrack) {
-							if (((AudioSamplerTrack) item).isArmed()) {
-								mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item, false);
-							} else {
-								mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item, true);
+							if (item != null) {
+								logger.log(Level.ALL, "*** select ***");
+								mainController.getSelectionController().toggleSelected(item);
 							}
+						} else if (first.hasName(ButtonName.Special) && item instanceof AudioSamplerTrack) {
+							mainController.getAudioSampler().setTrackArmed((AudioSamplerTrack) item,
+									!((AudioSamplerTrack) item).isArmed());
+						} else if (first.hasName(ButtonName.Special) && item instanceof AudioMixerTrack) {
+							mainController.getAudioMixer().setTrackMuted((AudioMixerTrack) item,
+									!((AudioMixerTrack) item).isMuted());
+						} else if (first.hasName(ButtonName.Special) && item instanceof AudioEffect) {
+							mainController.getAudioMixer().setEffectActivated((Effect) item,
+									!((Effect) item).isActivated());
+						} else if (first.hasName(ButtonName.Special) && item instanceof VideoEffect) {
+							mainController.getVideoMixer().setEffectActivated((Effect) item,
+									!((Effect) item).isActivated());
 						} else if (first.hasName(ButtonName.Load) && item instanceof AudioSamplerTrack) {
 							mainController.getFileExplorer().open(FileType.Sound, item);
 						} else if (first.hasName(ButtonName.Load) && item instanceof VideoSamplerTrack) {
@@ -156,17 +177,17 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					break;
 				case Player:
 					if (last.hasName(ButtonName.Forward)) {
-						mainController.getPlayerController().moveForward();
+						mainController.getSequencer().moveForward();
 					} else if (last.hasName(ButtonName.Backward)) {
 						if (first.hasName(ButtonName.Pause)) {
-							mainController.getPlayerController().stop();
+							mainController.getSequencer().stop();
 						} else {
-							mainController.getPlayerController().moveBackward();
+							mainController.getSequencer().moveBackward();
 						}
 					} else if (last.hasName(ButtonName.Play)) {
-						mainController.getPlayerController().play();
+						mainController.getSequencer().play();
 					} else if (last.hasName(ButtonName.Pause)) {
-						mainController.getPlayerController().pause();
+						mainController.getSequencer().pause();
 					}
 					break;
 				default:
@@ -227,25 +248,33 @@ public class BaseInputs extends BaseComponent implements Inputs {
 	}
 
 	@Override
+	public void buttonLeaved(InputSection section, ButtonName buttonName) {
+		String stringName = EnumUtils.getCorrespondingString(buttonName.name());
+		buttonLeaved(section, stringName);
+	}
+
+	@Override
 	public void buttonLeaved(InputSection section, String name) {
 		logger.log(Level.INFO, "buttonLeaved -----------");
 		ButtonEvent button = new ButtonEvent(name, section);
 
 		if (mainController.isReady()) {
 			if (button.equals(getFirstInQueue())) {
+				if (isASelectingButton(button)) {
+					logger.log(Level.ALL, "STOP SELECTING *****************************");
+					mainController.getSelectionController().setSelecting(false);
+				}
+
 				if (button.hasName(ButtonName.Edit)) {
-					logger.log(Level.FINE, "buttonLeaved->edit");
 					if (EMPTY_SELECTED_ITEMS_ON_LEAVING_EDIT_BUTTON) {
 						mainController.getSelectionController().emptySelectedItems();
 					}
-					mainController.getSelectionController().setSelecting(false);
 				} else if (button.hasName(ButtonName.Move)) {
 					switch (mainController.getCurrentMode()) {
 					case AudioSampler:
 					case VideoSampler:
 						mainController.getSelectionController().applySwapping();
 						mainController.getSelectionController().emptySelectedItems();
-						mainController.getSelectionController().setSelecting(false);
 						break;
 					default:
 						break;
@@ -256,7 +285,6 @@ public class BaseInputs extends BaseComponent implements Inputs {
 					case VideoSampler:
 						mainController.getSelectionController().applyCopying();
 						mainController.getSelectionController().emptySelectedItems();
-						mainController.getSelectionController().setSelecting(false);
 						break;
 					default:
 						break;
@@ -348,6 +376,12 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		}
 	}
 
+	// TODO: Move
+	@Override
+	public void clockTicked() {
+		mainController.getSequencer().clockTicked();
+	}
+
 	@Override
 	public void switchChanged(InputSection section, int value) {
 		// TODO
@@ -435,6 +469,10 @@ public class BaseInputs extends BaseComponent implements Inputs {
 		} else {
 			return null;
 		}
+	}
+
+	private boolean isASelectingButton(ButtonEvent button) {
+		return button.hasName(ButtonName.Edit) || button.hasName(ButtonName.Edit) || button.hasName(ButtonName.Edit);
 	}
 
 }

@@ -1,19 +1,48 @@
 package org.nl.magiamerlini.components.sequencer.tools;
 
-public enum TimeSignature {
-	MinSteps(3), MaxSteps(8), MinBeats(1), MaxBeats(8), MinBars(1), MaxBars(16);
-	
-	private float value;
+import java.io.Serializable;
 
-	TimeSignature(float value) {
-		this.value = value;
+public class TimeSignature {
+	private int step;
+	private int beat;
+	private int bar;
+
+	TimeSignature(int bar, int beat, int step) {
+		set(bar, beat, step);
 	}
-	
-	public float getValue() {
-		return value;
+
+	void set(int bar, int beat, int step) {
+		this.bar = bar;
+		this.beat = beat;
+		this.step = step;
+	}
+
+	void setStep(int step) {
+		this.step = step;
+	}
+
+	void setBeat(int beat) {
+		this.beat = beat;
+	}
+
+	void setBar(int bar) {
+		this.bar = bar;
+	}
+
+	int getStep() {
+		return step;
+	}
+
+	int getBeat() {
+		return beat;
+	}
+
+	int getBar() {
+		return bar;
 	}
 
 	public String toString() {
-		return String.valueOf(value);
+		return bar + "-" + beat + "-" + step;
 	}
+
 }

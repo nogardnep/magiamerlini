@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
+import org.nl.magiamerlini.components.mixer.items.AudioEffect;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
+import org.nl.magiamerlini.components.mixer.items.MixerTrack;
+import org.nl.magiamerlini.components.mixer.items.VideoEffect;
+import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.api.SelectionController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
@@ -45,12 +50,19 @@ public class BaseSelectionController extends BaseController implements Selection
 	public void applyParameter(ParameterSnapshot parameter) {
 		for (Item item : selectedItems) {
 			item.applyParameter(parameter);
-			mainController.getProjectManager().updateEntity(item);
+			mainController.getProjectManager().update(item);
 
 			if (item instanceof AudioSamplerTrack) {
-				mainController.getAudioSampler().editTrackParameter((AudioSamplerTrack) item, parameter);
+				mainController.getAudioSampler().trackParameterEdited((AudioSamplerTrack) item, parameter);
 			} else if (item instanceof AudioMixerTrack) {
-				mainController.getAudioMixer().editTrackParameter((AudioMixerTrack) item, parameter);
+				mainController.getAudioMixer().trackParameterEdited((AudioMixerTrack) item, parameter);
+			} else if (item instanceof AudioEffect) {mainController.getAudioMixer().effectParameterEdited((AudioEffect) item, parameter);
+			} else if (item instanceof VideoSamplerTrack) {
+				mainController.getVideoSampler().trackParameterEdited((VideoSamplerTrack) item, parameter);
+			} else if (item instanceof VideoMixerTrack) {
+				mainController.getVideoMixer().trackParameterEdited((VideoMixerTrack) item, parameter);
+			} else if (item instanceof VideoEffect) {
+				mainController.getVideoMixer().effectParameterEdited((VideoEffect) item, parameter);
 			}
 		}
 
@@ -72,6 +84,8 @@ public class BaseSelectionController extends BaseController implements Selection
 			addSelectedItem(item);
 			selected = true;
 		}
+		
+		logger.log(Level.ALL, selectedItems);
 
 		updateDisplay();
 
@@ -110,6 +124,7 @@ public class BaseSelectionController extends BaseController implements Selection
 
 	@Override
 	public void setSelecting(boolean selecting) {
+		//emptySelectedItems(); // TODO: remove
 		this.selecting = selecting;
 		updateDisplay();
 	}
@@ -117,12 +132,11 @@ public class BaseSelectionController extends BaseController implements Selection
 	@Override
 	public void applySwapping() {
 		// TODO: swapping for more than 2 items
+		// TODO: swap toggether video and audio
 
 		if (selectedItems.size() > 1) {
 			Item first = selectedItems.get(0);
 			Item second = selectedItems.get(1);
-			logger.log(Level.FINE, "SWAP " + first);
-			logger.log(Level.FINE, "SWAP " + second);
 
 			if (first instanceof AudioSamplerTrack) {
 				int firstBank = ((AudioSamplerTrack) first).getBank();
@@ -135,8 +149,8 @@ public class BaseSelectionController extends BaseController implements Selection
 				((AudioSamplerTrack) second).setNumber(firstNumber);
 			}
 
-			mainController.getProjectManager().updateEntity(first);
-			mainController.getProjectManager().updateEntity(second);
+			mainController.getProjectManager().update(first);
+			mainController.getProjectManager().update(second);
 
 			updateDisplay();
 		}
@@ -144,7 +158,7 @@ public class BaseSelectionController extends BaseController implements Selection
 
 	@Override
 	public void applyCopying() {
-		// TODO Auto-generated method stub
+		// TODO
 		updateDisplay();
 	}
 

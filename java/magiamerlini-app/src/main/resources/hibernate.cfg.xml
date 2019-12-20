@@ -24,7 +24,9 @@
 		<mapping class="org.nl.magiamerlini.components.mixer.items.MixerTrack" />
 		<mapping class="org.nl.magiamerlini.components.mixer.items.AudioMixerTrack" />
 		<mapping class="org.nl.magiamerlini.components.mixer.items.VideoMixerTrack" />
-		<mapping class="org.nl.magiamerlini.components.mixer.items.effects.Effect" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.Effect" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.AudioEffect" />
+		<mapping class="org.nl.magiamerlini.components.mixer.items.VideoEffect" />
 		<mapping class="org.nl.magiamerlini.components.mixer.items.effects.audio.ReverbAudioEffect" />
 	</session-factory>
 </hibernate-configuration>

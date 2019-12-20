@@ -50,7 +50,7 @@ public class CommunicatingDisplay extends CommunicatingComponent implements Disp
 	public void displaySelectedItem() {
 		String name;
 		int number = mainController.getSelectionController().getSelectedItems().size();
-
+		
 		if (number > 0) {
 			name = mainController.getSelectionController().getFirstSelectedItem().toDisplay();
 

@@ -15,4 +15,5 @@ public class CommunicatingAudioSampler extends CommunicatingSampler implements A
 		samplerTrack.setArmed(state);
 		updateDisplay();
 	}
+	
 }

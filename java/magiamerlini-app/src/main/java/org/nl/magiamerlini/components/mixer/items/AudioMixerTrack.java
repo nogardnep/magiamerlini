@@ -30,7 +30,6 @@ public class AudioMixerTrack extends MixerTrack implements Serializable {
 
 	public AudioMixerTrack() {
 		super();
-		getEffects().add(new ReverbAudioEffect());
 	}
 
 	public AudioMixerTrack(int number) {

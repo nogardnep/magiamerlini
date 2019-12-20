@@ -2,11 +2,17 @@ package org.nl.magiamerlini.components.ui.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
 import org.nl.magiamerlini.communication.api.Communication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
+import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
+import org.nl.magiamerlini.components.mixer.items.Effect;
+import org.nl.magiamerlini.components.mixer.items.MixerTrack;
+import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
+import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.components.ui.api.Padboard;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
@@ -72,41 +78,51 @@ public class CommunicatingPadboard extends CommunicatingComponent implements Pad
 				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
 				break;
 			case AudioSampler:
+			case VideoSampler:
 				pad.setLightColor(Color.Red);
-				if (item instanceof AudioSamplerTrack && ((AudioSamplerTrack) item).isPlaying()) {
-					pad.setLightIntensity(0.8f);
-				} else {
-					pad.setLightIntensity(0.2f);
-				}
-				if (item instanceof AudioSamplerTrack && ((AudioSamplerTrack) item).isArmed()) {
-					pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NORMAL);
-				} else {
-					pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+				if (item instanceof SamplerTrack) {
+					SamplerTrack samplerTrack = (SamplerTrack) item;
+					if (samplerTrack.isPlaying()) {
+						pad.setLightIntensity(0.8f);
+					} else {
+						pad.setLightIntensity(0.2f);
+					}
+					if (item instanceof AudioSamplerTrack && ((AudioSamplerTrack) samplerTrack).isArmed()) {
+						pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NORMAL);
+					} else {
+						pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
+					}
 				}
 				break;
 			case AudioMixer:
+			case VideoMixer:
 				pad.setLightColor(Color.Green);
-				pad.setLightIntensity(0.1f);
+				if (item instanceof MixerTrack) {
+					MixerTrack mixerTrack = (MixerTrack) item;
+					if (mixerTrack.isMuted()) {
+						pad.setLightIntensity(0);
+					} else {
+						if (mixerTrack instanceof AudioMixerTrack) {
+							pad.setLightIntensity(((AudioMixerTrack) mixerTrack).getVolume());
+						} else if (mixerTrack instanceof VideoMixerTrack) {
+							pad.setLightIntensity(((VideoMixerTrack) mixerTrack).getOpacity());
+						}
+					}
+				}
 				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
 				break;
 			case AudioEffects:
-				pad.setLightColor(Color.Green);
-				pad.setLightIntensity(0.1f);
-				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
-				break;
-			case VideoSampler:
-				pad.setLightColor(Color.Red);
-				pad.setLightIntensity(0.5f);
-				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
-				break;
-			case VideoMixer:
-				pad.setLightColor(Color.Green);
-				pad.setLightIntensity(0.1f);
-				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
-				break;
 			case VideoEffects:
-				pad.setLightColor(Color.Green);
-				pad.setLightIntensity(0.1f);
+				pad.setLightColor(Color.Pink);
+				if (item != null && item instanceof Effect) {
+					if (((Effect) item).isActivated()) {
+						pad.setLightIntensity(1f);
+					} else {
+						pad.setLightIntensity(0.2f);
+					}
+				} else {
+					pad.setLightIntensity(0);
+				}
 				pad.setLightBlinkingSpeed(Pad.BLINKING_SPEED_NO_BLINKING);
 				break;
 			default:

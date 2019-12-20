@@ -4,16 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.components.mixer.items.effects.Effect;
+import org.nl.magiamerlini.components.mixer.items.AudioEffect;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity
 @Table(name = "reverb_audio_effect")
-public class ReverbAudioEffect extends Effect implements Serializable {
+public class ReverbAudioEffect extends AudioEffect implements Serializable {
 	public final static String LEVEL_PARAMETER = "level";
 	public final static String TIME_PARAMETER = "time";
 	public final static String TONE_PARAMETER = "tone";

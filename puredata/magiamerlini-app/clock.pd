@@ -10,8 +10,8 @@
 -1 -1;
 #X obj 71 9 bng 15 250 50 0 empty empty stop 17 7 0 10 -262144 -1 -1
 ;
-#X floatatom 137 129 5 0 0 0 step - -;
-#X obj 37 163 min 400;
+#X floatatom 173 154 5 0 0 0 step - -;
+#X obj 30 75 min 400;
 #X obj 162 289 expr \$1;
 #X obj 660 46 list_contain 1 metronome;
 #X obj 601 198 list_contain 3 play;
@@ -21,7 +21,7 @@
 #X obj 448 281 t a a;
 #X msg 440 312 \$4;
 #X msg 483 314 \$6;
-#X obj 28 78 t a b;
+#X obj 35 113 t a b;
 #X obj 41 212 expr 60000 / ($f1*$f2);
 #X obj 644 147 list_min_length 3;
 #X obj 662 78 list_contain 2 \$1;
@@ -31,20 +31,20 @@
 #X obj 173 178 min 24;
 #X obj 659 17 inlet message;
 #X obj 168 356 outlet message;
-#X text 208 38 messsage format: metronome (number) bpm (number) tick
-(number);
 #X msg 168 323 clock number=\$1 action=tick;
+#X text 208 38 messsage format: metronome (number) bpm (number) step
+(number);
 #X connect 0 0 10 0;
 #X connect 1 0 5 0;
 #X connect 2 0 5 0;
-#X connect 3 0 19 0;
+#X connect 3 0 9 0;
 #X connect 4 0 5 1;
 #X connect 5 0 0 0;
 #X connect 6 0 1 0;
 #X connect 7 0 2 0;
 #X connect 8 0 25 0;
-#X connect 9 0 20 0;
-#X connect 10 0 29 0;
+#X connect 9 0 19 0;
+#X connect 10 0 28 0;
 #X connect 11 0 22 0;
 #X connect 12 0 6 0;
 #X connect 13 0 7 0;
@@ -54,7 +54,7 @@
 #X connect 16 1 18 0;
 #X connect 17 0 3 0;
 #X connect 18 0 8 0;
-#X connect 19 0 9 0;
+#X connect 19 0 20 0;
 #X connect 19 1 8 0;
 #X connect 20 0 4 0;
 #X connect 21 0 12 0;
@@ -64,5 +64,5 @@
 #X connect 23 0 14 0;
 #X connect 25 0 20 1;
 #X connect 26 0 11 0;
-#X connect 29 0 27 0;
+#X connect 28 0 27 0;
 #X coords 0 -1 1 1 120 60 1 0 0;

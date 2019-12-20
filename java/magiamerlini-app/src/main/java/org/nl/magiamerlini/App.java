@@ -22,15 +22,12 @@ import org.nl.magiamerlini.components.ui.implementations.BaseInputs;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingDisplay;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingFileExplorer;
 import org.nl.magiamerlini.components.ui.implementations.CommunicatingPadboard;
-import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.implementations.BaseMainController;
 import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.api.DatabaseManager;
-import org.nl.magiamerlini.data.api.ProjectsManager;
 import org.nl.magiamerlini.data.implementations.BaseDatabaseManager;
-import org.nl.magiamerlini.data.implementations.BaseProjectsManager;
 import org.nl.magiamerlini.utils.Logger;
 
 public class App {
@@ -51,7 +48,6 @@ public class App {
 			communication = new CommunicationImpl();
 			databaseManager = new BaseDatabaseManager();
 
-			ProjectsManager projectsManager = new BaseProjectsManager(databaseManager);
 			AudioSampler audioSampler = new CommunicatingAudioSampler(communication);
 			AudioMixer audioMixer = new CommunicatingAudioMixer(communication);
 			VideoSampler videoSampler = new CommunicatingVideoSampler(communication);
@@ -62,7 +58,7 @@ public class App {
 			FileExplorer fileExplorer = new CommunicatingFileExplorer(communication);
 			inputs = new BaseInputs();
 
-			mainController = new BaseMainController(projectsManager, display, fileExplorer, padboard, sequencer,
+			mainController = new BaseMainController(databaseManager, display, fileExplorer, padboard, sequencer,
 					audioSampler, audioMixer, videoSampler, videoMixer);
 
 			padboard.setMainController(mainController);
@@ -70,6 +66,8 @@ public class App {
 			display.setMainController(mainController);
 			audioSampler.setMainController(mainController);
 			videoSampler.setMainController(mainController);
+			audioMixer.setMainController(mainController);
+			videoMixer.setMainController(mainController);
 			communication.setInputs(inputs);
 
 			logger.log(Level.INFO, "=======");
@@ -89,10 +87,19 @@ public class App {
 
 	public static void test() {
 		logger.log(Level.INFO, "==== TESTS ====");
-//		communication.testMessage("file_explorer action=load type=project path=C:/Users/Nicolas/magiamerlini-data/projects/B/project.mv.db");
-//		inputs.selectorChanged(InputSection.Mode, Mode.AudioSampler.ordinal());
-//		inputs.buttonPressed(InputSection.Action, ButtonName.Load);
+		communication.testMessage(
+				"file_explorer action=load type=project path=C:/Users/Nicolas/magiamerlini-data/projects/W/project.mv.db");
+		inputs.selectorChanged(InputSection.Mode, Mode.AudioSampler.ordinal());
+//		inputs.buttonPressed(InputSection.Action, ButtonName.Special);
 //		inputs.padPressed(0, 1);
+//		inputs.padLeaved(0);
+////		for (int i = 0; i < 5; i++) {
+////			inputs.buttonPressed(InputSection.Navigation, ButtonName.Down);
+////			inputs.buttonLeaved(InputSection.Navigation, ButtonName.Down);
+////		}
+////		inputs.padPressed(0, 1);
+////		inputs.padLeaved(0);
+//		inputs.buttonLeaved(InputSection.Action, ButtonName.Special);
 		logger.log(Level.INFO, "=======");
 	}
 }

@@ -13,6 +13,8 @@ public interface Inputs extends Component {
 	public void buttonPressed(InputSection section, String name);
 
 	public void buttonLeaved(InputSection section, String name);
+	
+	public void buttonLeaved(InputSection section, ButtonName name);
 
 	public void selectorChanged(InputSection section, int newValue);
 
@@ -33,4 +35,6 @@ public interface Inputs extends Component {
 	public void switchChanged(InputSection section, int value);
 
 	public void networkConnected();
+
+	public void clockTicked();
 }

@@ -8,6 +8,7 @@ import org.nl.magiamerlini.controllers.api.MainController;
 import org.nl.magiamerlini.controllers.api.PlayerController;
 import org.nl.magiamerlini.controllers.tools.BaseController;
 
+// TODO: delete?
 public class BasePlayerController extends BaseController implements PlayerController {
 	public BasePlayerController(MainController mainController) {
 		super(mainController);
@@ -27,7 +28,6 @@ public class BasePlayerController extends BaseController implements PlayerContro
 
 	@Override
 	public void play() {
-		// TODO
 		logger.log(Level.INFO, "play");
 	}
 
@@ -35,6 +35,7 @@ public class BasePlayerController extends BaseController implements PlayerContro
 	public void pause() {
 		// TODO
 		logger.log(Level.INFO, "pause");
+
 	}
 
 	@Override
