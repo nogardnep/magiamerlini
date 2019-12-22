@@ -12,7 +12,7 @@ import org.nl.magiamerlini.components.mixer.items.VideoMixerTrack;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
 import org.nl.magiamerlini.controllers.tools.BaseController;
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public class SelectionController extends BaseController {

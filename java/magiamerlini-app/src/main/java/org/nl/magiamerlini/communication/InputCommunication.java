@@ -9,7 +9,7 @@ import org.nl.magiamerlini.controllers.ProjectsController;
 import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.utils.Logger;
 
-public class Communication  {
+public class InputCommunication  {
 	private final static String PRESSED = "pressed";
 	private final static String LEAVED = "leaved";
 	private final static String ACTION = "action";
@@ -34,14 +34,15 @@ public class Communication  {
 	private final static String SWITCH = "switch";
 	private final static String SEQUENCER = "sequencer";
 	
-	private Server server;
+	private ServerHandler server;
 	private Inputs inputs;
-
+	
+	@SuppressWarnings("unused")
 	private Logger logger;
 
-	public Communication() {
+	public InputCommunication() {
 		this.logger = new Logger(this.getClass().getSimpleName(), true);
-		this.server = new Server();
+		this.server = new ServerHandler();
 	}
 
 	public void connect(int port, boolean displayMessages) {

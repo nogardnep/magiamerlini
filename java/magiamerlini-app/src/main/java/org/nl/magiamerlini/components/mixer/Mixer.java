@@ -2,7 +2,7 @@ package org.nl.magiamerlini.components.mixer;
 
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.mixer.items.Effect;
 import org.nl.magiamerlini.components.mixer.items.MixerTrack;
@@ -16,7 +16,7 @@ public abstract class Mixer extends CommunicatingComponent  {
 	private final static String MUTED = "muted";
 	private final static String EFFECT = "effect";
 
-	public Mixer(Communication communication, String name) {
+	public Mixer(InputCommunication communication, String name) {
 		super(communication, name);
 	}
 

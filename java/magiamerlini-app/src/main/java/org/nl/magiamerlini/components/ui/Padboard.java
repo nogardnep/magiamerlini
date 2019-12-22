@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.mixer.items.AudioMixerTrack;
 import org.nl.magiamerlini.components.mixer.items.Effect;
@@ -17,13 +17,13 @@ import org.nl.magiamerlini.components.sequencer.items.PatternEvent;
 import org.nl.magiamerlini.components.sequencer.items.SequenceEvent;
 import org.nl.magiamerlini.components.ui.tools.Color;
 import org.nl.magiamerlini.components.ui.tools.Pad;
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
 public class Padboard extends CommunicatingComponent  {
 	private List<Pad> pads;
 
-	public Padboard(Communication communication) {
+	public Padboard(InputCommunication communication) {
 		super(communication, "pad");
 		pads = new ArrayList<Pad>();
 

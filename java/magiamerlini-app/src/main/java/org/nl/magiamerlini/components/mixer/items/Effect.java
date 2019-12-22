@@ -11,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 
 @Entity(name = "Effect")
 @Table(name = "effect")

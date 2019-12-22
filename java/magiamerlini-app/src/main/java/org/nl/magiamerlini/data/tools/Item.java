@@ -1,4 +1,4 @@
-package org.nl.magiamerlini.data.items;
+package org.nl.magiamerlini.data.tools;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,8 +8,6 @@ import java.util.List;
 import javax.persistence.Column;
 
 import org.nl.magiamerlini.components.BaseComponent;
-import org.nl.magiamerlini.data.tools.Parameter;
-import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 import org.nl.magiamerlini.utils.Logger;
 
 import com.google.common.base.CaseFormat;
@@ -18,7 +16,7 @@ public abstract class Item {
 	protected Logger logger;
 
 	public Item() {
-		this.logger = new Logger(BaseComponent.class.getSimpleName(), true);
+		this.logger = new Logger(this.getClass().getSimpleName(), true);
 		applyDefaultValues();
 	}
 

@@ -12,21 +12,21 @@ import java.util.logging.Level;
 
 import org.nl.magiamerlini.utils.Logger;
 
-public class Server {
+public class ServerHandler {
 	private Scanner scanner;
 	private PrintWriter serverPrintOut;
-	private Communication communication;
+	private InputCommunication communication;
 	private Logger logger;
 	private boolean displayMessages;
 
 	public static final String NETWORK = "network";
 	public static final String CONNECTED = "connected";
 
-	public Server() {
+	public ServerHandler() {
 		this.logger = new Logger(this.getClass().getSimpleName(), true);
 	}
 
-	public void connect(Communication communication, int port, boolean displayMessages) {
+	public void connect(InputCommunication communication, int port, boolean displayMessages) {
 		this.displayMessages = displayMessages;
 		this.communication = communication;
 

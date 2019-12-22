@@ -1,11 +1,11 @@
 package org.nl.magiamerlini.components.sampler;
 
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 
 public class AudioSampler extends Sampler  {
 	
-	public AudioSampler(Communication communication) {
+	public AudioSampler(InputCommunication communication) {
 		super(communication, "audio_sampler");
 	}
 

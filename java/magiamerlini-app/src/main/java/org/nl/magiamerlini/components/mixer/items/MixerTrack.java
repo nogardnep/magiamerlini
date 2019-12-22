@@ -14,7 +14,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 
 @Entity(name = "MixerTrack")
 @Table(name = "mixer_track")

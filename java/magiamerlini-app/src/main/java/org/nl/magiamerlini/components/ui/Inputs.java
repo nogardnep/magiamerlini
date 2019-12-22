@@ -25,11 +25,12 @@ import org.nl.magiamerlini.components.ui.tools.ButtonName;
 import org.nl.magiamerlini.components.ui.tools.InputSection;
 import org.nl.magiamerlini.controllers.tools.FileType;
 import org.nl.magiamerlini.controllers.tools.Mode;
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
 public class Inputs extends BaseComponent {
 	private final static boolean EMPTY_SELECTED_ITEMS_ON_LEAVING_EDIT_BUTTON = false;
+	public static Inputs instance;
 	public List<ButtonEvent> queue;
 
 	public Inputs() {
@@ -109,7 +110,7 @@ public class Inputs extends BaseComponent {
 					number = Integer.parseInt(last.getName());
 					switch (first.getSection()) {
 					case Bank:
-						mainController.changeBank(number);
+						mainController.changeTrackBank(number);
 						break;
 					case Action:
 						if (first.hasName(ButtonName.New)) {

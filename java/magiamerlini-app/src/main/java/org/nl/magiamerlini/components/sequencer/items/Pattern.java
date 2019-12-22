@@ -14,8 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.nl.magiamerlini.data.items.Item;
 import org.nl.magiamerlini.data.tools.Alias;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity

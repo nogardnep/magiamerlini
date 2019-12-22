@@ -21,6 +21,7 @@ import org.nl.magiamerlini.components.sequencer.items.Pattern;
 import org.nl.magiamerlini.components.sequencer.items.Sequence;
 import org.nl.magiamerlini.components.sequencer.items.Song;
 import org.nl.magiamerlini.data.tools.Alias;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.data.tools.Parameter;
 
 @Entity

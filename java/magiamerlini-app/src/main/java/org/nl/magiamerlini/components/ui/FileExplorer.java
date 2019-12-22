@@ -1,10 +1,10 @@
 package org.nl.magiamerlini.components.ui;
 
 import org.nl.magiamerlini.App;
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.controllers.tools.FileType;
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.utils.EnumUtils;
 
 public class FileExplorer extends CommunicatingComponent {
@@ -13,7 +13,7 @@ public class FileExplorer extends CommunicatingComponent {
 
 	private Item waitingItem;
 
-	public FileExplorer(Communication communication) {
+	public FileExplorer(InputCommunication communication) {
 		super(communication, "file_explorer");
 	}
 

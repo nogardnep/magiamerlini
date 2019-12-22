@@ -15,7 +15,7 @@ import org.nl.magiamerlini.components.ui.FileExplorer;
 import org.nl.magiamerlini.components.ui.Padboard;
 import org.nl.magiamerlini.controllers.tools.Mode;
 import org.nl.magiamerlini.data.DatabaseManager;
-import org.nl.magiamerlini.data.items.Item;
+import org.nl.magiamerlini.data.tools.Item;
 import org.nl.magiamerlini.utils.Logger;
 
 public class MainController {
@@ -38,7 +38,8 @@ public class MainController {
 
 	private Mode currentMode;
 	private int currentModeIndex;
-	private int currentBankIndex;
+	private int currentTrackBankIndex;
+	private int currentPatternBankIndex;
 	private int currentPatternIndex;
 	private int currentTrackIndex;
 	private int currentSequenceIndex;
@@ -64,7 +65,8 @@ public class MainController {
 
 		loadingProject = false;
 		currentMode = Mode.Project;
-		currentBankIndex = 0;
+		currentTrackBankIndex = 0;
+		currentPatternBankIndex = 0;
 		currentPatternIndex = 0;
 		currentTrackIndex = 0;
 		currentSequenceIndex = 0;
@@ -146,17 +148,17 @@ public class MainController {
 				tick = 18;
 				break;
 			}
-			pattern = projectsController.getPattern(currentBankIndex, currentPatternIndex);
+			pattern = projectsController.getPattern(currentTrackBankIndex, currentPatternIndex);
 			item = projectsController.getPatternEvent(pattern, currentTrackIndex, bar, beat, tick);
 			break;
 		case PatternLaunch:
-			item = projectsController.getPattern(currentBankIndex, number);
+			item = projectsController.getPattern(currentTrackBankIndex, number);
 			break;
 		case AudioMixer:
 			item = projectsController.getAudioMixerTrack(number);
 			break;
 		case AudioSampler:
-			item = projectsController.getAudioSamplerTrack(currentBankIndex, number);
+			item = projectsController.getAudioSamplerTrack(currentTrackBankIndex, number);
 			break;
 		case AudioEffects:
 			item = projectsController.getAudioEffect(currentTrackIndex, number);
@@ -271,17 +273,34 @@ public class MainController {
 		return currentModeIndex;
 	}
 
-	public int getCurrentBankIndex() {
-		return currentBankIndex;
+	public int getCurrentTrackBankIndex() {
+		return currentTrackBankIndex;
 	}
 
-	public void changeBank(int value) {
+	public void changeTrackBank(int value) {
 		if (value < Configuration.Banks.getValue()) {
-			if (value != this.currentBankIndex) {
+			if (value != this.currentTrackBankIndex) {
 				this.selectionController.emptySelectedItems();
 			}
 
-			this.currentBankIndex = value;
+			this.currentTrackBankIndex = value;
+		}
+
+		currentStateChanged();
+		updateDisplay();
+	}
+
+	public int getCurrentPatternBankIndex() {
+		return currentPatternBankIndex;
+	}
+
+	public void changePatternBank(int value) {
+		if (value < Configuration.Banks.getValue()) {
+			if (value != this.currentPatternBankIndex) {
+				this.selectionController.emptySelectedItems();
+			}
+
+			this.currentPatternBankIndex = value;
 		}
 
 		currentStateChanged();

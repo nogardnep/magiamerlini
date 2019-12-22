@@ -2,15 +2,15 @@ package org.nl.magiamerlini.communication.tools;
 
 import java.util.logging.Level;
 
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.components.BaseComponent;
 
 public abstract class CommunicatingComponent extends BaseComponent {
 
-	private Communication communication;
+	private InputCommunication communication;
 	private String name;
 
-	public CommunicatingComponent(Communication communication, String name) {
+	public CommunicatingComponent(InputCommunication communication, String name) {
 		super();
 		this.communication = communication;
 		this.name = name;

@@ -3,7 +3,7 @@ package org.nl.magiamerlini.components.sequencer;
 import java.util.logging.Level;
 
 import org.nl.magiamerlini.Configuration;
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.sampler.items.AudioSamplerTrack;
 import org.nl.magiamerlini.components.sampler.items.VideoSamplerTrack;
@@ -35,7 +35,7 @@ public class Sequencer extends CommunicatingComponent  {
 	private TimeSignature masterTimeSignature;
 	private int masterBpm;
 
-	public Sequencer(Communication communication) {
+	public Sequencer(InputCommunication communication) {
 		super(communication, "sequencer");
 		this.masterBpm = INITIAL_BPM;
 		this.playing = false;

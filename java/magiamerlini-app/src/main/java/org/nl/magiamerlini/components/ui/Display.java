@@ -1,13 +1,13 @@
 package org.nl.magiamerlini.components.ui;
 
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
 
 public class Display extends CommunicatingComponent {
 	private final static String EMPTY = "----";
 
-	public Display(Communication communication) {
+	public Display(InputCommunication communication) {
 		super(communication, "display");
 	}
 

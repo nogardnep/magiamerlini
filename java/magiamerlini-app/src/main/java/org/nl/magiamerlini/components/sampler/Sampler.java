@@ -1,6 +1,6 @@
 package org.nl.magiamerlini.components.sampler;
 
-import org.nl.magiamerlini.communication.Communication;
+import org.nl.magiamerlini.communication.InputCommunication;
 import org.nl.magiamerlini.communication.tools.CommunicatingComponent;
 import org.nl.magiamerlini.components.sampler.items.SamplerTrack;
 import org.nl.magiamerlini.data.tools.ParameterSnapshot;
@@ -11,7 +11,7 @@ public abstract class Sampler extends CommunicatingComponent {
 	private final static String STOP = "stop";
 	private final static String VELOCITY = "velocity";
 
-	public Sampler(Communication communication, String name) {
+	public Sampler(InputCommunication communication, String name) {
 		super(communication, name);
 	}
 
